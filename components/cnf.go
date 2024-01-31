@@ -47,12 +47,14 @@ func (c *CNF) Negate(opt_topv ...int) error {
 	if len(opt_topv) > 0 {
 		topv = opt_topv[0]
 	}
+	topv = maxInt(topv, c.tv)
 	// Handle empty CNF case.
 	if len(c.sClauses) == 0 {
 		// An empty CNF is always SAT so to negate it we set it as an always
 		// false CNF with a signle empty clause.
 		c.sClauses = append(c.sClauses, []int{})
 		c.cClauses = nil
+		c.tv = topv
 		return nil
 	}
 	// Handle empty clause in CNF case.
@@ -61,12 +63,11 @@ func (c *CNF) Negate(opt_topv ...int) error {
 		// an always true empty CNF.
 		c.sClauses = nil
 		c.cClauses = nil
-		c.tv = 0
+		c.tv = topv
 		return nil
 	}
 	// Apply transformation to CNF semantic clauses.
-	newNV := maxInt(topv, c.tv)
-	if err := c.generateNegation(newNV); err != nil {
+	if err := c.generateNegation(topv); err != nil {
 		return err
 	}
 	return nil

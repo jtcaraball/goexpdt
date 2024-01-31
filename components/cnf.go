@@ -12,7 +12,7 @@ import (
 // =========================== //
 
 type CNF struct {
-	nv int              // Top variable value used
+	tv int              // Top variable value used
 	sClauses [][]int    // Semantic clauses
 	cClauses [][]int    // Consistency clauses
 }
@@ -29,15 +29,15 @@ func CNFFromClauses(clauses [][]int) *CNF {
 	for _, clause = range clauses {
 		for _, variable = range clause {
 			absVariable = absInt(variable)
-			if absVariable > newCNF.nv {
-				newCNF.nv = absVariable
+			if absVariable > newCNF.tv {
+				newCNF.tv = absVariable
 			}
 		}
 	}
 	return newCNF
 }
 
-// Negate the CNF semantic clauses. The resulting value of CNF's nv is the
+// Negate the CNF semantic clauses. The resulting value of CNF's tv is the
 // maximum between topv and the current value. This operation will set the CNF
 // to an equivalent negation but it will not be equal to negating the
 // underlying formula.
@@ -61,11 +61,11 @@ func (c *CNF) Negate(opt_topv ...int) error {
 		// an always true empty CNF.
 		c.sClauses = nil
 		c.cClauses = nil
-		c.nv = 0
+		c.tv = 0
 		return nil
 	}
 	// Apply transformation to CNF semantic clauses.
-	newNV := maxInt(topv, c.nv)
+	newNV := maxInt(topv, c.tv)
 	if err := c.generateNegation(newNV); err != nil {
 		return err
 	}
@@ -79,36 +79,36 @@ func (c *CNF) Conjunction(oc *CNF) {
 	c.ExtendConsistency(oc.cClauses)
 }
 
-// Append a semantic clause to CNF and update nv value.
+// Append a semantic clause to CNF and update tv value.
 func (c *CNF) AppendSemantics(clause []int) {
 	for _, v := range clause {
 		absV := absInt(v)
-		if absV > c.nv {
-			c.nv = absV
+		if absV > c.tv {
+			c.tv = absV
 		}
 	}
 	c.sClauses = append(c.sClauses, clause)
 }
 
-// Append a consistency clause to CNF and update nv value.
+// Append a consistency clause to CNF and update tv value.
 func (c *CNF) AppendConsistency(clause []int) {
 	for _, v := range clause {
 		absV := absInt(v)
-		if absV > c.nv {
-			c.nv = absV
+		if absV > c.tv {
+			c.tv = absV
 		}
 	}
 	c.cClauses = append(c.cClauses, clause)
 }
 
-// Extend menaing clauses in CNF and update nv value.
+// Extend menaing clauses in CNF and update tv value.
 func (c *CNF) ExtendSemantics(clauses [][]int) {
 	for _, clause := range clauses {
 		c.AppendSemantics(clause)
 	}
 }
 
-// Extend consistency clauses in CNF and update nv value.
+// Extend consistency clauses in CNF and update tv value.
 func (c *CNF) ExtendConsistency(clauses [][]int) {
 	for _, clause := range clauses {
 		c.AppendConsistency(clause)
@@ -119,7 +119,7 @@ func (c *CNF) ExtendConsistency(clauses [][]int) {
 func (c *CNF) ToBytes() []byte {
 	bString := fmt.Sprintf(
 		"p CNF %d %d\n",
-		c.nv,
+		c.tv,
 		len(c.sClauses) + len(c.cClauses),
 	)
 	for _, clause := range c.sClauses {
@@ -141,7 +141,7 @@ func (c *CNF) ToFile(path string) error {
 	defer f.Close()
 	// Write CNF formula
 	f.WriteString(
-		fmt.Sprintf("p CNF %d %d\n", c.nv, len(c.sClauses) + len(c.cClauses)),
+		fmt.Sprintf("p CNF %d %d\n", c.tv, len(c.sClauses) + len(c.cClauses)),
 	)
 	for _, clause := range c.sClauses {
 		f.WriteString(fmt.Sprintf("%s\n", clauseToDIMACS(clause)))
@@ -172,7 +172,7 @@ func (c *CNF) hasEmptySemanticClause() bool {
 }
 
 // Generate negation in place using Tseytin transformation.
-func (c *CNF) generateNegation(nv int) error {
+func (c *CNF) generateNegation(tv int) error {
 	clauses := [][]int{}
 	enclits := []int{}
 	for _, clause := range c.sClauses {
@@ -184,8 +184,8 @@ func (c *CNF) generateNegation(nv int) error {
 		}
 		auxv := -clause[0]
 		if len(clause) > 1 {
-			nv += 1
-			auxv = nv
+			tv += 1
+			auxv = tv
 			// Direct implication.
 			for _, lit := range clause {
 				clauses = append(clauses, []int{-lit, -auxv})
@@ -198,7 +198,7 @@ func (c *CNF) generateNegation(nv int) error {
 	}
 	// If no errors were found then update CNF.
 	c.cClauses = append(c.cClauses, clauses...)
-	c.nv = nv
+	c.tv = tv
 	// Generate bidirectional implication from new enc literal and enclits.
 	if len(enclits) == 1 {
 		c.sClauses = [][]int{enclits}
@@ -210,8 +210,8 @@ func (c *CNF) generateNegation(nv int) error {
 
 // Add "if and only if" clause for the passed enclits to CNF.
 func (c *CNF) addNegationIFFClauses(enclits []int) {
-	c.nv += 1
-	auxv := c.nv
+	c.tv += 1
+	auxv := c.tv
 	for _, lit := range enclits {
 		c.cClauses = append(c.cClauses, []int{-lit, auxv})
 	}

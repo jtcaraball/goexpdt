@@ -175,7 +175,7 @@ func (c *CNF) tseytinNegation(tv int) {
 	enclits := []int{}
 	for _, clause := range c.sClauses {
 		// I would rather this function not return errors so we handle the case
-		// in which tseyting's transform is not valid (empty clause) by shoving
+		// in which tseytin's transform is not valid (empty clause) by shoving
 		// in the appropriate negation and returning.
 		if len(clause) == 0 {
 			c.sClauses = nil
@@ -206,7 +206,6 @@ func (c *CNF) tseytinNegation(tv int) {
 		return
 	}
 	c.addNegationIFFClauses(enclits)
-	return
 }
 
 // Add "if and only if" clause for the passed enclits to CNF.

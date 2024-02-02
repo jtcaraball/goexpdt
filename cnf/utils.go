@@ -1,4 +1,4 @@
-package components
+package cnf
 
 func absInt(v int) int {
 	if v > 0 {

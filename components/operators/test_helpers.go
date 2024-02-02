@@ -15,18 +15,6 @@ func clausesEq(c1, c2 [][]int) bool {
 	)
 }
 
-func componentsEq(c1, c2 []*any) bool {
-	if len(c1) != len(c2) {
-		return false
-	}
-	for i, elem1 := range c1 {
-		if elem1 != c2[i] {
-			return false
-		}
-	}
-	return true
-}
-
 func errorInClauses(
 	t *testing.T,
 	sClauses, cClauses, expSClauses, expCClauses [][]int,

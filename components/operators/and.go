@@ -32,7 +32,7 @@ func (a *And) Simplified() components.Component {
 	simpleChild2 := a.child2.Simplified()
 	trivial1, value1 := simpleChild1.IsTrivial()
 	trivial2, value2 := simpleChild2.IsTrivial()
-	// If any of the two children are trivial and false to is And.
+	// If any of the two children are trivial and false so to is And.
 	if trivial1 && !value1 {
 		return components.NewTrivial(false)
 	}

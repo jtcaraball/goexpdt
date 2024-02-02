@@ -14,6 +14,12 @@ type Trivial bool
 //           METHODS           //
 // =========================== //
 
+// Return pointer to trivial component with truthiness equal to value.
+func NewTrivial(value bool) *Trivial {
+	var t Trivial = Trivial(value)
+	return &t
+}
+
 // Return CNF encoding of component.
 func (t *Trivial) Encoding(ctx *Context) *cnf.CNF {
 	if bool(*t) {
@@ -32,7 +38,7 @@ func (t *Trivial) GetChildren() []Component {
 	return nil
 }
 
-// Return true if the component is trivial. False otherwise.
-func (t *Trivial) IsTrivial() bool {
-	return true
+// yes is true if struct is trivial and value represents its truthiness.
+func (t *Trivial) IsTrivial() (yes bool, value bool) {
+	return true, bool(*t)
 }

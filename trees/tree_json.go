@@ -26,7 +26,7 @@ type TreeInJSON struct {
 	Positive string                          `json:"positive"`
 	Features []string                        `json:"feature_names"`
 	NodesJSON map[string]json.RawMessage     `json:"nodes"`
-	Nodes map[int]*NodeInJSON             `json:"-"`
+	Nodes map[int]*NodeInJSON                `json:"-"`
 }
 
 // =========================== //
@@ -74,16 +74,21 @@ func (tj *TreeInJSON) Validate() error {
 			"Tree encoding error: positive must be contained in class_names",
 		)
 	}
+	if len(tj.Features) == 0 {
+		return errors.New(
+			"Tree encoding error: must have at least one feature_name",
+		)
+	}
 	// Validate nodes
 	for _, node := range tj.Nodes {
-		if err := node.Validate(tj.ClassNames); err != nil {
+		if err := node.Validate(len(tj.Features), tj.ClassNames); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func (nj *NodeInJSON) Validate(validClasses []string) error {
+func (nj *NodeInJSON) Validate(featCount int, validClasses []string) error {
 	if nj.Type != "internal" && nj.Type != "leaf" {
 		return errors.New("Tree encoding error: invalid or missing node's type")
 	}
@@ -93,7 +98,7 @@ func (nj *NodeInJSON) Validate(validClasses []string) error {
 		)
 	}
 	if nj.Type == "internal" {
-		if nj.FeatIdx < 0 {
+		if nj.FeatIdx < 0 || nj.FeatIdx >= featCount {
 			return errors.New(
 				"Tree encoding error: invalid or missing node's feature_index",
 			)

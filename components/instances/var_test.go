@@ -1,4 +1,4 @@
-package inst
+package instances
 
 import (
 	"slices"
@@ -27,7 +27,7 @@ func clausesEq(c1, c2 [][]int) bool {
 func TestVar_Encode(t *testing.T) {
 	var Variable Var = "testVar"
 	ctx := components.NewContext(1, nil)
-	encCNF := Variable.Encode(ctx)
+	encCNF := Variable.Encoding(ctx)
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{}
 	expCClauses := [][]int{

@@ -1,4 +1,4 @@
-package inst
+package instances
 
 import (
 	"stratifoiled/cnf"
@@ -15,6 +15,7 @@ type Var string
 //           METHODS           //
 // =========================== //
 
+// Add context variables corresponding to the fetures of v.
 func (v Var) addVariables(ctx *components.Context) {
 	for i := 0; i < ctx.Dimension; i++ {
 		for _, s := range components.Symbols {
@@ -23,7 +24,8 @@ func (v Var) addVariables(ctx *components.Context) {
 	}
 }
 
-func (v Var) Encode(ctx *components.Context) *cnf.CNF {
+// Encode v's consistency clauses to cnf and add necesary variables to context.
+func (v Var) Encoding(ctx *components.Context) *cnf.CNF {
 	// If variable already exists then we return an always true CNF.
 	if ctx.VarExists(string(v), 0, components.BOT) {
 		return &cnf.CNF{}

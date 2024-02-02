@@ -30,8 +30,9 @@ func (wv *WithVar) Encoding(ctx *components.Context) *cnf.CNF {
 // Return pointer to simplified equivalent component which might be itself.
 func (wv *WithVar) Simplified() components.Component {
 	simpleChild := wv.child.Simplified()
-	if simpleChild.IsTrivial() {
-		return simpleChild
+	trivial, value := simpleChild.IsTrivial()
+	if trivial {
+		return components.NewTrivial(value)
 	}
 	return wv
 }
@@ -41,7 +42,7 @@ func (wv *WithVar) GetChildren() []components.Component {
 	return []components.Component{wv.child}
 }
 
-// Return true if the component is trivial.
-func (wv *WithVar) IsTrivial() bool {
-	return false
+// yes is true if struct is trivial and value represents its truthiness.
+func (wv *WithVar) IsTrivial() (yes bool, value bool) {
+	return false, false
 }

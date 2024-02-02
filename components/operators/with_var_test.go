@@ -120,7 +120,8 @@ func TestWithVar_IsTrivial(t *testing.T) {
 		instance: x,
 		child: &trivial,
 	}
-	if component.IsTrivial() {
+	isTrivial, _ := component.IsTrivial()
+	if isTrivial {
 		t.Errorf("Wrong is trivial value. Expected %t but got %t", false, true)
 	}
 }

@@ -8,5 +8,5 @@ type Component interface {
 	Encoding(ctx *Context) *cnf.CNF
 	GetChildren() []Component
 	Simplified() Component
-	IsTrivial() bool
+	IsTrivial() (bool, bool)
 }

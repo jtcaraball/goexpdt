@@ -24,6 +24,7 @@ func errorInClauses(
 	sClauses, cClauses, expSClauses, expCClauses [][]int,
 	topv, expTopV int,
 ) {
+	t.Helper()
 	if !clausesEq(sClauses, expSClauses) {
 		t.Errorf(
 			"Semantic clauses not equal. Expected %d but got %d",

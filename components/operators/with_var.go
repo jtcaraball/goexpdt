@@ -13,7 +13,6 @@ import (
 type WithVar struct {
 	instance instances.Var
 	child components.Component
-	ctx *components.Context
 }
 
 // =========================== //
@@ -28,12 +27,14 @@ func (wv *WithVar) Encoding(ctx *components.Context) *cnf.CNF {
 }
 
 // Return pointer to simplified equivalent component which might be itself.
+// This method may change the state of the caller.
 func (wv *WithVar) Simplified() components.Component {
 	simpleChild := wv.child.Simplified()
 	trivial, value := simpleChild.IsTrivial()
 	if trivial {
 		return components.NewTrivial(value)
 	}
+	wv.child = simpleChild
 	return wv
 }
 

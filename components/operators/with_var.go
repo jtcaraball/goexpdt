@@ -13,7 +13,6 @@ import (
 type WithVar struct {
 	instance instances.Var
 	child components.Component
-	ctx *components.Context
 }
 
 // =========================== //

@@ -1,13 +1,12 @@
 package components
 
 import (
-	"context"
 	"stratifoiled/cnf"
 )
 
 type Component interface {
-	Contextualize(context context.Context)
-	Encode() *cnf.CNF
+	Encoding(ctx *Context) *cnf.CNF
 	GetChildren() []Component
-	Simplify()
+	Simplified() Component
+	IsTrivial() bool
 }

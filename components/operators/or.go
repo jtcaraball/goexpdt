@@ -20,7 +20,7 @@ type Or struct {
 
 // Return CNF encoding of component.
 func (o *Or) Encoding(ctx *components.Context) *cnf.CNF {
-	// Morgans law
+	// De Morgan's law
 	// Encode both children
 	cnf1 := o.child1.Encoding(ctx)
 	cnf2 := o.child2.Encoding(ctx)
@@ -38,17 +38,17 @@ func (o *Or) Encoding(ctx *components.Context) *cnf.CNF {
 }
 
 // Return pointer to simplified equivalent component which might be itself.
-// This method updates its own state.
+// This method may change the state of the caller.
 func (o *Or) Simplified() components.Component {
 	simpleChild1 := o.child1.Simplified()
 	simpleChild2 := o.child2.Simplified()
 	trivial1, value1 := simpleChild1.IsTrivial()
 	trivial2, value2 := simpleChild2.IsTrivial()
-	// If child1 true then so is Or's.
+	// If child1 true then so is Or.
 	if trivial1 && value1 {
 		return simpleChild1
 	}
-	// If child2 true then so is Or's.
+	// If child2 true then so is Or.
 	if trivial2 && value2 {
 		return simpleChild2
 	}
@@ -56,11 +56,11 @@ func (o *Or) Simplified() components.Component {
 	if trivial1 && trivial2 {
 		return components.NewTrivial(false)
 	}
-	// If child1 is false and child2 is not Or's value is equal to child2's.
+	// If child1 is false and child2 is not Or's value is equal to child2.
 	if trivial1 && !value1 {
 		return simpleChild2
 	}
-	// If child2 is false and child1 is not Or's value is equal to child1's.
+	// If child2 is false and child1 is not Or's value is equal to child1.
 	if trivial2 && !value2 {
 		return simpleChild1
 	}

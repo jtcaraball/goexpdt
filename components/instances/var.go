@@ -15,6 +15,12 @@ type Var string
 //           METHODS           //
 // =========================== //
 
+// Return new var instance with name equal to string passed.
+func NewVar(name string) Var {
+	var v Var = Var(name)
+	return v
+}
+
 // Encode v's consistency clauses to cnf and add necesary variables to context.
 func (v Var) Encoding(ctx *components.Context) *cnf.CNF {
 	// If variable already exists then we return an always true CNF.

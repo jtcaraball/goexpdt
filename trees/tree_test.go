@@ -54,6 +54,18 @@ func TestLoadTree_ValidTree(t *testing.T) {
 		{
 			"class_names": ["pos", "neg"],
 			"positive": "pos",
+			"feature_names": [
+				"ft1",
+				"ft2",
+				"ft3",
+				"ft4",
+				"ft5",
+				"ft6",
+				"ft7",
+				"ft8",
+				"ft9",
+				"ft10"
+			],
 			"nodes": {
 				"0": {
 				  "id": 0,

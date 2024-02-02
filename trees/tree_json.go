@@ -74,6 +74,11 @@ func (tj *TreeInJSON) Validate() error {
 			"Tree encoding error: positive must be contained in class_names",
 		)
 	}
+	if len(tj.Features) == 0 {
+		return errors.New(
+			"Tree encoding error: must have at least one feature_name",
+		)
+	}
 	// Validate nodes
 	for _, node := range tj.Nodes {
 		if err := node.Validate(len(tj.Features), tj.ClassNames); err != nil {

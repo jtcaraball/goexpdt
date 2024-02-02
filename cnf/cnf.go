@@ -1,7 +1,6 @@
 package cnf
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"strconv"
@@ -40,8 +39,8 @@ func CNFFromClauses(clauses [][]int) *CNF {
 // Negate the CNF semantic clauses. The resulting value of CNF's tv is the
 // maximum between topv and the current value. This operation will set the CNF
 // to an equivalent negation but it will not be equal to negating the
-// underlying formula.
-func (c *CNF) Negate(opt_topv ...int) error {
+// underlying formula. Returns new tv value.
+func (c *CNF) Negate(opt_topv ...int) int {
 	// Why did the go team decide against optional arguments?
 	topv := 0
 	if len(opt_topv) > 0 {
@@ -55,7 +54,7 @@ func (c *CNF) Negate(opt_topv ...int) error {
 		c.sClauses = append(c.sClauses, []int{})
 		c.cClauses = nil
 		c.tv = topv
-		return nil
+		return c.tv
 	}
 	// Handle empty clause in CNF case.
 	if c.hasEmptySemanticClause() {
@@ -64,13 +63,11 @@ func (c *CNF) Negate(opt_topv ...int) error {
 		c.sClauses = nil
 		c.cClauses = nil
 		c.tv = topv
-		return nil
+		return c.tv
 	}
 	// Apply transformation to CNF semantic clauses.
-	if err := c.generateNegation(topv); err != nil {
-		return err
-	}
-	return nil
+	c.tseytinNegation(topv)
+	return c.tv
 }
 
 // Generate extend the methods caller semantic and consistency clauses with
@@ -173,15 +170,18 @@ func (c *CNF) hasEmptySemanticClause() bool {
 }
 
 // Generate negation in place using Tseytin transformation.
-func (c *CNF) generateNegation(tv int) error {
+func (c *CNF) tseytinNegation(tv int) {
 	clauses := [][]int{}
 	enclits := []int{}
 	for _, clause := range c.sClauses {
+		// I would rather this function not return errors so we handle the case
+		// in which tseyting's transform is not valid (empty clause) by shoving
+		// in the appropriate negation and returning.
 		if len(clause) == 0 {
-			return errors.New(
-				"Invalid CNF: Tseytin transformation can not be applied to" +
-				"empty clause CNF.",
-			)
+			c.sClauses = nil
+			c.cClauses = nil
+			c.tv = tv
+			return
 		}
 		auxv := -clause[0]
 		if len(clause) > 1 {
@@ -203,10 +203,10 @@ func (c *CNF) generateNegation(tv int) error {
 	// Generate bidirectional implication from new enc literal and enclits.
 	if len(enclits) == 1 {
 		c.sClauses = [][]int{enclits}
-		return nil
+		return
 	}
 	c.addNegationIFFClauses(enclits)
-	return nil
+	return
 }
 
 // Add "if and only if" clause for the passed enclits to CNF.

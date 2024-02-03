@@ -34,14 +34,17 @@ func (wv *WithVar) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 
 // Return pointer to simplified equivalent component which might be itself.
 // This method may change the state of the caller.
-func (wv *WithVar) Simplified() components.Component {
-	simpleChild := wv.child.Simplified()
+func (wv *WithVar) Simplified() (components.Component, error) {
+	simpleChild, err := wv.child.Simplified()
+	if err != nil {
+		return nil, withVarErr(err)
+	}
 	trivial, value := simpleChild.IsTrivial()
 	if trivial {
-		return components.NewTrivial(value)
+		return components.NewTrivial(value), nil
 	}
 	wv.child = simpleChild
-	return wv
+	return wv, nil
 }
 
 // Return slice of pointers to component's children.

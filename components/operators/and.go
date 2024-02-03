@@ -36,33 +36,39 @@ func (a *And) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 
 // Return pointer to simplified equivalent component which might be itself.
 // This method may change the state of the caller.
-func (a *And) Simplified() components.Component {
-	simpleChild1 := a.child1.Simplified()
-	simpleChild2 := a.child2.Simplified()
+func (a *And) Simplified() (components.Component, error) {
+	simpleChild1, err := a.child1.Simplified()
+	if err != nil {
+		return nil, andErr(err, 1)
+	}
+	simpleChild2, err := a.child2.Simplified()
+	if err != nil {
+		return nil, andErr(err, 2)
+	}
 	trivial1, value1 := simpleChild1.IsTrivial()
 	trivial2, value2 := simpleChild2.IsTrivial()
 	// If any of the two children are trivial and false so to is And.
 	if trivial1 && !value1 {
-		return components.NewTrivial(false)
+		return components.NewTrivial(false), nil
 	}
 	if trivial2 && !value2 {
-		return components.NewTrivial(false)
+		return components.NewTrivial(false), nil
 	}
 	// If child1 and child2 are trivial and true then And is true.
 	if trivial1 && trivial2 && value1 && value2 {
-		return components.NewTrivial(true)
+		return components.NewTrivial(true), nil
 	}
 	// If child1 is trivial and true the value of And is equal to child2.
 	if trivial1 && value1 {
-		return simpleChild2
+		return simpleChild2, nil
 	}
 	// If child2 is trivial and true the value of And is equal to child1.
 	if trivial2 && value2 {
-		return simpleChild1
+		return simpleChild1, nil
 	}
 	a.child1 = simpleChild1
 	a.child2 = simpleChild2
-	return a
+	return a, nil
 }
 
 // Return slice of pointers to component's children.

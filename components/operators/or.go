@@ -47,36 +47,42 @@ func (o *Or) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 
 // Return pointer to simplified equivalent component which might be itself.
 // This method may change the state of the caller.
-func (o *Or) Simplified() components.Component {
-	simpleChild1 := o.child1.Simplified()
-	simpleChild2 := o.child2.Simplified()
+func (o *Or) Simplified() (components.Component, error) {
+	simpleChild1, err := o.child1.Simplified()
+	if err != nil {
+		return nil, orErr(err, 1)
+	}
+	simpleChild2, err := o.child2.Simplified()
+	if err != nil {
+		return nil, orErr(err, 1)
+	}
 	trivial1, value1 := simpleChild1.IsTrivial()
 	trivial2, value2 := simpleChild2.IsTrivial()
 	// If child1 true then so is Or.
 	if trivial1 && value1 {
-		return simpleChild1
+		return simpleChild1, nil
 	}
 	// If child2 true then so is Or.
 	if trivial2 && value2 {
-		return simpleChild2
+		return simpleChild2, nil
 	}
 	// If both children are trivial but none are true then Or must be false.
 	if trivial1 && trivial2 {
-		return components.NewTrivial(false)
+		return components.NewTrivial(false), nil
 	}
 	// If child1 is false and child2 is not Or's value is equal to child2.
 	if trivial1 && !value1 {
-		return simpleChild2
+		return simpleChild2, nil
 	}
 	// If child2 is false and child1 is not Or's value is equal to child1.
 	if trivial2 && !value2 {
-		return simpleChild1
+		return simpleChild1, nil
 	}
 	// If no trivial statements are recovered we update children to their
 	// simplified form and return pointer to self.
 	o.child1 = simpleChild1
 	o.child2 = simpleChild2
-	return o
+	return o, nil
 }
 
 // Return slice of pointers to component's children.

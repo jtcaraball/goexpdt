@@ -29,8 +29,8 @@ func (t *Trivial) Encoding(ctx *Context) (*cnf.CNF, error) {
 }
 
 // Return pointer to simplified equivalent component which might be itself.
-func (t *Trivial) Simplified() Component {
-	return t
+func (t *Trivial) Simplified() (Component, error) {
+	return t, nil
 }
 
 // Return slice of pointers to component's children.

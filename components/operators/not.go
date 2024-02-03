@@ -32,14 +32,17 @@ func (n *Not) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 
 // Return pointer to simplified equivalent component which might be itself.
 // This method may change the state of the caller.
-func (n *Not) Simplified() components.Component {
-	simpleChild := n.child.Simplified()
+func (n *Not) Simplified() (components.Component, error) {
+	simpleChild, err := n.child.Simplified()
+	if err != nil {
+		return nil, notErr(err)
+	}
 	trivial, value := simpleChild.IsTrivial()
 	if trivial {
-		return components.NewTrivial(!value)
+		return components.NewTrivial(!value), nil
 	}
 	n.child = simpleChild
-	return n
+	return n, nil
 }
 
 // Return slice of pointers to component's children.

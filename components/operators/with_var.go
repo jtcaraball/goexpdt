@@ -1,6 +1,8 @@
 package operators
 
 import (
+	"errors"
+	"fmt"
 	"stratifoiled/cnf"
 	"stratifoiled/components"
 	"stratifoiled/components/instances"
@@ -20,10 +22,14 @@ type WithVar struct {
 // =========================== //
 
 // Return CNF encoding of component.
-func (wv *WithVar) Encoding(ctx *components.Context) *cnf.CNF {
-	nCNF := wv.instance.Encoding(ctx)
-	nCNF.Conjunction(wv.child.Encoding(ctx))
-	return nCNF
+func (wv *WithVar) Encoding(ctx *components.Context) (*cnf.CNF, error) {
+	iCNF := wv.instance.Encoding(ctx)
+	cCNF, err := wv.child.Encoding(ctx)
+	if err != nil {
+		return nil, withVarErr(err)
+	}
+	iCNF.Conjunction(cCNF)
+	return iCNF, nil
 }
 
 // Return pointer to simplified equivalent component which might be itself.
@@ -46,4 +52,9 @@ func (wv *WithVar) GetChildren() []components.Component {
 // yes is true if struct is trivial and value represents its truthiness.
 func (wv *WithVar) IsTrivial() (yes bool, value bool) {
 	return false, false
+}
+
+// Add bread crumbs to error
+func withVarErr(err error) error {
+	return errors.New(fmt.Sprintf("WithVarErr -> %s", err.Error()))
 }

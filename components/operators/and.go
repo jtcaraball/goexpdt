@@ -1,6 +1,8 @@
 package operators
 
 import (
+	"errors"
+	"fmt"
 	"stratifoiled/cnf"
 	"stratifoiled/components"
 )
@@ -19,10 +21,17 @@ type And struct {
 // =========================== //
 
 // Return CNF encoding of component.
-func (a *And) Encoding(ctx *components.Context) *cnf.CNF {
-	cnf := a.child1.Encoding(ctx)
-	cnf.Conjunction(a.child2.Encoding(ctx))
-	return cnf
+func (a *And) Encoding(ctx *components.Context) (*cnf.CNF, error) {
+	cnf1, err := a.child1.Encoding(ctx)
+	if err != nil {
+		return nil, andErr(err, 1)
+	}
+	cnf2, err := a.child2.Encoding(ctx)
+	if err != nil {
+		return nil, andErr(err, 2)
+	}
+	cnf1.Conjunction(cnf2)
+	return cnf1, nil
 }
 
 // Return pointer to simplified equivalent component which might be itself.
@@ -64,4 +73,11 @@ func (a *And) GetChildren() []components.Component {
 // yes is true if struct is trivial and value represents its truthiness.
 func (a *And) IsTrivial() (yes bool, value bool) {
 	return false, false
+}
+
+// Add bread crumbs to error
+func andErr(err error, childIdx uint8) error {
+	return errors.New(
+		fmt.Sprintf("And:child%d -> %s", childIdx, err.Error()),
+	)
 }

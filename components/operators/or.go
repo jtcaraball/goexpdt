@@ -1,6 +1,8 @@
 package operators
 
 import (
+	"errors"
+	"fmt"
 	"stratifoiled/cnf"
 	"stratifoiled/components"
 )
@@ -19,11 +21,17 @@ type Or struct {
 // =========================== //
 
 // Return CNF encoding of component.
-func (o *Or) Encoding(ctx *components.Context) *cnf.CNF {
+func (o *Or) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 	// De Morgan's law
 	// Encode both children
-	cnf1 := o.child1.Encoding(ctx)
-	cnf2 := o.child2.Encoding(ctx)
+	cnf1, err := o.child1.Encoding(ctx)
+	if err != nil {
+		return nil, orErr(err, 1)
+	}
+	cnf2, err := o.child2.Encoding(ctx)
+	if err != nil {
+		return nil, orErr(err, 2)
+	}
 	// Negate both children
 	var tv int
 	tv = cnf1.Negate(ctx.TopV)
@@ -34,7 +42,7 @@ func (o *Or) Encoding(ctx *components.Context) *cnf.CNF {
 	cnf1.Conjunction(cnf2)
 	tv = cnf1.Negate(ctx.TopV)
 	ctx.MaxUpdateTopV(tv) // TopV could have increases while negating
-	return cnf1
+	return cnf1, nil
 }
 
 // Return pointer to simplified equivalent component which might be itself.
@@ -79,4 +87,11 @@ func (o *Or) GetChildren() []components.Component {
 // yes is true if struct is trivial and value represents its truthiness.
 func (o *Or) IsTrivial() (yes bool, value bool) {
 	return false, false
+}
+
+// Add bread crumbs to error
+func orErr(err error, childIdx uint8) error {
+	return errors.New(
+		fmt.Sprintf("Or:child%d -> %s", childIdx, err.Error()),
+	)
 }

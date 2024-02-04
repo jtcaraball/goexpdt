@@ -24,7 +24,7 @@ func NewVar(name string) Var {
 // Encode v's consistency clauses to cnf and add necesary variables to context.
 func (v Var) Encoding(ctx *components.Context) *cnf.CNF {
 	// If variable already exists then we return an always true CNF.
-	if ctx.VarExists(string(v), 0, components.BOT) {
+	if ctx.VarExists(string(v), 0, BOT.Val()) {
 		return &cnf.CNF{}
 	}
 	nCNF := &cnf.CNF{}
@@ -33,8 +33,8 @@ func (v Var) Encoding(ctx *components.Context) *cnf.CNF {
 	reqAllFeats := [][]int{}
 	for i := 0; i < ctx.Dimension; i++ {
 		clause := []int{}
-		for _, s := range components.Symbols {
-			clause = append(clause, ctx.Var(string(v), i, s))
+		for _, s := range FeatValues {
+			clause = append(clause, ctx.Var(string(v), i, s.Val()))
 		}
 		reqAllFeats = append(reqAllFeats, clause)
 	}
@@ -43,16 +43,16 @@ func (v Var) Encoding(ctx *components.Context) *cnf.CNF {
 	for i := 0; i < ctx.Dimension; i++ {
 		reqOnePerFeat := [][]int{
 			{
-				-ctx.Var(string(v), i, components.ZERO),
-				-ctx.Var(string(v), i, components.ONE),
+				-ctx.Var(string(v), i, ZERO.Val()),
+				-ctx.Var(string(v), i, ONE.Val()),
 			},
 			{
-				-ctx.Var(string(v), i, components.ZERO),
-				-ctx.Var(string(v), i, components.BOT),
+				-ctx.Var(string(v), i, ZERO.Val()),
+				-ctx.Var(string(v), i, BOT.Val()),
 			},
 			{
-				-ctx.Var(string(v), i, components.ONE),
-				-ctx.Var(string(v), i, components.BOT),
+				-ctx.Var(string(v), i, ONE.Val()),
+				-ctx.Var(string(v), i, BOT.Val()),
 			},
 		}
 		nCNF.ExtendConsistency(reqOnePerFeat)

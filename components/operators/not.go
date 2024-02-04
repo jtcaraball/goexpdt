@@ -11,7 +11,7 @@ import (
 //           STRUCTS           //
 // =========================== //
 
-type Not struct {
+type not struct {
 	child components.Component
 }
 
@@ -19,8 +19,13 @@ type Not struct {
 //           METHODS           //
 // =========================== //
 
+// Return not operator.
+func Not(child components.Component) *not {
+	return &not{child: child}
+}
+
 // Return CNF encoding of component.
-func (n *Not) Encoding(ctx *components.Context) (*cnf.CNF, error) {
+func (n *not) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 	cnf, err := n.child.Encoding(ctx)
 	if err != nil {
 		return nil, notErr(err)
@@ -32,7 +37,7 @@ func (n *Not) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 
 // Return pointer to simplified equivalent component which might be itself.
 // This method may change the state of the caller.
-func (n *Not) Simplified() (components.Component, error) {
+func (n *not) Simplified() (components.Component, error) {
 	simpleChild, err := n.child.Simplified()
 	if err != nil {
 		return nil, notErr(err)
@@ -46,16 +51,16 @@ func (n *Not) Simplified() (components.Component, error) {
 }
 
 // Return slice of pointers to component's children.
-func (n *Not) GetChildren() []components.Component {
+func (n *not) GetChildren() []components.Component {
 	return []components.Component{n.child}
 }
 
 // yes is true if struct is trivial and value represents its truthiness.
-func (n *Not) IsTrivial() (yes bool, value bool) {
+func (n *not) IsTrivial() (yes bool, value bool) {
 	return false, false
 }
 
 // Add bread crumbs to error
 func notErr(err error) error {
-	return errors.New(fmt.Sprintf("Not -> %s", err.Error()))
+	return errors.New(fmt.Sprintf("not -> %s", err.Error()))
 }

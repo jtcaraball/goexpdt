@@ -12,7 +12,7 @@ import (
 //           STRUCTS           //
 // =========================== //
 
-type WithVar struct {
+type withVar struct {
 	instance instances.Var
 	child components.Component
 }
@@ -21,8 +21,13 @@ type WithVar struct {
 //           METHODS           //
 // =========================== //
 
+// Return withVar operator.
+func WithVar(inst instances.Var, child components.Component) *withVar {
+	return &withVar{instance: inst, child: child}
+}
+
 // Return CNF encoding of component.
-func (wv *WithVar) Encoding(ctx *components.Context) (*cnf.CNF, error) {
+func (wv *withVar) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 	iCNF := wv.instance.Encoding(ctx)
 	cCNF, err := wv.child.Encoding(ctx)
 	if err != nil {
@@ -34,7 +39,7 @@ func (wv *WithVar) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 
 // Return pointer to simplified equivalent component which might be itself.
 // This method may change the state of the caller.
-func (wv *WithVar) Simplified() (components.Component, error) {
+func (wv *withVar) Simplified() (components.Component, error) {
 	simpleChild, err := wv.child.Simplified()
 	if err != nil {
 		return nil, withVarErr(err)
@@ -48,16 +53,16 @@ func (wv *WithVar) Simplified() (components.Component, error) {
 }
 
 // Return slice of pointers to component's children.
-func (wv *WithVar) GetChildren() []components.Component {
+func (wv *withVar) GetChildren() []components.Component {
 	return []components.Component{wv.child}
 }
 
 // yes is true if struct is trivial and value represents its truthiness.
-func (wv *WithVar) IsTrivial() (yes bool, value bool) {
+func (wv *withVar) IsTrivial() (yes bool, value bool) {
 	return false, false
 }
 
 // Add bread crumbs to error
 func withVarErr(err error) error {
-	return errors.New(fmt.Sprintf("WithVarErr -> %s", err.Error()))
+	return errors.New(fmt.Sprintf("withVarErr -> %s", err.Error()))
 }

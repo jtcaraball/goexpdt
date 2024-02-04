@@ -11,10 +11,7 @@ func TestWithVar_Encoding(t *testing.T) {
 	y := instances.NewVar("y")
 	trivial := components.NewTrivial(false)
 	context := components.NewContext(1, nil)
-	component := &WithVar{
-		instance: x,
-		child: &WithVar{instance: y, child: trivial},
-	}
+	component := WithVar(x, WithVar(y, trivial))
 	encCNF, err := component.Encoding(context)
 	if err != nil {
 		t.Errorf("CNF encoding error: %s", err.Error())
@@ -40,10 +37,7 @@ func TestWithVar_Simplified(t *testing.T) {
 	y := instances.NewVar("y")
 	trivial := components.NewTrivial(false)
 	context := components.NewContext(1, nil)
-	component := &WithVar{
-		instance: x,
-		child: &WithVar{instance: y, child: trivial},
-	}
+	component := WithVar(x, WithVar(y, trivial))
 	simpleComponent, err := component.Simplified()
 	if err != nil {
 		t.Errorf("Simplification error: %s", err.Error())
@@ -64,11 +58,8 @@ func TestWithVar_GetChildren(t *testing.T) {
 	x := instances.NewVar("x")
 	y := instances.NewVar("y")
 	trivial := components.NewTrivial(false)
-	childComp := &WithVar{instance: y, child: trivial}
-	component := &WithVar{
-		instance: x,
-		child: childComp,
-	}
+	childComp := WithVar(y, trivial)
+	component := WithVar(x, childComp)
 	compChildren := component.GetChildren()
 	if len(compChildren) != 1 {
 		t.Errorf(
@@ -90,10 +81,7 @@ func TestWithVar_GetChildren(t *testing.T) {
 func TestWithVar_IsTrivial(t *testing.T) {
 	x := instances.NewVar("x")
 	trivial := components.NewTrivial(false)
-	component := &WithVar{
-		instance: x,
-		child: trivial,
-	}
+	component := WithVar(x, trivial)
 	isTrivial, _ := component.IsTrivial()
 	if isTrivial {
 		t.Errorf("Wrong is trivial value. Expected %t but got %t", false, true)

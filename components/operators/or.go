@@ -11,7 +11,7 @@ import (
 //           STRUCTS           //
 // =========================== //
 
-type Or struct {
+type or struct {
 	child1 components.Component
 	child2 components.Component
 }
@@ -20,8 +20,13 @@ type Or struct {
 //           METHODS           //
 // =========================== //
 
+// Return or operator.
+func Or(child1, child2 components.Component) *or {
+	return &or{child1: child1, child2: child2}
+}
+
 // Return CNF encoding of component.
-func (o *Or) Encoding(ctx *components.Context) (*cnf.CNF, error) {
+func (o *or) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 	// De Morgan's law
 	// Encode both children
 	cnf1, err := o.child1.Encoding(ctx)
@@ -47,7 +52,7 @@ func (o *Or) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 
 // Return pointer to simplified equivalent component which might be itself.
 // This method may change the state of the caller.
-func (o *Or) Simplified() (components.Component, error) {
+func (o *or) Simplified() (components.Component, error) {
 	simpleChild1, err := o.child1.Simplified()
 	if err != nil {
 		return nil, orErr(err, 1)
@@ -58,23 +63,23 @@ func (o *Or) Simplified() (components.Component, error) {
 	}
 	trivial1, value1 := simpleChild1.IsTrivial()
 	trivial2, value2 := simpleChild2.IsTrivial()
-	// If child1 true then so is Or.
+	// If child1 true then so is or.
 	if trivial1 && value1 {
 		return simpleChild1, nil
 	}
-	// If child2 true then so is Or.
+	// If child2 true then so is or.
 	if trivial2 && value2 {
 		return simpleChild2, nil
 	}
-	// If both children are trivial but none are true then Or must be false.
+	// If both children are trivial but none are true then or must be false.
 	if trivial1 && trivial2 {
 		return components.NewTrivial(false), nil
 	}
-	// If child1 is false and child2 is not Or's value is equal to child2.
+	// If child1 is false and child2 is not or's value is equal to child2.
 	if trivial1 && !value1 {
 		return simpleChild2, nil
 	}
-	// If child2 is false and child1 is not Or's value is equal to child1.
+	// If child2 is false and child1 is not or's value is equal to child1.
 	if trivial2 && !value2 {
 		return simpleChild1, nil
 	}
@@ -86,18 +91,18 @@ func (o *Or) Simplified() (components.Component, error) {
 }
 
 // Return slice of pointers to component's children.
-func (o *Or) GetChildren() []components.Component {
+func (o *or) GetChildren() []components.Component {
 	return []components.Component{o.child1, o.child2}
 }
 
 // yes is true if struct is trivial and value represents its truthiness.
-func (o *Or) IsTrivial() (yes bool, value bool) {
+func (o *or) IsTrivial() (yes bool, value bool) {
 	return false, false
 }
 
 // Add bread crumbs to error
 func orErr(err error, childIdx uint8) error {
 	return errors.New(
-		fmt.Sprintf("Or:child%d -> %s", childIdx, err.Error()),
+		fmt.Sprintf("or:child%d -> %s", childIdx, err.Error()),
 	)
 }

@@ -11,7 +11,11 @@ func TestNot_Encoding(t *testing.T) {
 	trivial := components.NewTrivial(false)
 	context := components.NewContext(1, nil)
 	component := &Not{ child: &WithVar{ instance: x, child: trivial } }
-	encCNF := component.Encoding(context)
+	encCNF, err := component.Encoding(context)
+	if err != nil {
+		t.Errorf("CNF encoding error: %s", err.Error())
+		return
+	}
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{}
 	expCClauses := [][]int{}
@@ -23,7 +27,16 @@ func TestNot_Simplified(t *testing.T) {
 	trivial := components.NewTrivial(true)
 	context := components.NewContext(1, nil)
 	component := &Not{ child: &WithVar{ instance: x, child: trivial } }
-	encCNF := component.Simplified().Encoding(context)
+	simpleComponent, err := component.Simplified()
+	if err != nil {
+		t.Errorf("Simplification error: %s", err.Error())
+		return
+	}
+	encCNF, err := simpleComponent.Encoding(context)
+	if err != nil {
+		t.Errorf("CNF encoding error: %s", err.Error())
+		return
+	}
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{{}}
 	expCClauses := [][]int{}

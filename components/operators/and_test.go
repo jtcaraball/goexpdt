@@ -13,7 +13,11 @@ func TestAnd_Encoding_DTrue(t *testing.T) {
 	childY := &WithVar{instance: y, child: components.NewTrivial(true)}
 	context := components.NewContext(1, nil)
 	component := &And{ child1: childX, child2: childY }
-	encCNF := component.Encoding(context)
+	encCNF, err := component.Encoding(context)
+	if err != nil {
+		t.Errorf("CNF encoding error: %s", err.Error())
+		return
+	}
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{}
 	expCClauses := [][]int{
@@ -36,7 +40,11 @@ func TestAnd_Encoding_DFalse(t *testing.T) {
 	childY := &WithVar{instance: y, child: components.NewTrivial(false)}
 	context := components.NewContext(1, nil)
 	component := &And{ child1: childX, child2: childY }
-	encCNF := component.Encoding(context)
+	encCNF, err := component.Encoding(context)
+	if err != nil {
+		t.Errorf("CNF encoding error: %s", err.Error())
+		return
+	}
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{{}, {}}
 	expCClauses := [][]int{
@@ -59,7 +67,11 @@ func TestAnd_Encoding_Mixed(t *testing.T) {
 	childY := &WithVar{instance: y, child: components.NewTrivial(false)}
 	context := components.NewContext(1, nil)
 	component := &And{ child1: childX, child2: childY }
-	encCNF := component.Encoding(context)
+	encCNF, err := component.Encoding(context)
+	if err != nil {
+		t.Errorf("CNF encoding error: %s", err.Error())
+		return
+	}
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{{}}
 	expCClauses := [][]int{
@@ -82,7 +94,16 @@ func TestAnd_Simplified_DTrue(t *testing.T) {
 	childY := &WithVar{instance: y, child: components.NewTrivial(true)}
 	context := components.NewContext(1, nil)
 	component := &And{ child1: childX, child2: childY }
-	encCNF := component.Simplified().Encoding(context)
+	simpleComponent, err := component.Simplified()
+	if err != nil {
+		t.Errorf("Simplification error: %s", err.Error())
+		return
+	}
+	encCNF, err := simpleComponent.Encoding(context)
+	if err != nil {
+		t.Errorf("CNF encoding error: %s", err.Error())
+		return
+	}
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{}
 	expCClauses := [][]int{}
@@ -96,7 +117,16 @@ func TestAnd_Simplified_DFalse(t *testing.T) {
 	childY := &WithVar{instance: y, child: components.NewTrivial(false)}
 	context := components.NewContext(1, nil)
 	component := &And{ child1: childX, child2: childY }
-	encCNF := component.Simplified().Encoding(context)
+	simpleComponent, err := component.Simplified()
+	if err != nil {
+		t.Errorf("Simplification error: %s", err.Error())
+		return
+	}
+	encCNF, err := simpleComponent.Encoding(context)
+	if err != nil {
+		t.Errorf("CNF encoding error: %s", err.Error())
+		return
+	}
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{{}}
 	expCClauses := [][]int{}
@@ -110,7 +140,16 @@ func TestAnd_Simplified_Mixed(t *testing.T) {
 	childY := &WithVar{instance: y, child: components.NewTrivial(false)}
 	context := components.NewContext(1, nil)
 	component := &And{ child1: childX, child2: childY }
-	encCNF := component.Simplified().Encoding(context)
+	simpleComponent, err := component.Simplified()
+	if err != nil {
+		t.Errorf("Simplification error: %s", err.Error())
+		return
+	}
+	encCNF, err := simpleComponent.Encoding(context)
+	if err != nil {
+		t.Errorf("CNF encoding error: %s", err.Error())
+		return
+	}
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{{}}
 	expCClauses := [][]int{}

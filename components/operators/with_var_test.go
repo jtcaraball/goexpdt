@@ -15,7 +15,11 @@ func TestWithVar_Encoding(t *testing.T) {
 		instance: x,
 		child: &WithVar{instance: y, child: trivial},
 	}
-	encCNF := component.Encoding(context)
+	encCNF, err := component.Encoding(context)
+	if err != nil {
+		t.Errorf("CNF encoding error: %s", err.Error())
+		return
+	}
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{{}}
 	expCClauses := [][]int{
@@ -40,7 +44,16 @@ func TestWithVar_Simplified(t *testing.T) {
 		instance: x,
 		child: &WithVar{instance: y, child: trivial},
 	}
-	encCNF := component.Simplified().Encoding(context)
+	simpleComponent, err := component.Simplified()
+	if err != nil {
+		t.Errorf("Simplification error: %s", err.Error())
+		return
+	}
+	encCNF, err := simpleComponent.Encoding(context)
+	if err != nil {
+		t.Errorf("CNF encoding error: %s", err.Error())
+		return
+	}
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{{}}
 	expCClauses := [][]int{}

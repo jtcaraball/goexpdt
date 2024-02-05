@@ -59,7 +59,7 @@ func (o *or) Simplified() (components.Component, error) {
 	}
 	simpleChild2, err := o.child2.Simplified()
 	if err != nil {
-		return nil, orErr(err, 1)
+		return nil, orErr(err, 2)
 	}
 	trivial1, value1 := simpleChild1.IsTrivial()
 	trivial2, value2 := simpleChild2.IsTrivial()

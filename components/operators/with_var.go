@@ -64,5 +64,5 @@ func (wv *withVar) IsTrivial() (yes bool, value bool) {
 
 // Add bread crumbs to error
 func withVarErr(err error) error {
-	return errors.New(fmt.Sprintf("withVarErr -> %s", err.Error()))
+	return errors.New(fmt.Sprintf("withVar -> %s", err.Error()))
 }

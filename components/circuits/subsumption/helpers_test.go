@@ -2,11 +2,7 @@ package subsumption
 
 import "stratifoiled/components/instances"
 
-const (
-	DIM = 3
-	CNFPATH = "tmpCNF"
-	SOLVER = "/kissat"
-)
+const DIM = 3
 
 var tests = []struct {
 	name string

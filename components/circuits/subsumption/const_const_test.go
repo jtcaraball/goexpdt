@@ -28,8 +28,8 @@ func runSubsumptionConstConst(
 		formula, err = formula.Simplified()
 		if err != nil {
 			t.Errorf("Formula simplification error. %s", err.Error())
+			return
 		}
-		return
 	}
 	cnf, err := formula.Encoding(context)
 	if err = cnf.ToFile(filePath); err != nil {

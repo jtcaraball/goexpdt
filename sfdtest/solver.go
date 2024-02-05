@@ -13,7 +13,7 @@ import (
 const (
 	CNFPATH = "tmpCNF"
 	SOLVER = "/kissat"
-	DELSTAR = "%s.%s.%t"
+	DELSTAR = "%s.%s.%t*"
 )
 
 // Run solver command and return exit code.

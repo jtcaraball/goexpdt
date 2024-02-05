@@ -18,6 +18,7 @@ COPY sfdtest ./sfdtest
 ADD https://github.com/arminbiere/kissat/archive/refs/tags/rel-3.1.1.zip rel-3.1.1.zip
 RUN unzip rel-3.1.1.zip
 RUN mv kissat-rel-3.1.1 kissat
+RUN rm rel-3.1.1.zip
 
 # Compile solver binary
 WORKDIR /stratiFOILed-Go/kissat

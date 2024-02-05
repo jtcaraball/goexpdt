@@ -23,10 +23,6 @@ func NewVar(name string) Var {
 
 // Encode v's consistency clauses to cnf and add necesary variables to context.
 func (v Var) Encoding(ctx *components.Context) *cnf.CNF {
-	// If variable already exists then we return an always true CNF.
-	if ctx.VarExists(string(v), 0, BOT.Val()) {
-		return &cnf.CNF{}
-	}
 	nCNF := &cnf.CNF{}
 	// Add consistency clauses
 	// Every feature must have at least one value

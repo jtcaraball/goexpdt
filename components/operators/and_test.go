@@ -16,7 +16,7 @@ func TestAnd_Encoding_DTrue(t *testing.T) {
 	component := And(childX, childY)
 	encCNF, err := component.Encoding(context)
 	if err != nil {
-		t.Errorf("CNF encoding error: %s", err.Error())
+		t.Errorf("CNF encoding error. %s", err.Error())
 		return
 	}
 	sClauses, cClauses := encCNF.Clauses()
@@ -43,7 +43,7 @@ func TestAnd_Encoding_DFalse(t *testing.T) {
 	component := And(childX, childY)
 	encCNF, err := component.Encoding(context)
 	if err != nil {
-		t.Errorf("CNF encoding error: %s", err.Error())
+		t.Errorf("CNF encoding error. %s", err.Error())
 		return
 	}
 	sClauses, cClauses := encCNF.Clauses()
@@ -70,7 +70,7 @@ func TestAnd_Encoding_Mixed(t *testing.T) {
 	component := And(childX, childY)
 	encCNF, err := component.Encoding(context)
 	if err != nil {
-		t.Errorf("CNF encoding error: %s", err.Error())
+		t.Errorf("CNF encoding error. %s", err.Error())
 		return
 	}
 	sClauses, cClauses := encCNF.Clauses()
@@ -97,12 +97,12 @@ func TestAnd_Simplified_DTrue(t *testing.T) {
 	component := And(childX, childY)
 	simpleComponent, err := component.Simplified()
 	if err != nil {
-		t.Errorf("Simplification error: %s", err.Error())
+		t.Errorf("Simplification error. %s", err.Error())
 		return
 	}
 	encCNF, err := simpleComponent.Encoding(context)
 	if err != nil {
-		t.Errorf("CNF encoding error: %s", err.Error())
+		t.Errorf("CNF encoding error. %s", err.Error())
 		return
 	}
 	sClauses, cClauses := encCNF.Clauses()
@@ -120,12 +120,12 @@ func TestAnd_Simplified_DFalse(t *testing.T) {
 	component := And(childX, childY)
 	simpleComponent, err := component.Simplified()
 	if err != nil {
-		t.Errorf("Simplification error: %s", err.Error())
+		t.Errorf("Simplification error. %s", err.Error())
 		return
 	}
 	encCNF, err := simpleComponent.Encoding(context)
 	if err != nil {
-		t.Errorf("CNF encoding error: %s", err.Error())
+		t.Errorf("CNF encoding error. %s", err.Error())
 		return
 	}
 	sClauses, cClauses := encCNF.Clauses()
@@ -143,12 +143,12 @@ func TestAnd_Simplified_Mixed(t *testing.T) {
 	component := And(childX, childY)
 	simpleComponent, err := component.Simplified()
 	if err != nil {
-		t.Errorf("Simplification error: %s", err.Error())
+		t.Errorf("Simplification error. %s", err.Error())
 		return
 	}
 	encCNF, err := simpleComponent.Encoding(context)
 	if err != nil {
-		t.Errorf("CNF encoding error: %s", err.Error())
+		t.Errorf("CNF encoding error. %s", err.Error())
 		return
 	}
 	sClauses, cClauses := encCNF.Clauses()
@@ -192,6 +192,6 @@ func TestAnd_IsTrivial(t *testing.T) {
 	component := And(childX, childY)
 	isTrivial, _ := component.IsTrivial()
 	if isTrivial {
-		t.Errorf("Wrong is trivial value. Expected %t but got %t", false, true)
+		t.Errorf("Wrong IsTrivial value. Expected %t but got %t", false, true)
 	}
 }

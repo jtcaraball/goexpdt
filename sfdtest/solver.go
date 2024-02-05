@@ -47,12 +47,12 @@ func RunFormulaTest(
 	cmd := exec.Command(SOLVER, cnfPath)
 	retCode, err := runSolver(t, cmd)
 	if err != nil {
-		t.Errorf("Solver execution error: %s", err.Error())
+		t.Errorf("Solver execution error. %s", err.Error())
 		return
 	}
 	if retCode != expCode {
 		t.Errorf(
-			"Wrong answer: expected exit code %d but got %d",
+			"Wrong answer. expected exit code %d but got %d",
 			expCode,
 			retCode,
 		)
@@ -72,7 +72,7 @@ func AddCleanup(t *testing.T, sufix string, simplified bool) {
 				fmt.Sprintf(DELSTAR, CNFPATH, sufix, simplified),
 			)
 			if err != nil {
-				t.Errorf(fmt.Sprintf("Error in cleanup: %s", err.Error()))
+				t.Errorf(fmt.Sprintf("Error in cleanup. %s", err.Error()))
 				return
 			}
 			for _, file := range files {

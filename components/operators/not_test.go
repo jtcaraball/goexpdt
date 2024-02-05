@@ -4,6 +4,7 @@ import (
 	"testing"
 	"stratifoiled/components"
 	"stratifoiled/components/instances"
+	"stratifoiled/sfdtest"
 )
 
 func TestNot_Encoding(t *testing.T) {
@@ -19,7 +20,7 @@ func TestNot_Encoding(t *testing.T) {
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{}
 	expCClauses := [][]int{}
-	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestNot_Simplified(t *testing.T) {
@@ -40,7 +41,7 @@ func TestNot_Simplified(t *testing.T) {
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{{}}
 	expCClauses := [][]int{}
-	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestNot_GetChildren(t *testing.T) {

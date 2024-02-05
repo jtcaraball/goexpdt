@@ -4,6 +4,7 @@ import (
 	"testing"
 	"stratifoiled/components"
 	"stratifoiled/components/instances"
+	"stratifoiled/sfdtest"
 )
 
 func TestWithVar_Encoding(t *testing.T) {
@@ -29,7 +30,7 @@ func TestWithVar_Encoding(t *testing.T) {
 		{-4, -6},
 		{-5, -6},
 	}
-	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestWithVar_Simplified(t *testing.T) {
@@ -51,7 +52,7 @@ func TestWithVar_Simplified(t *testing.T) {
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{{}}
 	expCClauses := [][]int{}
-	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestWithVar_GetChildren(t *testing.T) {

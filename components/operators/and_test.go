@@ -3,6 +3,7 @@ package operators
 import (
 	"stratifoiled/components"
 	"stratifoiled/components/instances"
+	"stratifoiled/sfdtest"
 	"testing"
 )
 
@@ -30,7 +31,7 @@ func TestAnd_Encoding_DTrue(t *testing.T) {
 		{-4, -6},
 		{-5, -6},
 	}
-	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestAnd_Encoding_DFalse(t *testing.T) {
@@ -57,7 +58,7 @@ func TestAnd_Encoding_DFalse(t *testing.T) {
 		{-4, -6},
 		{-5, -6},
 	}
-	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestAnd_Encoding_Mixed(t *testing.T) {
@@ -84,7 +85,7 @@ func TestAnd_Encoding_Mixed(t *testing.T) {
 		{-4, -6},
 		{-5, -6},
 	}
-	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestAnd_Simplified_DTrue(t *testing.T) {
@@ -107,7 +108,7 @@ func TestAnd_Simplified_DTrue(t *testing.T) {
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{}
 	expCClauses := [][]int{}
-	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestAnd_Simplified_DFalse(t *testing.T) {
@@ -130,7 +131,7 @@ func TestAnd_Simplified_DFalse(t *testing.T) {
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{{}}
 	expCClauses := [][]int{}
-	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestAnd_Simplified_Mixed(t *testing.T) {
@@ -153,7 +154,7 @@ func TestAnd_Simplified_Mixed(t *testing.T) {
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{{}}
 	expCClauses := [][]int{}
-	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestAnd_Children(t *testing.T) {

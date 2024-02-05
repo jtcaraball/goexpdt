@@ -1,6 +1,8 @@
 package cnf
 
 import (
+	"os"
+	"slices"
 	"stratifoiled/sfdtest"
 	"testing"
 )
@@ -204,4 +206,48 @@ func TestCNF_ExtendConsistency(t *testing.T) {
 		cnf.tv,
 		4,
 	)
+}
+
+func TestCNF_ToBytes(t *testing.T) {
+	cnfSClauses := [][]int{{1, 2}, {3, 4}, {-1, 2}}
+	cnfCClauses := [][]int{{1, 2, 3, 4}, {-1, -2}, {4}}
+	cnf := CNFFromClauses(cnfSClauses)
+	cnf.ExtendConsistency(cnfCClauses)
+	expBytes := []byte("p cnf 4 6\n1 2 0\n3 4 0\n-1 2 0\n1 2 3 4 0\n-1 -2 0\n4 0\n")
+	cnfBytes := cnf.ToBytes()
+	if !slices.Equal[[]byte](expBytes, cnfBytes) {
+		t.Errorf(
+			"CNF as bytes not equal. Expected %s but got %s",
+			expBytes,
+			cnfBytes,
+		)
+	}
+}
+
+func TestCNF_ToFile(t *testing.T) {
+	cnfFileName := "cnfToFile"
+	t.Cleanup(
+		func() {
+			os.Remove(cnfFileName)
+		},
+	)
+	cnfSClauses := [][]int{{1, 2}, {3, 4}, {-1, 2}}
+	cnfCClauses := [][]int{{1, 2, 3, 4}, {-1, -2}, {4}}
+	cnf := CNFFromClauses(cnfSClauses)
+	cnf.ExtendConsistency(cnfCClauses)
+	if err := cnf.ToFile(cnfFileName); err != nil {
+		t.Errorf("File writing error. %s", err.Error())
+	}
+	expBytes := []byte("p cnf 4 6\n1 2 0\n3 4 0\n-1 2 0\n1 2 3 4 0\n-1 -2 0\n4 0\n")
+	cnfBytes, err := os.ReadFile(cnfFileName)
+	if err != nil {
+		t.Errorf("File reading error. %s", err.Error())
+	}
+	if !slices.Equal[[]byte](expBytes, cnfBytes) {
+		t.Errorf(
+			"CNF as bytes not equal. Expected %s but got %s",
+			expBytes,
+			cnfBytes,
+		)
+	}
 }

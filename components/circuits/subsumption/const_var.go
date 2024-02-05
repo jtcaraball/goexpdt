@@ -53,7 +53,12 @@ func (s *constVar) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 // Return pointer to simplified equivalent component which might be itself.
 // This method may change the state of the caller.
 func (s *constVar) Simplified() (components.Component, error) {
-	return s, nil
+	for _, f := range s.constInst {
+		if f != instances.BOT {
+			return s, nil
+		}
+	}
+	return components.NewTrivial(true), nil
 }
 
 // Return slice of pointers to component's children.

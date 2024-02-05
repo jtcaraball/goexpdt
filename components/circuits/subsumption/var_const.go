@@ -21,7 +21,7 @@ type varConst struct {
 //           METHODS           //
 // =========================== //
 
-// Return varvar subsumption.
+// Return varConst subsumption.
 func VarConst(varInst instances.Var, constInst instances.Const) *varConst {
 	return &varConst{varInst: varInst, constInst: constInst}
 }

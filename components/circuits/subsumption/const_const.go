@@ -22,7 +22,7 @@ type constConst struct {
 // =========================== //
 
 
-// Return varvar subsumption.
+// Return constConst subsumption.
 func ConstConst(constInst1, constInst2 instances.Const) *constConst {
 	return &constConst{constInst1: constInst1, constInst2: constInst2}
 }

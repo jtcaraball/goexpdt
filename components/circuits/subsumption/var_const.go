@@ -12,7 +12,7 @@ import (
 //           STRUCTS           //
 // =========================== //
 
-type varconst struct {
+type varConst struct {
 	varInst instances.Var
 	constInst instances.Const
 }
@@ -22,16 +22,16 @@ type varconst struct {
 // =========================== //
 
 // Return varvar subsumption.
-func VarConst(varInst instances.Var, constInst instances.Const) *varconst {
-	return &varconst{varInst: varInst, constInst: constInst}
+func VarConst(varInst instances.Var, constInst instances.Const) *varConst {
+	return &varConst{varInst: varInst, constInst: constInst}
 }
 
 // Return CNF encoding of component.
-func (s *varconst) Encoding(ctx *components.Context) (*cnf.CNF, error) {
+func (s *varConst) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 	if len(s.constInst) != ctx.Dimension {
 		return nil, errors.New(
 			fmt.Sprintf(
-				`subsumption.varconst -> constant: wrong dim %d
+				`subsumption.varConst -> constant: wrong dim %d
 				(%d feats in context)`,
 				len(s.constInst),
 				ctx.Dimension,
@@ -65,16 +65,16 @@ func (s *varconst) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 
 // Return pointer to simplified equivalent component which might be itself.
 // This method may change the state of the caller.
-func (s *varconst) Simplified() (components.Component, error) {
+func (s *varConst) Simplified() (components.Component, error) {
 	return s, nil
 }
 
 // Return slice of pointers to component's children.
-func (s *varconst) GetChildren() []components.Component {
+func (s *varConst) GetChildren() []components.Component {
 	return []components.Component{}
 }
 
 // yes is true if struct is trivial and value represents its truthiness.
-func (s *varconst) IsTrivial() (yes bool, value bool) {
+func (s *varConst) IsTrivial() (yes bool, value bool) {
 	return false, false
 }

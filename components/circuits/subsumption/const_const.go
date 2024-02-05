@@ -12,7 +12,7 @@ import (
 //           STRUCTS           //
 // =========================== //
 
-type constconst struct {
+type constConst struct {
 	constInst1 instances.Const
 	constInst2 instances.Const
 }
@@ -23,16 +23,16 @@ type constconst struct {
 
 
 // Return varvar subsumption.
-func ConstConst(constInst1, constInst2 instances.Const) *constconst {
-	return &constconst{constInst1: constInst1, constInst2: constInst2}
+func ConstConst(constInst1, constInst2 instances.Const) *constConst {
+	return &constConst{constInst1: constInst1, constInst2: constInst2}
 }
 
 // Return CNF encoding of component.
-func (s *constconst) Encoding(ctx *components.Context) (*cnf.CNF, error) {
+func (s *constConst) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 	if len(s.constInst1) != ctx.Dimension {
 		return nil, errors.New(
 			fmt.Sprintf(
-				`subsumption.constconst -> constant%d: wrong dim %d
+				`subsumption.constConst -> constant%d: wrong dim %d
 				(%d feats in context)`,
 				1,
 				len(s.constInst1),
@@ -43,7 +43,7 @@ func (s *constconst) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 	if len(s.constInst2) != ctx.Dimension {
 		return nil, errors.New(
 			fmt.Sprintf(
-				`subsumption.constconst -> constant%d: wrong dim %d
+				`subsumption.constConst -> constant%d: wrong dim %d
 				(%d feats in context)`,
 				2,
 				len(s.constInst2),
@@ -61,11 +61,11 @@ func (s *constconst) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 
 // Return pointer to simplified equivalent component which might be itself.
 // This method may change the state of the caller.
-func (s *constconst) Simplified() (components.Component, error) {
+func (s *constConst) Simplified() (components.Component, error) {
 	if len(s.constInst1) != len(s.constInst2) {
 		return nil, errors.New(
 			fmt.Sprintf(
-				`subsumption.constconst -> constants: different length
+				`subsumption.constConst -> constants: different length
 				(%d != %d)`,
 				len(s.constInst1),
 				len(s.constInst2),
@@ -81,11 +81,11 @@ func (s *constconst) Simplified() (components.Component, error) {
 }
 
 // Return slice of pointers to component's children.
-func (s *constconst) GetChildren() []components.Component {
+func (s *constConst) GetChildren() []components.Component {
 	return []components.Component{}
 }
 
 // yes is true if struct is trivial and value represents its truthiness.
-func (s *constconst) IsTrivial() (yes bool, value bool) {
+func (s *constConst) IsTrivial() (yes bool, value bool) {
 	return false, false
 }

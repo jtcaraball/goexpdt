@@ -7,7 +7,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"stratifoiled/components"
 	"testing"
 )
 
@@ -23,11 +22,15 @@ func runSolver(t *testing.T, cmd *exec.Cmd) (int, error) {
 	var stderr bytes.Buffer
 	cmd.Stderr = &stderr
 	err := cmd.Run()
+	// Attpemt to cast error to exit error to read exit code
 	if exitErr, ok := err.(*exec.ExitError); ok {
 		exitCode := exitErr.ExitCode()
+		// If exit code is not 10 or 20 then solver failed to run and an error
+		// has to be thrown
 		if exitCode != 10 && exitCode != 20 {
-			t.Error(stderr.String())
+			return 0, errors.New(stderr.String())
 		}
+		// If it is just return it
 		return exitErr.ExitCode(), nil
 	} else if err != nil {
 		return 0, err
@@ -39,15 +42,8 @@ func runSolver(t *testing.T, cmd *exec.Cmd) (int, error) {
 func RunFormulaTest(
 	t *testing.T,
 	id, expCode int,
-	formula components.Component,
-	context *components.Context,
 	cnfPath string,
 ) {
-	cnf, err := formula.Encoding(context)
-	if err = cnf.ToFile(cnfPath); err != nil {
-		t.Errorf("CNF writing error: %s", err.Error())
-		return
-	}
 	cmd := exec.Command(SOLVER, cnfPath)
 	retCode, err := runSolver(t, cmd)
 	if err != nil {

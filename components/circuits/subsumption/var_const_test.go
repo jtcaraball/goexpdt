@@ -20,9 +20,11 @@ func runSubsumptionVarConst(
 	c1, c2 instances.Const,
 	simplify bool,
 ) {
+	var err error
+	var formula components.Component
 	y := instances.NewVar("y")
 	context := components.NewContext(DIM, nil)
-	formula := operators.WithVar(
+	formula = operators.WithVar(
 		y,
 		operators.And(
 			operators.And(VarConst(y, c1), ConstVar(c1, y)),
@@ -31,14 +33,18 @@ func runSubsumptionVarConst(
 	)
 	filePath := sfdtest.CNFName(varConstSUFIX, id, simplify)
 	if simplify {
-		simpleFormula, err := formula.Simplified()
+		formula, err = formula.Simplified()
 		if err != nil {
 			t.Errorf("Formula simplification error: %s", err.Error())
 		}
-		sfdtest.RunFormulaTest(t, id, expCode, simpleFormula, context, filePath)
 		return
 	}
-	sfdtest.RunFormulaTest(t, id, expCode, formula, context, filePath)
+	cnf, err := formula.Encoding(context)
+	if err = cnf.ToFile(filePath); err != nil {
+		t.Errorf("CNF writing error: %s", err.Error())
+		return
+	}
+	sfdtest.RunFormulaTest(t, id, expCode, filePath)
 }
 
 // =========================== //

@@ -7,7 +7,7 @@ package instances
 type Const []featV
 
 type featV struct {
-	val uint8
+	val int
 }
 
 // =========================== //
@@ -37,6 +37,6 @@ func Bot() featV {
 	return featV{val: 2}
 }
 
-func (f featV) Val() uint8 {
+func (f featV) Val() int {
 	return f.val
 }

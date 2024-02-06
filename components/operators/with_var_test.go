@@ -4,6 +4,7 @@ import (
 	"testing"
 	"stratifoiled/components"
 	"stratifoiled/components/instances"
+	"stratifoiled/sfdtest"
 )
 
 func TestWithVar_Encoding(t *testing.T) {
@@ -11,11 +12,12 @@ func TestWithVar_Encoding(t *testing.T) {
 	y := instances.NewVar("y")
 	trivial := components.NewTrivial(false)
 	context := components.NewContext(1, nil)
-	component := &WithVar{
-		instance: x,
-		child: &WithVar{instance: y, child: trivial},
+	component := WithVar(x, WithVar(y, trivial))
+	encCNF, err := component.Encoding(context)
+	if err != nil {
+		t.Errorf("CNF encoding error. %s", err.Error())
+		return
 	}
-	encCNF := component.Encoding(context)
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{{}}
 	expCClauses := [][]int{
@@ -28,7 +30,7 @@ func TestWithVar_Encoding(t *testing.T) {
 		{-4, -6},
 		{-5, -6},
 	}
-	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestWithVar_Simplified(t *testing.T) {
@@ -36,26 +38,29 @@ func TestWithVar_Simplified(t *testing.T) {
 	y := instances.NewVar("y")
 	trivial := components.NewTrivial(false)
 	context := components.NewContext(1, nil)
-	component := &WithVar{
-		instance: x,
-		child: &WithVar{instance: y, child: trivial},
+	component := WithVar(x, WithVar(y, trivial))
+	simpleComponent, err := component.Simplified()
+	if err != nil {
+		t.Errorf("Simplification error. %s", err.Error())
+		return
 	}
-	encCNF := component.Simplified().Encoding(context)
+	encCNF, err := simpleComponent.Encoding(context)
+	if err != nil {
+		t.Errorf("CNF encoding error. %s", err.Error())
+		return
+	}
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{{}}
 	expCClauses := [][]int{}
-	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestWithVar_GetChildren(t *testing.T) {
 	x := instances.NewVar("x")
 	y := instances.NewVar("y")
 	trivial := components.NewTrivial(false)
-	childComp := &WithVar{instance: y, child: trivial}
-	component := &WithVar{
-		instance: x,
-		child: childComp,
-	}
+	childComp := WithVar(y, trivial)
+	component := WithVar(x, childComp)
 	compChildren := component.GetChildren()
 	if len(compChildren) != 1 {
 		t.Errorf(
@@ -77,12 +82,9 @@ func TestWithVar_GetChildren(t *testing.T) {
 func TestWithVar_IsTrivial(t *testing.T) {
 	x := instances.NewVar("x")
 	trivial := components.NewTrivial(false)
-	component := &WithVar{
-		instance: x,
-		child: trivial,
-	}
+	component := WithVar(x, trivial)
 	isTrivial, _ := component.IsTrivial()
 	if isTrivial {
-		t.Errorf("Wrong is trivial value. Expected %t but got %t", false, true)
+		t.Errorf("Wrong IsTrivial value. Expected %t but got %t", false, true)
 	}
 }

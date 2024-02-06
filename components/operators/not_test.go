@@ -4,37 +4,51 @@ import (
 	"testing"
 	"stratifoiled/components"
 	"stratifoiled/components/instances"
+	"stratifoiled/sfdtest"
 )
 
 func TestNot_Encoding(t *testing.T) {
 	x := instances.NewVar("x")
 	trivial := components.NewTrivial(false)
 	context := components.NewContext(1, nil)
-	component := &Not{ child: &WithVar{ instance: x, child: trivial } }
-	encCNF := component.Encoding(context)
+	component := Not(WithVar(x, trivial))
+	encCNF, err := component.Encoding(context)
+	if err != nil {
+		t.Errorf("CNF encoding error. %s", err.Error())
+		return
+	}
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{}
 	expCClauses := [][]int{}
-	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestNot_Simplified(t *testing.T) {
 	x := instances.NewVar("x")
 	trivial := components.NewTrivial(true)
 	context := components.NewContext(1, nil)
-	component := &Not{ child: &WithVar{ instance: x, child: trivial } }
-	encCNF := component.Simplified().Encoding(context)
+	component := Not(WithVar(x, trivial))
+	simpleComponent, err := component.Simplified()
+	if err != nil {
+		t.Errorf("Simplification error. %s", err.Error())
+		return
+	}
+	encCNF, err := simpleComponent.Encoding(context)
+	if err != nil {
+		t.Errorf("CNF encoding error. %s", err.Error())
+		return
+	}
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{{}}
 	expCClauses := [][]int{}
-	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestNot_GetChildren(t *testing.T) {
 	x := instances.NewVar("x")
 	trivial := components.NewTrivial(true)
-	childComp := &WithVar{ instance: x, child: trivial }
-	component := &Not{ child: childComp }
+	childComp := WithVar(x, trivial)
+	component := Not(childComp)
 	compChildren := component.GetChildren()
 	if len(compChildren) != 1 {
 		t.Errorf(
@@ -56,9 +70,9 @@ func TestNot_GetChildren(t *testing.T) {
 func TestNot_IsTrivial(t *testing.T) {
 	x := instances.NewVar("x")
 	trivial := components.NewTrivial(false)
-	component := &Not{ child: &WithVar{ instance: x, child: trivial } }
+	component := Not(WithVar(x, trivial))
 	isTrivial, _ := component.IsTrivial()
 	if isTrivial {
-		t.Errorf("Wrong is trivial value. Expected %t but got %t", false, true)
+		t.Errorf("Wrong IsTrivial value. Expected %t but got %t", false, true)
 	}
 }

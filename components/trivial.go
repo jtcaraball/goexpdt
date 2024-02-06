@@ -21,16 +21,16 @@ func NewTrivial(value bool) *Trivial {
 }
 
 // Return CNF encoding of component.
-func (t *Trivial) Encoding(ctx *Context) *cnf.CNF {
+func (t *Trivial) Encoding(ctx *Context) (*cnf.CNF, error) {
 	if bool(*t) {
-		return &cnf.CNF{}
+		return &cnf.CNF{}, nil
 	}
-	return cnf.CNFFromClauses([][]int{{}})
+	return cnf.CNFFromClauses([][]int{{}}), nil
 }
 
 // Return pointer to simplified equivalent component which might be itself.
-func (t *Trivial) Simplified() Component {
-	return t
+func (t *Trivial) Simplified() (Component, error) {
+	return t, nil
 }
 
 // Return slice of pointers to component's children.

@@ -3,17 +3,22 @@ package operators
 import (
 	"stratifoiled/components"
 	"stratifoiled/components/instances"
+	"stratifoiled/sfdtest"
 	"testing"
 )
 
 func TestAnd_Encoding_DTrue(t *testing.T) {
 	x := instances.NewVar("x")
 	y := instances.NewVar("y")
-	childX := &WithVar{instance: x, child: components.NewTrivial(true)}
-	childY := &WithVar{instance: y, child: components.NewTrivial(true)}
+	childX := WithVar(x, components.NewTrivial(true))
+	childY := WithVar(y, components.NewTrivial(true))
 	context := components.NewContext(1, nil)
-	component := &And{ child1: childX, child2: childY }
-	encCNF := component.Encoding(context)
+	component := And(childX, childY)
+	encCNF, err := component.Encoding(context)
+	if err != nil {
+		t.Errorf("CNF encoding error. %s", err.Error())
+		return
+	}
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{}
 	expCClauses := [][]int{
@@ -26,17 +31,21 @@ func TestAnd_Encoding_DTrue(t *testing.T) {
 		{-4, -6},
 		{-5, -6},
 	}
-	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestAnd_Encoding_DFalse(t *testing.T) {
 	x := instances.NewVar("x")
 	y := instances.NewVar("y")
-	childX := &WithVar{instance: x, child: components.NewTrivial(false)}
-	childY := &WithVar{instance: y, child: components.NewTrivial(false)}
+	childX := WithVar(x, components.NewTrivial(false))
+	childY := WithVar(y, components.NewTrivial(false))
 	context := components.NewContext(1, nil)
-	component := &And{ child1: childX, child2: childY }
-	encCNF := component.Encoding(context)
+	component := And(childX, childY)
+	encCNF, err := component.Encoding(context)
+	if err != nil {
+		t.Errorf("CNF encoding error. %s", err.Error())
+		return
+	}
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{{}, {}}
 	expCClauses := [][]int{
@@ -49,17 +58,21 @@ func TestAnd_Encoding_DFalse(t *testing.T) {
 		{-4, -6},
 		{-5, -6},
 	}
-	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestAnd_Encoding_Mixed(t *testing.T) {
 	x := instances.NewVar("x")
 	y := instances.NewVar("y")
-	childX := &WithVar{instance: x, child: components.NewTrivial(true)}
-	childY := &WithVar{instance: y, child: components.NewTrivial(false)}
+	childX := WithVar(x, components.NewTrivial(true))
+	childY := WithVar(y, components.NewTrivial(false))
 	context := components.NewContext(1, nil)
-	component := &And{ child1: childX, child2: childY }
-	encCNF := component.Encoding(context)
+	component := And(childX, childY)
+	encCNF, err := component.Encoding(context)
+	if err != nil {
+		t.Errorf("CNF encoding error. %s", err.Error())
+		return
+	}
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{{}}
 	expCClauses := [][]int{
@@ -72,59 +85,86 @@ func TestAnd_Encoding_Mixed(t *testing.T) {
 		{-4, -6},
 		{-5, -6},
 	}
-	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestAnd_Simplified_DTrue(t *testing.T) {
 	x := instances.NewVar("x")
 	y := instances.NewVar("y")
-	childX := &WithVar{instance: x, child: components.NewTrivial(true)}
-	childY := &WithVar{instance: y, child: components.NewTrivial(true)}
+	childX := WithVar(x, components.NewTrivial(true))
+	childY := WithVar(y, components.NewTrivial(true))
 	context := components.NewContext(1, nil)
-	component := &And{ child1: childX, child2: childY }
-	encCNF := component.Simplified().Encoding(context)
+	component := And(childX, childY)
+	simpleComponent, err := component.Simplified()
+	if err != nil {
+		t.Errorf("Simplification error. %s", err.Error())
+		return
+	}
+	encCNF, err := simpleComponent.Encoding(context)
+	if err != nil {
+		t.Errorf("CNF encoding error. %s", err.Error())
+		return
+	}
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{}
 	expCClauses := [][]int{}
-	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestAnd_Simplified_DFalse(t *testing.T) {
 	x := instances.NewVar("x")
 	y := instances.NewVar("y")
-	childX := &WithVar{instance: x, child: components.NewTrivial(false)}
-	childY := &WithVar{instance: y, child: components.NewTrivial(false)}
+	childX := WithVar(x, components.NewTrivial(false))
+	childY := WithVar(y, components.NewTrivial(false))
 	context := components.NewContext(1, nil)
-	component := &And{ child1: childX, child2: childY }
-	encCNF := component.Simplified().Encoding(context)
+	component := And(childX, childY)
+	simpleComponent, err := component.Simplified()
+	if err != nil {
+		t.Errorf("Simplification error. %s", err.Error())
+		return
+	}
+	encCNF, err := simpleComponent.Encoding(context)
+	if err != nil {
+		t.Errorf("CNF encoding error. %s", err.Error())
+		return
+	}
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{{}}
 	expCClauses := [][]int{}
-	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestAnd_Simplified_Mixed(t *testing.T) {
 	x := instances.NewVar("x")
 	y := instances.NewVar("y")
-	childX := &WithVar{instance: x, child: components.NewTrivial(true)}
-	childY := &WithVar{instance: y, child: components.NewTrivial(false)}
+	childX := WithVar(x, components.NewTrivial(true))
+	childY := WithVar(y, components.NewTrivial(false))
 	context := components.NewContext(1, nil)
-	component := &And{ child1: childX, child2: childY }
-	encCNF := component.Simplified().Encoding(context)
+	component := And(childX, childY)
+	simpleComponent, err := component.Simplified()
+	if err != nil {
+		t.Errorf("Simplification error. %s", err.Error())
+		return
+	}
+	encCNF, err := simpleComponent.Encoding(context)
+	if err != nil {
+		t.Errorf("CNF encoding error. %s", err.Error())
+		return
+	}
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{{}}
 	expCClauses := [][]int{}
-	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestAnd_Children(t *testing.T) {
 	x := instances.NewVar("x")
 	y := instances.NewVar("y")
-	childX := &WithVar{instance: x, child: components.NewTrivial(true)}
-	childY := &WithVar{instance: y, child: components.NewTrivial(false)}
-	component := &And{ child1: childX, child2: childY }
+	childX := WithVar(x, components.NewTrivial(true))
+	childY := WithVar(y, components.NewTrivial(false))
+	component := And(childX, childY)
 	compChildren := component.GetChildren()
-	expCompChildren := []*WithVar{childX, childY}
+	expCompChildren := []*withVar{childX, childY}
 	if len(compChildren) != len(expCompChildren) {
 		t.Errorf(
 			"Wrong number of children. Expected %d but got %d",
@@ -147,11 +187,11 @@ func TestAnd_Children(t *testing.T) {
 func TestAnd_IsTrivial(t *testing.T) {
 	x := instances.NewVar("x")
 	y := instances.NewVar("y")
-	childX := &WithVar{instance: x, child: components.NewTrivial(true)}
-	childY := &WithVar{instance: y, child: components.NewTrivial(false)}
-	component := &And{ child1: childX, child2: childY }
+	childX := WithVar(x, components.NewTrivial(true))
+	childY := WithVar(y, components.NewTrivial(false))
+	component := And(childX, childY)
 	isTrivial, _ := component.IsTrivial()
 	if isTrivial {
-		t.Errorf("Wrong is trivial value. Expected %t but got %t", false, true)
+		t.Errorf("Wrong IsTrivial value. Expected %t but got %t", false, true)
 	}
 }

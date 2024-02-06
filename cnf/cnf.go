@@ -116,7 +116,7 @@ func (c *CNF) ExtendConsistency(clauses [][]int) {
 // Convert CNF formula to bytes in DIMACS CNF format.
 func (c *CNF) ToBytes() []byte {
 	bString := fmt.Sprintf(
-		"p CNF %d %d\n",
+		"p cnf %d %d\n",
 		c.tv,
 		len(c.sClauses) + len(c.cClauses),
 	)
@@ -139,7 +139,7 @@ func (c *CNF) ToFile(path string) error {
 	defer f.Close()
 	// Write CNF formula
 	f.WriteString(
-		fmt.Sprintf("p CNF %d %d\n", c.tv, len(c.sClauses) + len(c.cClauses)),
+		fmt.Sprintf("p cnf %d %d\n", c.tv, len(c.sClauses) + len(c.cClauses)),
 	)
 	for _, clause := range c.sClauses {
 		f.WriteString(fmt.Sprintf("%s\n", clauseToDIMACS(clause)))

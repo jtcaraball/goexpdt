@@ -5,8 +5,8 @@ import (
 )
 
 type Component interface {
-	Encoding(ctx *Context) *cnf.CNF
+	Encoding(ctx *Context) (*cnf.CNF, error)
+	Simplified() (Component, error)
 	GetChildren() []Component
-	Simplified() Component
 	IsTrivial() (bool, bool)
 }

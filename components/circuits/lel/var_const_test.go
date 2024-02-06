@@ -9,7 +9,7 @@ import (
 	"testing"
 )
 
-const varConstSUFIX = "lel.varvar"
+const varConstSUFIX = "lel.varconst"
 
 // =========================== //
 //           HELPERS           //

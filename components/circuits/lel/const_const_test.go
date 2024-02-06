@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-const constConstSUFIX = "lel.varvar"
+const constConstSUFIX = "lel.constconst"
 
 // =========================== //
 //           HELPERS           //
@@ -52,12 +52,34 @@ func TestConstConst_Encoding(t *testing.T) {
 	}
 }
 
+func TestConstConst_Encoding_WrongDim(t *testing.T) {
+	x := instances.Const{instances.BOT, instances.BOT, instances.BOT}
+	y := instances.Const{instances.BOT, instances.BOT, instances.BOT}
+	formula := ConstConst(x, y)
+	context := components.NewContext(4, nil)
+	_, err := formula.Encoding(context)
+	if err == nil {
+		t.Error("Error not cached. Expected constant wrong dimension error")
+	}
+}
+
 func TestConstConst_Simplified(t *testing.T) {
 	sfdtest.AddCleanup(t, constConstSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runLELConstConst(t, i, tc.expCode, tc.val1, tc.val2, true)
 		})
+	}
+}
+
+func TestConstConst_Simplified_WrongDim(t *testing.T) {
+	x := instances.Const{instances.BOT, instances.BOT, instances.BOT}
+	y := instances.Const{instances.BOT, instances.BOT, instances.BOT}
+	formula := ConstConst(x, y)
+	context := components.NewContext(4, nil)
+	_, err := formula.Simplified(context)
+	if err == nil {
+		t.Error("Error not cached. Expected constant wrong dimension error")
 	}
 }
 

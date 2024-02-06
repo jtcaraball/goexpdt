@@ -27,6 +27,9 @@ func Or(child1, child2 components.Component) *or {
 
 // Return CNF encoding of component.
 func (o *or) Encoding(ctx *components.Context) (*cnf.CNF, error) {
+	if err := o.nonNilChildren(); err != nil {
+		return nil, err
+	}
 	// De Morgan's law
 	// Encode both children
 	cnf1, err := o.child1.Encoding(ctx)
@@ -53,6 +56,9 @@ func (o *or) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 // Return pointer to simplified equivalent component which might be itself.
 // This method may change the state of the caller.
 func (o *or) Simplified(ctx *components.Context) (components.Component, error) {
+	if err := o.nonNilChildren(); err != nil {
+		return nil, err
+	}
 	simpleChild1, err := o.child1.Simplified(ctx)
 	if err != nil {
 		return nil, orErr(err, 1)
@@ -100,9 +106,21 @@ func (o *or) IsTrivial() (yes bool, value bool) {
 	return false, false
 }
 
-// Add bread crumbs to error
+// Returns error if any of the children are nil.
+func (o *or) nonNilChildren() error {
+	if o.child1 == nil {
+		return orErr(errors.New("child is nil"), 1)
+	}
+	if o.child2 == nil {
+		return orErr(errors.New("child is nil"), 2)
+	}
+	return nil
+}
+
+// Add bread crumbs to error.
 func orErr(err error, childIdx uint8) error {
 	return errors.New(
 		fmt.Sprintf("or:child%d -> %s", childIdx, err.Error()),
 	)
+
 }

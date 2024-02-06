@@ -40,7 +40,7 @@ func (l *varConst) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 			botsInConst += 1
 		}
 	}
-	// Ask if var has a fewer bots
+	// Ask for var to not have fewer bots.
 	cVarName := "c" + string(l.varInst)
 	for i := 0; i < botsInConst; i++ {
 		cnf.AppendSemantics([]int{-ctx.IVar(cVarName, ctx.Dimension - 1, i)})

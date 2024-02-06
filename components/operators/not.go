@@ -26,6 +26,9 @@ func Not(child components.Component) *not {
 
 // Return CNF encoding of component.
 func (n *not) Encoding(ctx *components.Context) (*cnf.CNF, error) {
+	if err := n.nonNilChildren(); err != nil {
+		return nil, err
+	}
 	cnf, err := n.child.Encoding(ctx)
 	if err != nil {
 		return nil, notErr(err)
@@ -38,6 +41,9 @@ func (n *not) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 // Return pointer to simplified equivalent component which might be itself.
 // This method may change the state of the caller.
 func (n *not) Simplified(ctx *components.Context) (components.Component, error) {
+	if err := n.nonNilChildren(); err != nil {
+		return nil, err
+	}
 	simpleChild, err := n.child.Simplified(ctx)
 	if err != nil {
 		return nil, notErr(err)
@@ -60,7 +66,15 @@ func (n *not) IsTrivial() (yes bool, value bool) {
 	return false, false
 }
 
-// Add bread crumbs to error
+// Returns error if any of the children are nil.
+func (n *not) nonNilChildren() error {
+	if n.child == nil {
+		return notErr(errors.New("child is nil"))
+	}
+	return nil
+}
+
+// Add bread crumbs to error.
 func notErr(err error) error {
 	return errors.New(fmt.Sprintf("not -> %s", err.Error()))
 }

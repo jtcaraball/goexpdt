@@ -27,6 +27,9 @@ func And(child1, child2 components.Component) *and {
 
 // Return CNF encoding of component.
 func (a *and) Encoding(ctx *components.Context) (*cnf.CNF, error) {
+	if err := a.nonNilChildren(); err != nil {
+		return nil, err
+	}
 	cnf1, err := a.child1.Encoding(ctx)
 	if err != nil {
 		return nil, andErr(err, 1)
@@ -41,7 +44,12 @@ func (a *and) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 
 // Return pointer to simplified equivalent component which might be itself.
 // This method may change the state of the caller.
-func (a *and) Simplified(ctx *components.Context) (components.Component, error) {
+func (a *and) Simplified(
+	ctx *components.Context,
+) (components.Component, error) {
+	if err := a.nonNilChildren(); err != nil {
+		return nil, err
+	}
 	simpleChild1, err := a.child1.Simplified(ctx)
 	if err != nil {
 		return nil, andErr(err, 1)
@@ -86,7 +94,18 @@ func (a *and) IsTrivial() (yes bool, value bool) {
 	return false, false
 }
 
-// Add bread crumbs to error
+// Returns error if any of the children are nil.
+func (a *and) nonNilChildren() error {
+	if a.child1 == nil {
+		return andErr(errors.New("child is nil"), 1)
+	}
+	if a.child2 == nil {
+		return andErr(errors.New("child is nil"), 2)
+	}
+	return nil
+}
+
+// Add bread crumbs to error.
 func andErr(err error, childIdx uint8) error {
 	return errors.New(
 		fmt.Sprintf("and:child%d -> %s", childIdx, err.Error()),

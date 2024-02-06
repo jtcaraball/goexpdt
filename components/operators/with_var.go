@@ -28,6 +28,9 @@ func WithVar(inst instances.Var, child components.Component) *withVar {
 
 // Return CNF encoding of component.
 func (wv *withVar) Encoding(ctx *components.Context) (*cnf.CNF, error) {
+	if err := wv.nonNilChildren(); err != nil {
+		return nil, err
+	}
 	iCNF := wv.instance.Encoding(ctx)
 	cCNF, err := wv.child.Encoding(ctx)
 	if err != nil {
@@ -39,7 +42,12 @@ func (wv *withVar) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 
 // Return pointer to simplified equivalent component which might be itself.
 // This method may change the state of the caller.
-func (wv *withVar) Simplified(ctx *components.Context) (components.Component, error) {
+func (wv *withVar) Simplified(
+	ctx *components.Context,
+) (components.Component, error) {
+	if err := wv.nonNilChildren(); err != nil {
+		return nil, err
+	}
 	simpleChild, err := wv.child.Simplified(ctx)
 	if err != nil {
 		return nil, withVarErr(err)
@@ -62,7 +70,15 @@ func (wv *withVar) IsTrivial() (yes bool, value bool) {
 	return false, false
 }
 
-// Add bread crumbs to error
+// Returns error if any of the children are nil.
+func (wv *withVar) nonNilChildren() error {
+	if wv.child == nil {
+		return withVarErr(errors.New("child is nil"))
+	}
+	return nil
+}
+
+// Add bread crumbs to error.
 func withVarErr(err error) error {
 	return errors.New(fmt.Sprintf("withVar -> %s", err.Error()))
 }

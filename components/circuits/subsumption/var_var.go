@@ -45,7 +45,9 @@ func (s *varVar) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 
 // Return pointer to simplified equivalent component which might be itself.
 // This method may change the state of the caller.
-func (s *varVar) Simplified() (components.Component, error) {
+func (s *varVar) Simplified(
+	ctx *components.Context,
+) (components.Component, error) {
 	return s, nil
 }
 

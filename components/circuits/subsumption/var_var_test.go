@@ -75,3 +75,27 @@ func TestVarVar_Simplified(t *testing.T) {
 		})
 	}
 }
+
+func TestVarVar_GetChildren(t *testing.T) {
+	x := instances.NewVar("x")
+	y := instances.NewVar("y")
+	formula := VarVar(x, y)
+	children := formula.GetChildren()
+	if len(children) != 0 {
+		t.Errorf(
+			"Wrong number of children. Expected %d but got %d",
+			0,
+			len(children),
+		)
+	}
+}
+
+func TestVarVar_IsTrivial(t *testing.T) {
+	x := instances.NewVar("x")
+	y := instances.NewVar("y")
+	formula := VarVar(x, y)
+	isTrivial, _ := formula.IsTrivial()
+	if isTrivial {
+		t.Errorf("Wrong IsTrivial value. Expected %t but got %t", false, true)
+	}
+}

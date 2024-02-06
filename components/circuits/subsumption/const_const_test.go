@@ -60,3 +60,31 @@ func TestConstConst_Simplified(t *testing.T) {
 		})
 	}
 }
+
+func TestConstConst_GetChildren(t *testing.T) {
+	x := instances.Const{instances.BOT, instances.BOT, instances.BOT}
+	y := instances.Const{instances.BOT, instances.BOT, instances.BOT}
+	formula := ConstConst(x, y)
+	children := formula.GetChildren()
+	if len(children) != 0 {
+		t.Errorf(
+			"Wrong number of children. Expected %d but got %d",
+			0,
+			len(children),
+		)
+	}
+}
+
+func TestConstConst_IsTrivial(t *testing.T) {
+	x := instances.Const{instances.BOT, instances.BOT, instances.BOT}
+	y := instances.Const{instances.BOT, instances.BOT, instances.BOT}
+	formula := ConstConst(x, y)
+	children := formula.GetChildren()
+	if len(children) != 0 {
+		t.Errorf(
+			"Wrong number of children. Expected %d but got %d",
+			0,
+			len(children),
+		)
+	}
+}

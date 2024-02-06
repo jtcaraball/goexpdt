@@ -97,7 +97,7 @@ func (l *constConst) validateInstances(ctx *components.Context) error {
 	if len(l.constInst2) != ctx.Dimension {
 		return errors.New(
 			fmt.Sprintf(
-				`subsumption.constConst -> constant%d: wrong dim %d
+				`lel.constConst -> constant%d: wrong dim %d
 				(%d feats in context)`,
 				2,
 				len(l.constInst2),

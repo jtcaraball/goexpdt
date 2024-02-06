@@ -33,7 +33,7 @@ func runSubsumptionVarConst(
 	)
 	filePath := sfdtest.CNFName(varConstSUFIX, id, simplify)
 	if simplify {
-		formula, err = formula.Simplified()
+		formula, err = formula.Simplified(context)
 		if err != nil {
 			t.Errorf("Formula simplification error. %s", err.Error())
 			return
@@ -60,12 +60,34 @@ func TestVarConst_Encoding(t *testing.T) {
 	}
 }
 
+func TestVarConst_Encoding_WrongDim(t *testing.T) {
+	x := instances.NewVar("x")
+	y := instances.Const{instances.BOT, instances.BOT, instances.BOT}
+	formula := VarConst(x, y)
+	context := components.NewContext(4, nil)
+	_, err := formula.Encoding(context)
+	if err == nil {
+		t.Error("Error not cached. Expected constant wrong dimension error")
+	}
+}
+
 func TestVarConst_Simplified(t *testing.T) {
 	sfdtest.AddCleanup(t, varConstSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runSubsumptionVarConst(t, i, tc.expCode, tc.val1, tc.val2, true)
 		})
+	}
+}
+
+func TestVarConst_Simplified_WrongDim(t *testing.T) {
+	x := instances.NewVar("x")
+	y := instances.Const{instances.BOT, instances.BOT, instances.BOT}
+	formula := VarConst(x, y)
+	context := components.NewContext(4, nil)
+	_, err := formula.Simplified(context)
+	if err == nil {
+		t.Error("Error not cached. Expected constant wrong dimension error")
 	}
 }
 

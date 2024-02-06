@@ -68,7 +68,7 @@ func TestOr_Simplified_DTrue(t *testing.T) {
 	childY := WithVar(y, components.NewTrivial(true))
 	context := components.NewContext(1, nil)
 	component := Or(childX, childY)
-	simpleComponent, err := component.Simplified()
+	simpleComponent, err := component.Simplified(context)
 	if err != nil {
 		t.Errorf("Simplification error. %s", err.Error())
 		return
@@ -91,7 +91,7 @@ func TestOr_Simplified_DFalse(t *testing.T) {
 	childY := WithVar(y, components.NewTrivial(false))
 	context := components.NewContext(1, nil)
 	component := Or(childX, childY)
-	simpleComponent, err := component.Simplified()
+	simpleComponent, err := component.Simplified(context)
 	if err != nil {
 		t.Errorf("Simplification error. %s", err.Error())
 		return
@@ -114,7 +114,7 @@ func TestOr_Simplified_Mixed(t *testing.T) {
 	childY := WithVar(y, components.NewTrivial(false))
 	context := components.NewContext(1, nil)
 	component := Or(childX, childY)
-	simpleComponent, err := component.Simplified()
+	simpleComponent, err := component.Simplified(context)
 	if err != nil {
 		t.Errorf("Simplification error. %s", err.Error())
 		return

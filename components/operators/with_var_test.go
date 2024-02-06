@@ -39,7 +39,7 @@ func TestWithVar_Simplified(t *testing.T) {
 	trivial := components.NewTrivial(false)
 	context := components.NewContext(1, nil)
 	component := WithVar(x, WithVar(y, trivial))
-	simpleComponent, err := component.Simplified()
+	simpleComponent, err := component.Simplified(context)
 	if err != nil {
 		t.Errorf("Simplification error. %s", err.Error())
 		return

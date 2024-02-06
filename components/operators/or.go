@@ -52,12 +52,12 @@ func (o *or) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 
 // Return pointer to simplified equivalent component which might be itself.
 // This method may change the state of the caller.
-func (o *or) Simplified() (components.Component, error) {
-	simpleChild1, err := o.child1.Simplified()
+func (o *or) Simplified(ctx *components.Context) (components.Component, error) {
+	simpleChild1, err := o.child1.Simplified(ctx)
 	if err != nil {
 		return nil, orErr(err, 1)
 	}
-	simpleChild2, err := o.child2.Simplified()
+	simpleChild2, err := o.child2.Simplified(ctx)
 	if err != nil {
 		return nil, orErr(err, 2)
 	}

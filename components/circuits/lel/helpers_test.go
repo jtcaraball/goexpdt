@@ -17,7 +17,7 @@ var tests = []struct {
 		expCode: 10,
 	},
 	{
-		name: "less nBOT BOT",
+		name: "less BOT nBOT",
 		val1: instances.Const{instances.BOT, instances.BOT, instances.BOT},
 		val2: instances.Const{instances.ONE, instances.ONE, instances.ZERO},
 		expCode: 10,

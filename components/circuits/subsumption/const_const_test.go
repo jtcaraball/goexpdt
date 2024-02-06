@@ -79,12 +79,8 @@ func TestConstConst_IsTrivial(t *testing.T) {
 	x := instances.Const{instances.BOT, instances.BOT, instances.BOT}
 	y := instances.Const{instances.BOT, instances.BOT, instances.BOT}
 	formula := ConstConst(x, y)
-	children := formula.GetChildren()
-	if len(children) != 0 {
-		t.Errorf(
-			"Wrong number of children. Expected %d but got %d",
-			0,
-			len(children),
-		)
+	isTrivial, _ := formula.IsTrivial()
+	if isTrivial {
+		t.Errorf("Wrong IsTrivial value. Expected %t but got %t", false, true)
 	}
 }

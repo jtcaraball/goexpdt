@@ -56,7 +56,12 @@ func (l *varConst) Simplified(
 	if err := l.validateInstances(ctx); err != nil {
 		return nil, err
 	}
-	return l, nil
+	for _, f := range l.constInst {
+		if f == instances.BOT {
+			return l, nil
+		}
+	}
+	return components.NewTrivial(true), nil
 }
 
 // Return slice of pointers to component's children.
@@ -73,7 +78,7 @@ func (l *varConst) validateInstances(ctx *components.Context) error {
 	if len(l.constInst) != ctx.Dimension {
 		return errors.New(
 			fmt.Sprintf(
-				"lel.constVar -> constant: wrong dim %d (%d feats in context)",
+				"lel.varConst -> constant: wrong dim %d (%d feats in context)",
 				len(l.constInst),
 				ctx.Dimension,
 			),

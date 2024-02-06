@@ -16,7 +16,8 @@ type Context struct {
 type contextVar struct {
 	name string
 	idx int
-	value uint8
+	value int
+	inter bool
 }
 
 // =========================== //
@@ -31,7 +32,7 @@ func NewContext(dim int, tree *trees.Tree) *Context {
 }
 
 // Return assigned value to variable. If it does not exist it is added.
-func (c* Context) Var(name string, idx int, value uint8) int {
+func (c* Context) Var(name string, idx int, value int) int {
 	varS := contextVar{name: name, idx: idx, value: value}
 	varValue := c.vars[varS]
 	if varValue == 0 {
@@ -43,8 +44,26 @@ func (c* Context) Var(name string, idx int, value uint8) int {
 }
 
 // Return true if variable exits in context. False otherwise.
-func (c *Context) VarExists(name string, idx int, value uint8) bool {
+func (c *Context) VarExists(name string, idx int, value int) bool {
 	varS := contextVar{name: name, idx: idx, value: value}
+	return c.vars[varS] != 0
+}
+
+// Return assigned value to internal variable. If it does not exist it is added.
+func (c* Context) IVar(name string, idx int, value int) int {
+	varS := contextVar{name: name, idx: idx, value: value, inter: true}
+	varValue := c.vars[varS]
+	if varValue == 0 {
+		c.TopV += 1
+		c.vars[varS] = c.TopV
+		return c.TopV
+	}
+	return varValue
+}
+
+// Return true if internal variable exits in context. False otherwise.
+func (c *Context) IVarExists(name string, idx int, value int) bool {
+	varS := contextVar{name: name, idx: idx, value: value, inter: true}
 	return c.vars[varS] != 0
 }
 

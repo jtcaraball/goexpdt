@@ -28,15 +28,8 @@ func ConstVar(constInst instances.Const, varInst instances.Var) *constVar {
 
 // Return CNF encoding of component.
 func (s *constVar) Encoding(ctx *components.Context) (*cnf.CNF, error) {
-	if len(s.constInst) != ctx.Dimension {
-		return nil, errors.New(
-			fmt.Sprintf(
-				`subsumption.constVar -> constant: wrong dim %d
-				(%d feats in context)`,
-				len(s.constInst),
-				ctx.Dimension,
-			),
-		)
+	if err := s.validateInstances(ctx); err != nil {
+		return nil, err
 	}
 	clauses := [][]int{}
 	for i, f := range s.constInst {
@@ -52,7 +45,12 @@ func (s *constVar) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 
 // Return pointer to simplified equivalent component which might be itself.
 // This method may change the state of the caller.
-func (s *constVar) Simplified() (components.Component, error) {
+func (s *constVar) Simplified(
+	ctx *components.Context,
+) (components.Component, error) {
+	if err := s.validateInstances(ctx); err != nil {
+		return nil, err
+	}
 	for _, f := range s.constInst {
 		if f != instances.BOT {
 			return s, nil
@@ -69,4 +67,18 @@ func (s *constVar) GetChildren() []components.Component {
 // yes is true if struct is trivial and value represents its truthiness.
 func (s *constVar) IsTrivial() (yes bool, value bool) {
 	return false, false
+}
+
+func (s *constVar) validateInstances(ctx *components.Context) error {
+	if len(s.constInst) != ctx.Dimension {
+		return errors.New(
+			fmt.Sprintf(
+				`subsumption.constVar -> constant: wrong dim %d
+				(%d feats in context)`,
+				len(s.constInst),
+				ctx.Dimension,
+			),
+		)
+	}
+	return nil
 }

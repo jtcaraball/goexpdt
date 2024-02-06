@@ -39,8 +39,8 @@ func (wv *withVar) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 
 // Return pointer to simplified equivalent component which might be itself.
 // This method may change the state of the caller.
-func (wv *withVar) Simplified() (components.Component, error) {
-	simpleChild, err := wv.child.Simplified()
+func (wv *withVar) Simplified(ctx *components.Context) (components.Component, error) {
+	simpleChild, err := wv.child.Simplified(ctx)
 	if err != nil {
 		return nil, withVarErr(err)
 	}

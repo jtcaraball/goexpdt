@@ -28,7 +28,7 @@ func TestNot_Simplified(t *testing.T) {
 	trivial := components.NewTrivial(true)
 	context := components.NewContext(1, nil)
 	component := Not(WithVar(x, trivial))
-	simpleComponent, err := component.Simplified()
+	simpleComponent, err := component.Simplified(context)
 	if err != nil {
 		t.Errorf("Simplification error. %s", err.Error())
 		return

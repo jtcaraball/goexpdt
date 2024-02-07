@@ -86,7 +86,7 @@ func TestConst_Encoding_WrongDim(t *testing.T) {
 }
 
 func TestConst_Simplified_AllPos(t *testing.T) {
-	sfdtest.AddCleanup(t, compConstSufix(true), false)
+	sfdtest.AddCleanup(t, compConstSufix(true), true)
 	tree := genTree()
 	for i, tc := range allPosTests {
 		t.Run(tc.name, func(t *testing.T) {
@@ -96,7 +96,7 @@ func TestConst_Simplified_AllPos(t *testing.T) {
 }
 
 func TestConst_Simplified_AllNeg(t *testing.T) {
-	sfdtest.AddCleanup(t, compConstSufix(false), false)
+	sfdtest.AddCleanup(t, compConstSufix(false), true)
 	tree := genTree()
 	for i, tc := range allNegTests {
 		t.Run(tc.name, func(t *testing.T) {

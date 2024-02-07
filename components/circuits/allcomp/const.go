@@ -113,7 +113,7 @@ func (ac *acConst) validateInstances(ctx *components.Context) error {
 	if len(ac.constInst) != ctx.Dimension {
 		return errors.New(
 			fmt.Sprintf(
-				"lel.constVar -> constant: wrong dim %d (%d feats in context)",
+				"allComp.Const -> constant: wrong dim %d (%d feats in context)",
 				len(ac.constInst),
 				ctx.Dimension,
 			),

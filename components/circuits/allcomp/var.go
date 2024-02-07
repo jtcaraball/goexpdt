@@ -44,61 +44,39 @@ func (ac *acVar) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 		}
 		nCNF.ExtendConsistency([][]int{
 			{
-				// -context.V[(var.name, node.label, Symbol.ZERO)],
-				// -context.V[('r', var.name, node.id)],
-				// context.V[('r', var.name, node.child_zero.id)]
 				-ctx.Var(string(ac.varInst), node.Feat, instances.ZERO.Val()),
 				-ctx.IVar(rVarName, node.ID, 0),
 				ctx.IVar(rVarName, node.LChild.ID, 0),
 			},
 			{
-				// -context.V[(var.name, node.label, Symbol.ONE)],
-				// -context.V[('r', var.name, node.id)],
-				// context.V[('r', var.name, node.child_one.id)]
 				-ctx.Var(string(ac.varInst), node.Feat, instances.ONE.Val()),
 				-ctx.IVar(rVarName, node.ID, 0),
 				ctx.IVar(rVarName, node.RChild.ID, 0),
 			},
 			{
-				// -context.V[(var.name, node.label, Symbol.BOT)],
-				// -context.V[('r', var.name, node.id)],
-				// context.V[('r', var.name, node.child_zero.id)]
 				-ctx.Var(string(ac.varInst), node.Feat, instances.BOT.Val()),
 				-ctx.IVar(rVarName, node.ID, 0),
 				ctx.IVar(rVarName, node.LChild.ID, 0),
 			},
 			{
-				// -context.V[(var.name, node.label, Symbol.BOT)],
-				// -context.V[('r', var.name, node.id)],
-				// context.V[('r', var.name, node.child_one.id)]
 				-ctx.Var(string(ac.varInst), node.Feat, instances.BOT.Val()),
 				-ctx.IVar(rVarName, node.ID, 0),
 				ctx.IVar(rVarName, node.RChild.ID, 0),
 			},
 			{
-				// -context.V[('r', var.name, node.child_one.id)],
-				// context.V[('r', var.name, node.id)]
 				-ctx.IVar(rVarName, node.RChild.ID, 0),
 				ctx.IVar(rVarName, node.ID, 0),
 			},
 			{
-				// -context.V[('r', var.name, node.child_one.id)],
-				// context.V[(var.name, node.label, Symbol.ONE)],
-				// context.V[(var.name, node.label, Symbol.BOT)]
 				-ctx.Var(rVarName, node.RChild.ID, 0),
 				ctx.Var(string(ac.varInst), node.Feat, instances.ONE.Val()),
 				ctx.Var(string(ac.varInst), node.Feat, instances.BOT.Val()),
 			},
 			{
-				// -context.V[('r', var.name, node.child_zero.id)],
-				// context.V[('r', var.name, node.id)]
 				-ctx.IVar(rVarName, node.LChild.ID, 0),
 				ctx.IVar(rVarName, node.ID, 0),
 			},
 			{
-				// -context.V[('r', var.name, node.child_zero.id)],
-				// context.V[(var.name, node.label, Symbol.ZERO)],
-				// context.V[(var.name, node.label, Symbol.BOT)]
 				-ctx.Var(rVarName, node.LChild.ID, 0),
 				ctx.Var(string(ac.varInst), node.Feat, instances.ZERO.Val()),
 				ctx.Var(string(ac.varInst), node.Feat, instances.BOT.Val()),

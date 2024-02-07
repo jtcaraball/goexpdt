@@ -30,4 +30,3 @@ var tests = []struct {
 		expCode: 10,
 	},
 }
-

@@ -28,7 +28,7 @@ func Var(varInst instances.Var, leafValue bool) *acVar {
 // Return CNF encoding of component.
 func (ac *acVar) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 	if ctx.Tree == nil || ctx.Tree.Root == nil {
-		return nil, errors.New("Tree or root is nil")
+		return nil, errors.New("Tree or it's root is nil")
 	}
 	nCNF := &cnf.CNF{}
 	rVarName := "r" + string(ac.varInst)

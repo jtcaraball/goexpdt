@@ -10,22 +10,22 @@ var tests = []struct {
 	expCode int
 }{
 	{
-		name: "BOT1",
+		name: "(_,1,0)",
 		val: instances.Const{instances.BOT, instances.ONE, instances.ZERO},
 		expCode: 20,
 	},
 	{
-		name: "BOT2",
+		name: "(1,_,1)",
 		val: instances.Const{instances.ONE, instances.BOT, instances.ONE},
 		expCode: 20,
 	},
 	{
-		name: "BOT3",
+		name: "(0,1,_)",
 		val: instances.Const{instances.ZERO, instances.ONE, instances.BOT},
 		expCode: 20,
 	},
 	{
-		name: "FULL",
+		name: "(0,1,1)",
 		val: instances.Const{instances.ZERO, instances.ONE, instances.ONE},
 		expCode: 10,
 	},

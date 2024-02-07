@@ -47,6 +47,10 @@ func runSubsumptionVarVar(
 		}
 	}
 	cnf, err := formula.Encoding(context)
+	if err != nil {
+		t.Errorf("Formula encoding error. %s", err.Error())
+		return
+	}
 	if err = cnf.ToFile(filePath); err != nil {
 		t.Errorf("CNF writing error. %s", err.Error())
 		return

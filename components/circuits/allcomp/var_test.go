@@ -60,7 +60,7 @@ func runAllCompVar(
 }
 
 func compVarSufix(val bool) string {
-	return varSUFIX + fmt.Sprintf("%t", true)
+	return varSUFIX + fmt.Sprintf("%t", val)
 }
 
 // =========================== //

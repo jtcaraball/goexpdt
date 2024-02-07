@@ -48,7 +48,7 @@ func runAllCompConst(
 }
 
 func compConstSufix(val bool) string {
-	return constSUFIX + fmt.Sprintf("%t", true)
+	return constSUFIX + fmt.Sprintf("%t", val)
 }
 
 // =========================== //

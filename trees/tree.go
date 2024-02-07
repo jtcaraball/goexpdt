@@ -123,5 +123,5 @@ func (n *Node) AppendSubtree(nodes *[]*Node) {
 
 // Return true if node is a leaf.
 func (n *Node) IsLeaf() bool {
-	return n.LChild == nil && n.RChild == nil
+	return n.LChild == nil || n.RChild == nil
 }

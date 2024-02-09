@@ -88,10 +88,14 @@ func (v Var) Encoding(ctx *Context) *cnf.CNF {
 // Return corresponding scoped var. If no scope is found in guard returns the
 // method caller.
 func (v Var) Scoped(ctx *Context) Var {
+	rVar := ""
 	for _, guard := range ctx.Guards {
 		if slices.Contains[[]string](guard.InScope, string(v)) {
-			return Var(string(v) + guard.Target)
+			rVar += guard.Rep
 		}
+	}
+	if rVar != "" {
+		return Var(string(v) + rVar)
 	}
 	return v
 }

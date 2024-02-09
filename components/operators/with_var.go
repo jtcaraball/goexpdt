@@ -41,8 +41,8 @@ func (wv *withVar) buildEncoding(
 	child components.Component,
 	ctx *components.Context,
 ) (*cnf.CNF, error) {
-	iCNF := wv.instance.Encoding(ctx)
-	cCNF, err := wv.child.Encoding(ctx)
+	iCNF := varInstance.Encoding(ctx)
+	cCNF, err := child.Encoding(ctx)
 	if err != nil {
 		return nil, withVarErr(err)
 	}

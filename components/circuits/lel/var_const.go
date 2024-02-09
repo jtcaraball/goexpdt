@@ -1,8 +1,6 @@
 package lel
 
 import (
-	"fmt"
-	"errors"
 	"stratifoiled/cnf"
 	"stratifoiled/components"
 )
@@ -13,7 +11,7 @@ import (
 
 type varConst struct {
 	varInst components.Var
-	constInst components.Const
+	constInst components.ConstInstance
 }
 
 // =========================== //
@@ -21,26 +19,47 @@ type varConst struct {
 // =========================== //
 
 // Return varConst lel.
-func VarConst(varInst components.Var, constInst components.Const) *varConst {
+func VarConst(
+	varInst components.Var,
+	constInst components.ConstInstance,
+) *varConst {
 	return &varConst{varInst: varInst, constInst: constInst}
 }
 
 // Return CNF encoding of component.
 func (l *varConst) Encoding(ctx *components.Context) (*cnf.CNF, error) {
-	if err := l.validateInstances(ctx); err != nil {
+	scpConst, err := l.constInst.Scoped(ctx)
+	if err != nil {
 		return nil, err
 	}
+	scpVar := l.varInst.Scoped(ctx)
+	if err = components.ValidateConstsDim(
+		"lel.VarConst",
+		ctx,
+		scpConst,
+	); err != nil {
+		return nil, err
+	}
+	return l.buildEncoding(scpVar, scpConst, ctx)
+}
+
+// Return CNF encoding of component.
+func (l *varConst) buildEncoding(
+	varInst components.Var,
+	constInst components.Const,
+	ctx *components.Context,
+) (*cnf.CNF, error) {
 	cnf := &cnf.CNF{}
-	cnf.ExtendConsistency(genCountClauses(string(l.varInst), ctx))
+	cnf.ExtendConsistency(genCountClauses(string(varInst), ctx))
 	// Count amount of bots in constant.
 	botsInConst := 0
-	for _, f := range l.constInst {
+	for _, f := range constInst {
 		if f == components.BOT {
 			botsInConst += 1
 		}
 	}
 	// Ask for var to not have fewer bots.
-	cVarName := "c" + string(l.varInst)
+	cVarName := "c" + string(varInst)
 	for i := 0; i < botsInConst; i++ {
 		cnf.AppendSemantics([]int{-ctx.IVar(cVarName, ctx.Dimension - 1, i)})
 	}
@@ -48,14 +67,29 @@ func (l *varConst) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 }
 
 // Return pointer to simplified equivalent component which might be itself.
-// This method may change the state of the caller.
 func (l *varConst) Simplified(
 	ctx *components.Context,
 ) (components.Component, error) {
-	if err := l.validateInstances(ctx); err != nil {
+	scpConst, err := l.constInst.Scoped(ctx)
+	if err != nil {
 		return nil, err
 	}
-	for _, f := range l.constInst {
+	if err = components.ValidateConstsDim(
+		"lel.VarConst",
+		ctx,
+		scpConst,
+	); err != nil {
+		return nil, err
+	}
+	return l.buildSimplified(scpConst, ctx)
+}
+
+// Generate simplified component.
+func (l *varConst) buildSimplified(
+	constInst components.Const,
+	ctx *components.Context,
+) (components.Component, error) {
+	for _, f := range constInst {
 		if f == components.BOT {
 			return l, nil
 		}
@@ -71,17 +105,4 @@ func (l *varConst) GetChildren() []components.Component {
 // yes is true if struct is trivial and value represents its truthiness.
 func (l *varConst) IsTrivial() (yes bool, value bool) {
 	return false, false
-}
-
-func (l *varConst) validateInstances(ctx *components.Context) error {
-	if len(l.constInst) != ctx.Dimension {
-		return errors.New(
-			fmt.Sprintf(
-				"lel.varConst -> constant: wrong dim %d (%d feats in context)",
-				len(l.constInst),
-				ctx.Dimension,
-			),
-		)
-	}
-	return nil
 }

@@ -2,7 +2,6 @@ package subsumption
 
 import (
 	"stratifoiled/components"
-	"stratifoiled/components/instances"
 	"stratifoiled/sfdtest"
 	"testing"
 )
@@ -16,7 +15,7 @@ const constConstSUFIX = "subsumtpion.varvar"
 func runSubsumptionConstConst(
 	t *testing.T,
 	id, expCode int,
-	c1, c2 instances.Const,
+	c1, c2 components.Const,
 	simplify bool,
 ) {
 	var err error
@@ -57,8 +56,8 @@ func TestConstConst_Encoding(t *testing.T) {
 }
 
 func TestConstConst_Encoding_WrongDim(t *testing.T) {
-	x := instances.Const{instances.BOT, instances.BOT, instances.BOT}
-	y := instances.Const{instances.BOT, instances.BOT, instances.BOT}
+	x := components.Const{components.BOT, components.BOT, components.BOT}
+	y := components.Const{components.BOT, components.BOT, components.BOT}
 	formula := ConstConst(x, y)
 	context := components.NewContext(4, nil)
 	_, err := formula.Encoding(context)
@@ -77,8 +76,8 @@ func TestConstConst_Simplified(t *testing.T) {
 }
 
 func TestConstConst_Simplified_WrongDim(t *testing.T) {
-	x := instances.Const{instances.BOT, instances.BOT, instances.BOT}
-	y := instances.Const{instances.BOT, instances.BOT, instances.BOT}
+	x := components.Const{components.BOT, components.BOT, components.BOT}
+	y := components.Const{components.BOT, components.BOT, components.BOT}
 	formula := ConstConst(x, y)
 	context := components.NewContext(4, nil)
 	_, err := formula.Simplified(context)
@@ -88,8 +87,8 @@ func TestConstConst_Simplified_WrongDim(t *testing.T) {
 }
 
 func TestConstConst_GetChildren(t *testing.T) {
-	x := instances.Const{instances.BOT, instances.BOT, instances.BOT}
-	y := instances.Const{instances.BOT, instances.BOT, instances.BOT}
+	x := components.Const{components.BOT, components.BOT, components.BOT}
+	y := components.Const{components.BOT, components.BOT, components.BOT}
 	formula := ConstConst(x, y)
 	children := formula.GetChildren()
 	if len(children) != 0 {
@@ -102,8 +101,8 @@ func TestConstConst_GetChildren(t *testing.T) {
 }
 
 func TestConstConst_IsTrivial(t *testing.T) {
-	x := instances.Const{instances.BOT, instances.BOT, instances.BOT}
-	y := instances.Const{instances.BOT, instances.BOT, instances.BOT}
+	x := components.Const{components.BOT, components.BOT, components.BOT}
+	y := components.Const{components.BOT, components.BOT, components.BOT}
 	formula := ConstConst(x, y)
 	isTrivial, _ := formula.IsTrivial()
 	if isTrivial {

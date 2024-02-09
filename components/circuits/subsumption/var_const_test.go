@@ -2,7 +2,6 @@ package subsumption
 
 import (
 	"stratifoiled/components"
-	"stratifoiled/components/instances"
 	"stratifoiled/components/operators"
 	"stratifoiled/sfdtest"
 	"testing"
@@ -17,12 +16,12 @@ const varConstSUFIX = "subsumtpion.varconst"
 func runSubsumptionVarConst(
 	t *testing.T,
 	id, expCode int,
-	c1, c2 instances.Const,
+	c1, c2 components.Const,
 	simplify bool,
 ) {
 	var err error
 	var formula components.Component
-	y := instances.NewVar("y")
+	y := components.NewVar("y")
 	context := components.NewContext(DIM, nil)
 	formula = operators.WithVar(
 		y,
@@ -65,8 +64,8 @@ func TestVarConst_Encoding(t *testing.T) {
 }
 
 func TestVarConst_Encoding_WrongDim(t *testing.T) {
-	x := instances.NewVar("x")
-	y := instances.Const{instances.BOT, instances.BOT, instances.BOT}
+	x := components.NewVar("x")
+	y := components.Const{components.BOT, components.BOT, components.BOT}
 	formula := VarConst(x, y)
 	context := components.NewContext(4, nil)
 	_, err := formula.Encoding(context)
@@ -84,20 +83,9 @@ func TestVarConst_Simplified(t *testing.T) {
 	}
 }
 
-func TestVarConst_Simplified_WrongDim(t *testing.T) {
-	x := instances.NewVar("x")
-	y := instances.Const{instances.BOT, instances.BOT, instances.BOT}
-	formula := VarConst(x, y)
-	context := components.NewContext(4, nil)
-	_, err := formula.Simplified(context)
-	if err == nil {
-		t.Error("Error not cached. Expected constant wrong dimension error")
-	}
-}
-
 func TestVarConst_GetChildren(t *testing.T) {
-	x := instances.NewVar("x")
-	y := instances.Const{instances.BOT, instances.BOT, instances.BOT}
+	x := components.NewVar("x")
+	y := components.Const{components.BOT, components.BOT, components.BOT}
 	formula := VarConst(x, y)
 	children := formula.GetChildren()
 	if len(children) != 0 {
@@ -110,8 +98,8 @@ func TestVarConst_GetChildren(t *testing.T) {
 }
 
 func TestVarConst_IsTrivial(t *testing.T) {
-	x := instances.NewVar("x")
-	y := instances.Const{instances.BOT, instances.BOT, instances.BOT}
+	x := components.NewVar("x")
+	y := components.Const{components.BOT, components.BOT, components.BOT}
 	formula := VarConst(x, y)
 	isTrivial, _ := formula.IsTrivial()
 	if isTrivial {

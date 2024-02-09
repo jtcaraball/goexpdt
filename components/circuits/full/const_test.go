@@ -2,7 +2,6 @@ package full
 
 import (
 	"stratifoiled/components"
-	"stratifoiled/components/instances"
 	"stratifoiled/sfdtest"
 	"testing"
 )
@@ -16,7 +15,7 @@ const constSUFIX = "full.const"
 func runFullConst(
 	t *testing.T,
 	id, expCode int,
-	c instances.Const,
+	c components.Const,
 	simplify bool,
 ) {
 	var err error
@@ -57,7 +56,7 @@ func TestConst_Encoding(t *testing.T) {
 }
 
 func TestConstConst_Encoding_WrongDim(t *testing.T) {
-	x := instances.Const{instances.BOT, instances.BOT, instances.BOT}
+	x := components.Const{components.BOT, components.BOT, components.BOT}
 	formula := Const(x)
 	context := components.NewContext(4, nil)
 	_, err := formula.Encoding(context)
@@ -76,7 +75,7 @@ func TestConst_Simplified(t *testing.T) {
 }
 
 func TestConstConst_Simplified_WrongDim(t *testing.T) {
-	x := instances.Const{instances.BOT, instances.BOT, instances.BOT}
+	x := components.Const{components.BOT, components.BOT, components.BOT}
 	formula := Const(x)
 	context := components.NewContext(4, nil)
 	_, err := formula.Simplified(context)
@@ -86,7 +85,7 @@ func TestConstConst_Simplified_WrongDim(t *testing.T) {
 }
 
 func TestConst_GetChildren(t *testing.T) {
-	x := instances.Const{instances.BOT, instances.BOT, instances.BOT}
+	x := components.Const{components.BOT, components.BOT, components.BOT}
 	formula := Const(x)
 	children := formula.GetChildren()
 	if len(children) != 0 {
@@ -99,7 +98,7 @@ func TestConst_GetChildren(t *testing.T) {
 }
 
 func TestConst_IsTrivial(t *testing.T) {
-	x := instances.Const{instances.BOT, instances.BOT, instances.BOT}
+	x := components.Const{components.BOT, components.BOT, components.BOT}
 	formula := Const(x)
 	isTrivial, _ := formula.IsTrivial()
 	if isTrivial {

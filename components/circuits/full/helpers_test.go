@@ -1,32 +1,32 @@
 package full
 
-import "stratifoiled/components/instances"
+import "stratifoiled/components"
 
 const DIM = 3
 
 var tests = []struct {
 	name string
-	val instances.Const
+	val components.Const
 	expCode int
 }{
 	{
 		name: "(_,1,0)",
-		val: instances.Const{instances.BOT, instances.ONE, instances.ZERO},
+		val: components.Const{components.BOT, components.ONE, components.ZERO},
 		expCode: 20,
 	},
 	{
 		name: "(1,_,1)",
-		val: instances.Const{instances.ONE, instances.BOT, instances.ONE},
+		val: components.Const{components.ONE, components.BOT, components.ONE},
 		expCode: 20,
 	},
 	{
 		name: "(0,1,_)",
-		val: instances.Const{instances.ZERO, instances.ONE, instances.BOT},
+		val: components.Const{components.ZERO, components.ONE, components.BOT},
 		expCode: 20,
 	},
 	{
 		name: "(0,1,1)",
-		val: instances.Const{instances.ZERO, instances.ONE, instances.ONE},
+		val: components.Const{components.ZERO, components.ONE, components.ONE},
 		expCode: 10,
 	},
 }

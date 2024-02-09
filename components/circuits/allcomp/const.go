@@ -6,7 +6,6 @@ import (
 	"stratifoiled/cnf"
 	"stratifoiled/trees"
 	"stratifoiled/components"
-	"stratifoiled/components/instances"
 )
 
 // =========================== //
@@ -14,7 +13,7 @@ import (
 // =========================== //
 
 type acConst struct {
-	constInst instances.Const
+	constInst components.Const
 	leafValue bool
 }
 
@@ -23,7 +22,7 @@ type acConst struct {
 // =========================== //
 
 // Return varVar lel.
-func Const(constInst instances.Const, leafValue bool) *acConst {
+func Const(constInst components.Const, leafValue bool) *acConst {
 	return &acConst{constInst: constInst, leafValue: leafValue}
 }
 
@@ -45,15 +44,15 @@ func (ac *acConst) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 			}
 			continue
 		}
-		if ac.constInst[node.Feat] == instances.BOT {
+		if ac.constInst[node.Feat] == components.BOT {
 			nStack = append(nStack, node.LChild, node.RChild)
 			continue
 		}
-		if ac.constInst[node.Feat] == instances.ONE {
+		if ac.constInst[node.Feat] == components.ONE {
 			nStack = append(nStack, node.RChild)
 			continue
 		}
-		if ac.constInst[node.Feat] == instances.ZERO {
+		if ac.constInst[node.Feat] == components.ZERO {
 			nStack = append(nStack, node.LChild)
 			continue
 		}
@@ -82,15 +81,15 @@ func (ac *acConst) Simplified(
 			}
 			continue
 		}
-		if ac.constInst[node.Feat] == instances.BOT {
+		if ac.constInst[node.Feat] == components.BOT {
 			nStack = append(nStack, node.LChild, node.RChild)
 			continue
 		}
-		if ac.constInst[node.Feat] == instances.ONE {
+		if ac.constInst[node.Feat] == components.ONE {
 			nStack = append(nStack, node.RChild)
 			continue
 		}
-		if ac.constInst[node.Feat] == instances.ZERO {
+		if ac.constInst[node.Feat] == components.ZERO {
 			nStack = append(nStack, node.LChild)
 			continue
 		}

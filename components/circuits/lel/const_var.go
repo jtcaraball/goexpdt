@@ -5,7 +5,6 @@ import (
 	"errors"
 	"stratifoiled/cnf"
 	"stratifoiled/components"
-	"stratifoiled/components/instances"
 )
 
 // =========================== //
@@ -13,8 +12,8 @@ import (
 // =========================== //
 
 type constVar struct {
-	varInst instances.Var
-	constInst instances.Const
+	varInst components.Var
+	constInst components.Const
 }
 
 // =========================== //
@@ -22,7 +21,7 @@ type constVar struct {
 // =========================== //
 
 // Return constVar lel.
-func ConstVar(constInst instances.Const, varInst instances.Var) *constVar {
+func ConstVar(constInst components.Const, varInst components.Var) *constVar {
 	return &constVar{constInst: constInst, varInst: varInst}
 }
 
@@ -36,7 +35,7 @@ func (l *constVar) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 	// Count amount of bots in constant.
 	botsInConst := 0
 	for _, f := range l.constInst {
-		if f == instances.BOT {
+		if f == components.BOT {
 			botsInConst += 1
 		}
 	}
@@ -58,7 +57,7 @@ func (l *constVar) Simplified(
 	}
 	// If const has only bottoms then this predicate is trivialy true.
 	for _, f := range l.constInst {
-		if f != instances.BOT {
+		if f != components.BOT {
 			return l, nil
 		}
 	}

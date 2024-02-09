@@ -3,13 +3,12 @@ package operators
 import (
 	"testing"
 	"stratifoiled/components"
-	"stratifoiled/components/instances"
 	"stratifoiled/sfdtest"
 )
 
 func TestWithVar_Encoding(t *testing.T) {
-	x := instances.NewVar("x")
-	y := instances.NewVar("y")
+	x := components.NewVar("x")
+	y := components.NewVar("y")
 	trivial := components.NewTrivial(false)
 	context := components.NewContext(1, nil)
 	component := WithVar(x, WithVar(y, trivial))
@@ -34,8 +33,8 @@ func TestWithVar_Encoding(t *testing.T) {
 }
 
 func TestWithVar_Simplified(t *testing.T) {
-	x := instances.NewVar("x")
-	y := instances.NewVar("y")
+	x := components.NewVar("x")
+	y := components.NewVar("y")
 	trivial := components.NewTrivial(false)
 	context := components.NewContext(1, nil)
 	component := WithVar(x, WithVar(y, trivial))
@@ -56,8 +55,8 @@ func TestWithVar_Simplified(t *testing.T) {
 }
 
 func TestWithVar_GetChildren(t *testing.T) {
-	x := instances.NewVar("x")
-	y := instances.NewVar("y")
+	x := components.NewVar("x")
+	y := components.NewVar("y")
 	trivial := components.NewTrivial(false)
 	childComp := WithVar(y, trivial)
 	component := WithVar(x, childComp)
@@ -80,7 +79,7 @@ func TestWithVar_GetChildren(t *testing.T) {
 }
 
 func TestWithVar_IsTrivial(t *testing.T) {
-	x := instances.NewVar("x")
+	x := components.NewVar("x")
 	trivial := components.NewTrivial(false)
 	component := WithVar(x, trivial)
 	isTrivial, _ := component.IsTrivial()

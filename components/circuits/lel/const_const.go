@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"stratifoiled/cnf"
 	"stratifoiled/components"
-	"stratifoiled/components/instances"
 )
 
 // =========================== //
@@ -13,8 +12,8 @@ import (
 // =========================== //
 
 type constConst struct {
-	constInst1 instances.Const
-	constInst2 instances.Const
+	constInst1 components.Const
+	constInst2 components.Const
 }
 
 // =========================== //
@@ -23,7 +22,7 @@ type constConst struct {
 
 
 // Return constConst lel.
-func ConstConst(constInst1, constInst2 instances.Const) *constConst {
+func ConstConst(constInst1, constInst2 components.Const) *constConst {
 	return &constConst{constInst1: constInst1, constInst2: constInst2}
 }
 
@@ -35,10 +34,10 @@ func (l *constConst) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 	const1Bots := 0
 	const2Bots := 0
 	for i := 0; i < ctx.Dimension; i++ {
-		if l.constInst1[i] == instances.BOT {
+		if l.constInst1[i] == components.BOT {
 			const1Bots += 1
 		}
-		if l.constInst2[i] == instances.BOT {
+		if l.constInst2[i] == components.BOT {
 			const2Bots += 1
 		}
 	}
@@ -59,10 +58,10 @@ func (l *constConst) Simplified(
 	const1Bots := 0
 	const2Bots := 0
 	for i := 0; i < ctx.Dimension; i++ {
-		if l.constInst1[i] == instances.BOT {
+		if l.constInst1[i] == components.BOT {
 			const1Bots += 1
 		}
-		if l.constInst2[i] == instances.BOT {
+		if l.constInst2[i] == components.BOT {
 			const2Bots += 1
 		}
 	}

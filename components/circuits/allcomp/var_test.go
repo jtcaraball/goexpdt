@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"stratifoiled/components"
 	"stratifoiled/components/circuits/subsumption"
-	"stratifoiled/components/instances"
 	"stratifoiled/components/operators"
 	"stratifoiled/sfdtest"
 	"stratifoiled/trees"
@@ -20,14 +19,14 @@ const varSUFIX = "allComp.var"
 func runAllCompVar(
 	t *testing.T,
 	id, expCode int,
-	c instances.Const,
+	c components.Const,
 	tree *trees.Tree,
 	leafValue bool,
 	simplify bool,
 ) {
 	var err error
 	var formula components.Component
-	x := instances.NewVar("x")
+	x := components.NewVar("x")
 	context := components.NewContext(DIM, tree)
 	formula = operators.WithVar(
 		x,
@@ -108,7 +107,7 @@ func TestVar_Simplified_AllNeg(t *testing.T) {
 }
 
 func TestVar_GetChildren(t *testing.T) {
-	x := instances.NewVar("x")
+	x := components.NewVar("x")
 	formula := Var(x, true)
 	children := formula.GetChildren()
 	if len(children) != 0 {
@@ -121,7 +120,7 @@ func TestVar_GetChildren(t *testing.T) {
 }
 
 func TestVar_IsTrivial(t *testing.T) {
-	x := instances.NewVar("x")
+	x := components.NewVar("x")
 	formula := Var(x, true)
 	isTrivial, _ := formula.IsTrivial()
 	if isTrivial {

@@ -3,7 +3,6 @@ package lel
 import (
 	"stratifoiled/components"
 	"stratifoiled/components/circuits/subsumption"
-	"stratifoiled/components/instances"
 	"stratifoiled/components/operators"
 	"stratifoiled/sfdtest"
 	"testing"
@@ -18,12 +17,12 @@ const constVarSUFIX = "lel.constvar"
 func runLELConstVar(
 	t *testing.T,
 	id, expCode int,
-	c1, c2 instances.Const,
+	c1, c2 components.Const,
 	simplify bool,
 ) {
 	var err error
 	var formula components.Component
-	x := instances.NewVar("x")
+	x := components.NewVar("x")
 	context := components.NewContext(DIM, nil)
 	formula = operators.WithVar(
 		x,
@@ -69,8 +68,8 @@ func TestConstVar_Encoding(t *testing.T) {
 }
 
 func TestConstVar_Encoding_WrongDim(t *testing.T) {
-	x := instances.Const{instances.BOT, instances.BOT, instances.BOT}
-	y := instances.NewVar("y")
+	x := components.Const{components.BOT, components.BOT, components.BOT}
+	y := components.NewVar("y")
 	formula := ConstVar(x, y)
 	context := components.NewContext(4, nil)
 	_, err := formula.Encoding(context)
@@ -89,8 +88,8 @@ func TestConstVar_Simplified(t *testing.T) {
 }
 
 func TestConstVar_Simplified_WrongDim(t *testing.T) {
-	x := instances.Const{instances.BOT, instances.BOT, instances.BOT}
-	y := instances.NewVar("y")
+	x := components.Const{components.BOT, components.BOT, components.BOT}
+	y := components.NewVar("y")
 	formula := ConstVar(x, y)
 	context := components.NewContext(4, nil)
 	_, err := formula.Simplified(context)
@@ -100,8 +99,8 @@ func TestConstVar_Simplified_WrongDim(t *testing.T) {
 }
 
 func TestConstVar_GetChildren(t *testing.T) {
-	x := instances.Const{instances.BOT, instances.BOT, instances.BOT}
-	y := instances.NewVar("y")
+	x := components.Const{components.BOT, components.BOT, components.BOT}
+	y := components.NewVar("y")
 	formula := ConstVar(x, y)
 	children := formula.GetChildren()
 	if len(children) != 0 {
@@ -114,8 +113,8 @@ func TestConstVar_GetChildren(t *testing.T) {
 }
 
 func TestConstVar_IsTrivial(t *testing.T) {
-	x := instances.Const{instances.BOT, instances.BOT, instances.BOT}
-	y := instances.NewVar("y")
+	x := components.Const{components.BOT, components.BOT, components.BOT}
+	y := components.NewVar("y")
 	formula := ConstVar(x, y)
 	isTrivial, _ := formula.IsTrivial()
 	if isTrivial {

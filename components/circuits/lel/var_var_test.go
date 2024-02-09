@@ -3,7 +3,6 @@ package lel
 import (
 	"stratifoiled/components"
 	"stratifoiled/components/circuits/subsumption"
-	"stratifoiled/components/instances"
 	"stratifoiled/components/operators"
 	"stratifoiled/sfdtest"
 	"testing"
@@ -18,13 +17,13 @@ const varVarSUFIX = "lel.varvar"
 func runLELVarVar(
 	t *testing.T,
 	id, expCode int,
-	c1, c2 instances.Const,
+	c1, c2 components.Const,
 	simplify bool,
 ) {
 	var err error
 	var formula components.Component
-	x := instances.NewVar("x")
-	y := instances.NewVar("y")
+	x := components.NewVar("x")
+	y := components.NewVar("y")
 	context := components.NewContext(DIM, nil)
 	formula = operators.WithVar(
 		x,
@@ -88,8 +87,8 @@ func TestVarVar_Simplified(t *testing.T) {
 }
 
 func TestVarVar_GetChildren(t *testing.T) {
-	x := instances.NewVar("x")
-	y := instances.NewVar("y")
+	x := components.NewVar("x")
+	y := components.NewVar("y")
 	formula := VarVar(x, y)
 	children := formula.GetChildren()
 	if len(children) != 0 {
@@ -102,8 +101,8 @@ func TestVarVar_GetChildren(t *testing.T) {
 }
 
 func TestVarVar_IsTrivial(t *testing.T) {
-	x := instances.NewVar("x")
-	y := instances.NewVar("y")
+	x := components.NewVar("x")
+	y := components.NewVar("y")
 	formula := VarVar(x, y)
 	isTrivial, _ := formula.IsTrivial()
 	if isTrivial {

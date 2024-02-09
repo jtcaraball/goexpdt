@@ -4,7 +4,6 @@ import (
 	"errors"
 	"stratifoiled/cnf"
 	"stratifoiled/components"
-	"stratifoiled/components/instances"
 )
 
 // =========================== //
@@ -12,7 +11,7 @@ import (
 // =========================== //
 
 type acVar struct {
-	varInst instances.Var
+	varInst components.Var
 	leafValue bool
 }
 
@@ -21,7 +20,7 @@ type acVar struct {
 // =========================== //
 
 // Return varVar lel.
-func Var(varInst instances.Var, leafValue bool) *acVar {
+func Var(varInst components.Var, leafValue bool) *acVar {
 	return &acVar{varInst: varInst, leafValue: leafValue}
 }
 
@@ -44,22 +43,22 @@ func (ac *acVar) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 		}
 		nCNF.ExtendConsistency([][]int{
 			{
-				-ctx.Var(string(ac.varInst), node.Feat, instances.ZERO.Val()),
+				-ctx.Var(string(ac.varInst), node.Feat, components.ZERO.Val()),
 				-ctx.IVar(rVarName, node.ID, 0),
 				ctx.IVar(rVarName, node.LChild.ID, 0),
 			},
 			{
-				-ctx.Var(string(ac.varInst), node.Feat, instances.ONE.Val()),
+				-ctx.Var(string(ac.varInst), node.Feat, components.ONE.Val()),
 				-ctx.IVar(rVarName, node.ID, 0),
 				ctx.IVar(rVarName, node.RChild.ID, 0),
 			},
 			{
-				-ctx.Var(string(ac.varInst), node.Feat, instances.BOT.Val()),
+				-ctx.Var(string(ac.varInst), node.Feat, components.BOT.Val()),
 				-ctx.IVar(rVarName, node.ID, 0),
 				ctx.IVar(rVarName, node.LChild.ID, 0),
 			},
 			{
-				-ctx.Var(string(ac.varInst), node.Feat, instances.BOT.Val()),
+				-ctx.Var(string(ac.varInst), node.Feat, components.BOT.Val()),
 				-ctx.IVar(rVarName, node.ID, 0),
 				ctx.IVar(rVarName, node.RChild.ID, 0),
 			},
@@ -69,8 +68,8 @@ func (ac *acVar) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 			},
 			{
 				-ctx.Var(rVarName, node.RChild.ID, 0),
-				ctx.Var(string(ac.varInst), node.Feat, instances.ONE.Val()),
-				ctx.Var(string(ac.varInst), node.Feat, instances.BOT.Val()),
+				ctx.Var(string(ac.varInst), node.Feat, components.ONE.Val()),
+				ctx.Var(string(ac.varInst), node.Feat, components.BOT.Val()),
 			},
 			{
 				-ctx.IVar(rVarName, node.LChild.ID, 0),
@@ -78,8 +77,8 @@ func (ac *acVar) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 			},
 			{
 				-ctx.Var(rVarName, node.LChild.ID, 0),
-				ctx.Var(string(ac.varInst), node.Feat, instances.ZERO.Val()),
-				ctx.Var(string(ac.varInst), node.Feat, instances.BOT.Val()),
+				ctx.Var(string(ac.varInst), node.Feat, components.ZERO.Val()),
+				ctx.Var(string(ac.varInst), node.Feat, components.BOT.Val()),
 			},
 		})
 	}

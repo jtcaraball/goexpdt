@@ -3,7 +3,6 @@ package lel
 import (
 	"stratifoiled/cnf"
 	"stratifoiled/components"
-	"stratifoiled/components/instances"
 )
 
 // =========================== //
@@ -11,8 +10,8 @@ import (
 // =========================== //
 
 type varVar struct {
-	varInst1 instances.Var
-	varInst2 instances.Var
+	varInst1 components.Var
+	varInst2 components.Var
 }
 
 // =========================== //
@@ -20,7 +19,7 @@ type varVar struct {
 // =========================== //
 
 // Return varVar lel.
-func VarVar(varInst1, varInst2 instances.Var) *varVar {
+func VarVar(varInst1, varInst2 components.Var) *varVar {
 	return &varVar{varInst1: varInst1, varInst2: varInst2}
 }
 

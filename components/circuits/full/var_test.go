@@ -3,7 +3,6 @@ package full
 import (
 	"stratifoiled/components"
 	"stratifoiled/components/circuits/subsumption"
-	"stratifoiled/components/instances"
 	"stratifoiled/components/operators"
 	"stratifoiled/sfdtest"
 	"testing"
@@ -18,12 +17,12 @@ const varSUFIX = "full.var"
 func runFullVar(
 	t *testing.T,
 	id, expCode int,
-	c instances.Const,
+	c components.Const,
 	simplify bool,
 ) {
 	var err error
 	var formula components.Component
-	x := instances.NewVar("x")
+	x := components.NewVar("x")
 	context := components.NewContext(DIM, nil)
 	formula = operators.WithVar(
 		x,
@@ -78,7 +77,7 @@ func TestVar_Simplified(t *testing.T) {
 }
 
 func TestVar_GetChildren(t *testing.T) {
-	x := instances.NewVar("x")
+	x := components.NewVar("x")
 	formula := Var(x)
 	children := formula.GetChildren()
 	if len(children) != 0 {
@@ -91,7 +90,7 @@ func TestVar_GetChildren(t *testing.T) {
 }
 
 func TestVar_IsTrivial(t *testing.T) {
-	x := instances.NewVar("x")
+	x := components.NewVar("x")
 	formula := Var(x)
 	isTrivial, _ := formula.IsTrivial()
 	if isTrivial {

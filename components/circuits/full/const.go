@@ -5,7 +5,6 @@ import (
 	"errors"
 	"stratifoiled/cnf"
 	"stratifoiled/components"
-	"stratifoiled/components/instances"
 )
 
 // =========================== //
@@ -13,7 +12,7 @@ import (
 // =========================== //
 
 type fConst struct {
-	constInst instances.Const
+	constInst components.Const
 }
 
 // =========================== //
@@ -21,7 +20,7 @@ type fConst struct {
 // =========================== //
 
 // Return const full.
-func Const(constInst instances.Const) *fConst {
+func Const(constInst components.Const) *fConst {
 	return &fConst{constInst: constInst}
 }
 
@@ -31,7 +30,7 @@ func (f *fConst) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 		return nil, err
 	}
 	for _, ft := range f.constInst {
-		if ft == instances.BOT {
+		if ft == components.BOT {
 			return cnf.CNFFromClauses([][]int{{}}), nil
 		}
 	}
@@ -47,7 +46,7 @@ func (f *fConst) Simplified(
 		return nil, err
 	}
 	for _, ft := range f.constInst {
-		if ft == instances.BOT {
+		if ft == components.BOT {
 			return components.NewTrivial(false), nil
 		}
 	}

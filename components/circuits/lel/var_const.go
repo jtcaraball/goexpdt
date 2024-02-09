@@ -5,7 +5,6 @@ import (
 	"errors"
 	"stratifoiled/cnf"
 	"stratifoiled/components"
-	"stratifoiled/components/instances"
 )
 
 // =========================== //
@@ -13,8 +12,8 @@ import (
 // =========================== //
 
 type varConst struct {
-	varInst instances.Var
-	constInst instances.Const
+	varInst components.Var
+	constInst components.Const
 }
 
 // =========================== //
@@ -22,7 +21,7 @@ type varConst struct {
 // =========================== //
 
 // Return varConst lel.
-func VarConst(varInst instances.Var, constInst instances.Const) *varConst {
+func VarConst(varInst components.Var, constInst components.Const) *varConst {
 	return &varConst{varInst: varInst, constInst: constInst}
 }
 
@@ -36,7 +35,7 @@ func (l *varConst) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 	// Count amount of bots in constant.
 	botsInConst := 0
 	for _, f := range l.constInst {
-		if f == instances.BOT {
+		if f == components.BOT {
 			botsInConst += 1
 		}
 	}
@@ -57,7 +56,7 @@ func (l *varConst) Simplified(
 		return nil, err
 	}
 	for _, f := range l.constInst {
-		if f == instances.BOT {
+		if f == components.BOT {
 			return l, nil
 		}
 	}

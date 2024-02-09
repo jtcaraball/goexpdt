@@ -3,7 +3,6 @@ package allcomp
 import (
 	"fmt"
 	"stratifoiled/components"
-	"stratifoiled/components/instances"
 	"stratifoiled/sfdtest"
 	"stratifoiled/trees"
 	"testing"
@@ -18,7 +17,7 @@ const constSUFIX = "allComp.const"
 func runAllCompConst(
 	t *testing.T,
 	id, expCode int,
-	c instances.Const,
+	c components.Const,
 	tree *trees.Tree,
 	leafValue bool,
 	simplify bool,
@@ -76,7 +75,7 @@ func TestConst_Encoding_AllNeg(t *testing.T) {
 }
 
 func TestConst_Encoding_WrongDim(t *testing.T) {
-	x := instances.Const{instances.BOT, instances.BOT, instances.BOT}
+	x := components.Const{components.BOT, components.BOT, components.BOT}
 	formula := Const(x, true)
 	context := components.NewContext(4, &trees.Tree{Root: &trees.Node{}})
 	_, err := formula.Encoding(context)
@@ -106,7 +105,7 @@ func TestConst_Simplified_AllNeg(t *testing.T) {
 }
 
 func TestConstConst_Simplified_WrongDim(t *testing.T) {
-	x := instances.Const{instances.BOT, instances.BOT, instances.BOT}
+	x := components.Const{components.BOT, components.BOT, components.BOT}
 	formula := Const(x, true)
 	context := components.NewContext(4, &trees.Tree{Root: &trees.Node{}})
 	_, err := formula.Simplified(context)
@@ -116,7 +115,7 @@ func TestConstConst_Simplified_WrongDim(t *testing.T) {
 }
 
 func TestConst_GetChildren(t *testing.T) {
-	x := instances.NewVar("x")
+	x := components.NewVar("x")
 	formula := Var(x, true)
 	children := formula.GetChildren()
 	if len(children) != 0 {
@@ -129,7 +128,7 @@ func TestConst_GetChildren(t *testing.T) {
 }
 
 func TestConst_IsTrivial(t *testing.T) {
-	x := instances.NewVar("x")
+	x := components.NewVar("x")
 	formula := Var(x, true)
 	isTrivial, _ := formula.IsTrivial()
 	if isTrivial {

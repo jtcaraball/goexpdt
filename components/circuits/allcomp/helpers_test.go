@@ -2,291 +2,291 @@ package allcomp
 
 import (
 	"stratifoiled/trees"
-	"stratifoiled/components/instances"
+	"stratifoiled/components"
 )
 
 const DIM = 3
 
 var allPosTests = []struct {
 	name string
-	val instances.Const
+	val components.Const
 	expCode int
 }{
 	{
 		name: "(_,_,_)",
-		val: instances.Const{instances.BOT, instances.BOT, instances.BOT},
+		val: components.Const{components.BOT, components.BOT, components.BOT},
 		expCode: 20,
 	},
 	{
 		name: "(0,_,_)",
-		val: instances.Const{instances.ZERO, instances.BOT, instances.BOT},
+		val: components.Const{components.ZERO, components.BOT, components.BOT},
 		expCode: 10,
 	},
 	{
 		name: "(1,_,_)",
-		val: instances.Const{instances.ONE, instances.BOT, instances.BOT},
+		val: components.Const{components.ONE, components.BOT, components.BOT},
 		expCode: 20,
 	},
 	{
 		name: "(0,0,_)",
-		val: instances.Const{instances.ZERO, instances.ZERO, instances.BOT},
+		val: components.Const{components.ZERO, components.ZERO, components.BOT},
 		expCode: 10,
 	},
 	{
 		name: "(0,1,_)",
-		val: instances.Const{instances.ZERO, instances.ONE, instances.BOT},
+		val: components.Const{components.ZERO, components.ONE, components.BOT},
 		expCode: 10,
 	},
 	{
 		name: "(1,0,_)",
-		val: instances.Const{instances.ONE, instances.ZERO, instances.BOT},
+		val: components.Const{components.ONE, components.ZERO, components.BOT},
 		expCode: 20,
 	},
 	{
 		name: "(1,1,_)",
-		val: instances.Const{instances.ONE, instances.ONE, instances.BOT},
+		val: components.Const{components.ONE, components.ONE, components.BOT},
 		expCode: 20,
 	},
 	{
 		name: "(0,0,0)",
-		val: instances.Const{instances.ZERO, instances.ZERO, instances.ZERO},
+		val: components.Const{components.ZERO, components.ZERO, components.ZERO},
 		expCode: 10,
 	},
 	{
 		name: "(0,0,1)",
-		val: instances.Const{instances.ZERO, instances.ZERO, instances.ONE},
+		val: components.Const{components.ZERO, components.ZERO, components.ONE},
 		expCode: 10,
 	},
 	{
 		name: "(0,1,0)",
-		val: instances.Const{instances.ZERO, instances.ONE, instances.ZERO},
+		val: components.Const{components.ZERO, components.ONE, components.ZERO},
 		expCode: 10,
 	},
 	{
 		name: "(0,1,1)",
-		val: instances.Const{instances.ZERO, instances.ONE, instances.ONE},
+		val: components.Const{components.ZERO, components.ONE, components.ONE},
 		expCode: 10,
 	},
 	{
 		name: "(1,0,0)",
-		val: instances.Const{instances.ONE, instances.ZERO, instances.ZERO},
+		val: components.Const{components.ONE, components.ZERO, components.ZERO},
 		expCode: 20,
 	},
 	{
 		name: "(1,0,1)",
-		val: instances.Const{instances.ONE, instances.ZERO, instances.ONE},
+		val: components.Const{components.ONE, components.ZERO, components.ONE},
 		expCode: 10,
 	},
 	{
 		name: "(1,1,0)",
-		val: instances.Const{instances.ONE, instances.ONE, instances.ZERO},
+		val: components.Const{components.ONE, components.ONE, components.ZERO},
 		expCode: 20,
 	},
 	{
 		name: "(1,1,1)",
-		val: instances.Const{instances.ONE, instances.ONE, instances.ONE},
+		val: components.Const{components.ONE, components.ONE, components.ONE},
 		expCode: 20,
 	},
 	{
 		name: "(_,0,_)",
-		val: instances.Const{instances.BOT, instances.ZERO, instances.BOT},
+		val: components.Const{components.BOT, components.ZERO, components.BOT},
 		expCode: 20,
 	},
 	{
 		name: "(_,1,_)",
-		val: instances.Const{instances.BOT, instances.ONE, instances.BOT},
+		val: components.Const{components.BOT, components.ONE, components.BOT},
 		expCode: 20,
 	},
 	{
 		name: "(_,0,0)",
-		val: instances.Const{instances.BOT, instances.ZERO, instances.ZERO},
+		val: components.Const{components.BOT, components.ZERO, components.ZERO},
 		expCode: 20,
 	},
 	{
 		name: "(_,0,1)",
-		val: instances.Const{instances.BOT, instances.ZERO, instances.ONE},
+		val: components.Const{components.BOT, components.ZERO, components.ONE},
 		expCode: 10,
 	},
 	{
 		name: "(_,1,0)",
-		val: instances.Const{instances.BOT, instances.ONE, instances.ZERO},
+		val: components.Const{components.BOT, components.ONE, components.ZERO},
 		expCode: 20,
 	},
 	{
 		name: "(_,1,1)",
-		val: instances.Const{instances.BOT, instances.ONE, instances.ONE},
+		val: components.Const{components.BOT, components.ONE, components.ONE},
 		expCode: 20,
 	},
 	{
 		name: "(_,_,0)",
-		val: instances.Const{instances.BOT, instances.BOT, instances.ZERO},
+		val: components.Const{components.BOT, components.BOT, components.ZERO},
 		expCode: 20,
 	},
 	{
 		name: "(_,_,1)",
-		val: instances.Const{instances.BOT, instances.BOT, instances.ONE},
+		val: components.Const{components.BOT, components.BOT, components.ONE},
 		expCode: 20,
 	},
 	{
 		name: "(0,_,0)",
-		val: instances.Const{instances.ZERO, instances.BOT, instances.ZERO},
+		val: components.Const{components.ZERO, components.BOT, components.ZERO},
 		expCode: 10,
 	},
 	{
 		name: "(0,_,1)",
-		val: instances.Const{instances.ZERO, instances.BOT, instances.ONE},
+		val: components.Const{components.ZERO, components.BOT, components.ONE},
 		expCode: 10,
 	},
 	{
 		name: "(1,_,0)",
-		val: instances.Const{instances.ONE, instances.BOT, instances.ZERO},
+		val: components.Const{components.ONE, components.BOT, components.ZERO},
 		expCode: 20,
 	},
 	{
 		name: "(1,_,1)",
-		val: instances.Const{instances.ONE, instances.BOT, instances.ONE},
+		val: components.Const{components.ONE, components.BOT, components.ONE},
 		expCode: 20,
 	},
 }
 
 var allNegTests = []struct{
 	name string
-	val instances.Const
+	val components.Const
 	expCode int
 }{
 	{
 		name: "(_,_,_)",
-		val: instances.Const{instances.BOT, instances.BOT, instances.BOT},
+		val: components.Const{components.BOT, components.BOT, components.BOT},
 		expCode: 20,
 	},
 	{
 		name: "(0,_,_)",
-		val: instances.Const{instances.ZERO, instances.BOT, instances.BOT},
+		val: components.Const{components.ZERO, components.BOT, components.BOT},
 		expCode: 20,
 	},
 	{
 		name: "(1,_,_)",
-		val: instances.Const{instances.ONE, instances.BOT, instances.BOT},
+		val: components.Const{components.ONE, components.BOT, components.BOT},
 		expCode: 20,
 	},
 	{
 		name: "(0,0,_)",
-		val: instances.Const{instances.ZERO, instances.ZERO, instances.BOT},
+		val: components.Const{components.ZERO, components.ZERO, components.BOT},
 		expCode: 20,
 	},
 	{
 		name: "(0,1,_)",
-		val: instances.Const{instances.ZERO, instances.ONE, instances.BOT},
+		val: components.Const{components.ZERO, components.ONE, components.BOT},
 		expCode: 20,
 	},
 	{
 		name: "(1,0,_)",
-		val: instances.Const{instances.ONE, instances.ZERO, instances.BOT},
+		val: components.Const{components.ONE, components.ZERO, components.BOT},
 		expCode: 20,
 	},
 	{
 		name: "(1,1,_)",
-		val: instances.Const{instances.ONE, instances.ONE, instances.BOT},
+		val: components.Const{components.ONE, components.ONE, components.BOT},
 		expCode: 10,
 	},
 	{
 		name: "(0,0,0)",
-		val: instances.Const{instances.ZERO, instances.ZERO, instances.ZERO},
+		val: components.Const{components.ZERO, components.ZERO, components.ZERO},
 		expCode: 20,
 	},
 	{
 		name: "(0,0,1)",
-		val: instances.Const{instances.ZERO, instances.ZERO, instances.ONE},
+		val: components.Const{components.ZERO, components.ZERO, components.ONE},
 		expCode: 20,
 	},
 	{
 		name: "(0,1,0)",
-		val: instances.Const{instances.ZERO, instances.ONE, instances.ZERO},
+		val: components.Const{components.ZERO, components.ONE, components.ZERO},
 		expCode: 20,
 	},
 	{
 		name: "(0,1,1)",
-		val: instances.Const{instances.ZERO, instances.ONE, instances.ONE},
+		val: components.Const{components.ZERO, components.ONE, components.ONE},
 		expCode: 20,
 	},
 	{
 		name: "(1,0,0)",
-		val: instances.Const{instances.ONE, instances.ZERO, instances.ZERO},
+		val: components.Const{components.ONE, components.ZERO, components.ZERO},
 		expCode: 10,
 	},
 	{
 		name: "(1,0,1)",
-		val: instances.Const{instances.ONE, instances.ZERO, instances.ONE},
+		val: components.Const{components.ONE, components.ZERO, components.ONE},
 		expCode: 20,
 	},
 	{
 		name: "(1,1,0)",
-		val: instances.Const{instances.ONE, instances.ONE, instances.ZERO},
+		val: components.Const{components.ONE, components.ONE, components.ZERO},
 		expCode: 10,
 	},
 	{
 		name: "(1,1,1)",
-		val: instances.Const{instances.ONE, instances.ONE, instances.ONE},
+		val: components.Const{components.ONE, components.ONE, components.ONE},
 		expCode: 10,
 	},
 	{
 		name: "(_,0,_)",
-		val: instances.Const{instances.BOT, instances.ZERO, instances.BOT},
+		val: components.Const{components.BOT, components.ZERO, components.BOT},
 		expCode: 20,
 	},
 	{
 		name: "(_,1,_)",
-		val: instances.Const{instances.BOT, instances.ONE, instances.BOT},
+		val: components.Const{components.BOT, components.ONE, components.BOT},
 		expCode: 20,
 	},
 	{
 		name: "(_,0,0)",
-		val: instances.Const{instances.BOT, instances.ZERO, instances.ZERO},
+		val: components.Const{components.BOT, components.ZERO, components.ZERO},
 		expCode: 20,
 	},
 	{
 		name: "(_,0,1)",
-		val: instances.Const{instances.BOT, instances.ZERO, instances.ONE},
+		val: components.Const{components.BOT, components.ZERO, components.ONE},
 		expCode: 20,
 	},
 	{
 		name: "(_,1,0)",
-		val: instances.Const{instances.BOT, instances.ONE, instances.ZERO},
+		val: components.Const{components.BOT, components.ONE, components.ZERO},
 		expCode: 20,
 	},
 	{
 		name: "(_,1,1)",
-		val: instances.Const{instances.BOT, instances.ONE, instances.ONE},
+		val: components.Const{components.BOT, components.ONE, components.ONE},
 		expCode: 20,
 	},
 	{
 		name: "(_,_,0)",
-		val: instances.Const{instances.BOT, instances.BOT, instances.ZERO},
+		val: components.Const{components.BOT, components.BOT, components.ZERO},
 		expCode: 20,
 	},
 	{
 		name: "(_,_,1)",
-		val: instances.Const{instances.BOT, instances.BOT, instances.ONE},
+		val: components.Const{components.BOT, components.BOT, components.ONE},
 		expCode: 20,
 	},
 	{
 		name: "(0,_,0)",
-		val: instances.Const{instances.ZERO, instances.BOT, instances.ZERO},
+		val: components.Const{components.ZERO, components.BOT, components.ZERO},
 		expCode: 20,
 	},
 	{
 		name: "(0,_,1)",
-		val: instances.Const{instances.ZERO, instances.BOT, instances.ONE},
+		val: components.Const{components.ZERO, components.BOT, components.ONE},
 		expCode: 20,
 	},
 	{
 		name: "(1,_,0)",
-		val: instances.Const{instances.ONE, instances.BOT, instances.ZERO},
+		val: components.Const{components.ONE, components.BOT, components.ZERO},
 		expCode: 10,
 	},
 	{
 		name: "(1,_,1)",
-		val: instances.Const{instances.ONE, instances.BOT, instances.ONE},
+		val: components.Const{components.ONE, components.BOT, components.ONE},
 		expCode: 20,
 	},
 }

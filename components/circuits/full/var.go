@@ -3,7 +3,6 @@ package full
 import (
 	"stratifoiled/cnf"
 	"stratifoiled/components"
-	"stratifoiled/components/instances"
 )
 
 // =========================== //
@@ -11,7 +10,7 @@ import (
 // =========================== //
 
 type fVar struct {
-	varInst instances.Var
+	varInst components.Var
 }
 
 // =========================== //
@@ -19,7 +18,7 @@ type fVar struct {
 // =========================== //
 
 // Return varVar lel.
-func Var(varInst instances.Var) *fVar {
+func Var(varInst components.Var) *fVar {
 	return &fVar{varInst: varInst}
 }
 
@@ -29,7 +28,7 @@ func (f *fVar) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 	for i := 0; i < ctx.Dimension; i++ {
 		no_bots_clauses = append(
 			no_bots_clauses,
-			[]int{-ctx.Var(string(f.varInst), i, instances.BOT.Val())},
+			[]int{-ctx.Var(string(f.varInst), i, components.BOT.Val())},
 		)
 	}
 	return cnf.CNFFromClauses(no_bots_clauses), nil

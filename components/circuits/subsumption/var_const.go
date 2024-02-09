@@ -72,7 +72,6 @@ func (s *varConst) buildEncoding(
 }
 
 // Return pointer to simplified equivalent component which might be itself.
-// This method may change the state of the caller.
 func (s *varConst) Simplified(
 	ctx *components.Context,
 ) (components.Component, error) {

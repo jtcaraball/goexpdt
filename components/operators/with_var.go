@@ -50,8 +50,7 @@ func (wv *withVar) buildEncoding(
 	return iCNF, nil
 }
 
-// Return pointer to simplified equivalent component which might be itself.
-// This method may change the state of the caller.
+// Return pointer to simplified equivalent component.
 func (wv *withVar) Simplified(
 	ctx *components.Context,
 ) (components.Component, error) {
@@ -66,8 +65,7 @@ func (wv *withVar) Simplified(
 	if trivial {
 		return components.NewTrivial(value), nil
 	}
-	wv.child = simpleChild
-	return wv, nil
+	return &withVar{instance: wv.instance, child: simpleChild}, nil
 }
 
 // Return slice of pointers to component's children.

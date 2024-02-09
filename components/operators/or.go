@@ -53,8 +53,7 @@ func (o *or) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 	return cnf1, nil
 }
 
-// Return pointer to simplified equivalent component which might be itself.
-// This method may change the state of the caller.
+// Return pointer to simplified equivalent component.
 func (o *or) Simplified(ctx *components.Context) (components.Component, error) {
 	if err := o.nonNilChildren(); err != nil {
 		return nil, err
@@ -89,11 +88,7 @@ func (o *or) Simplified(ctx *components.Context) (components.Component, error) {
 	if trivial2 && !value2 {
 		return simpleChild1, nil
 	}
-	// If no trivial statements are recovered we update children to their
-	// simplified form and return pointer to self.
-	o.child1 = simpleChild1
-	o.child2 = simpleChild2
-	return o, nil
+	return &or{child1: simpleChild1, child2: simpleChild2}, nil
 }
 
 // Return slice of pointers to component's children.

@@ -42,8 +42,7 @@ func (a *and) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 	return cnf1, nil
 }
 
-// Return pointer to simplified equivalent component which might be itself.
-// This method may change the state of the caller.
+// Return pointer to simplified equivalent component.
 func (a *and) Simplified(
 	ctx *components.Context,
 ) (components.Component, error) {
@@ -79,9 +78,7 @@ func (a *and) Simplified(
 	if trivial2 && value2 {
 		return simpleChild1, nil
 	}
-	a.child1 = simpleChild1
-	a.child2 = simpleChild2
-	return a, nil
+	return &and{child1: simpleChild1, child2: simpleChild2}, nil
 }
 
 // Return slice of pointers to component's children.

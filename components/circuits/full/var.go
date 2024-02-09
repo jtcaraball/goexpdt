@@ -24,18 +24,26 @@ func Var(varInst components.Var) *fVar {
 
 // Return CNF encoding of component.
 func (f *fVar) Encoding(ctx *components.Context) (*cnf.CNF, error) {
+	scpVar := f.varInst.Scoped(ctx)
+	return f.buildEncoding(scpVar, ctx)
+}
+
+// Generate cnf encoding.
+func (f *fVar) buildEncoding(
+	varInst components.Var,
+	ctx *components.Context,
+) (*cnf.CNF, error) {
 	no_bots_clauses := [][]int{}
 	for i := 0; i < ctx.Dimension; i++ {
 		no_bots_clauses = append(
 			no_bots_clauses,
-			[]int{-ctx.Var(string(f.varInst), i, components.BOT.Val())},
+			[]int{-ctx.Var(string(varInst), i, components.BOT.Val())},
 		)
 	}
 	return cnf.CNFFromClauses(no_bots_clauses), nil
 }
 
 // Return pointer to simplified equivalent component which might be itself.
-// This method may change the state of the caller.
 func (f *fVar) Simplified(
 	ctx *components.Context,
 ) (components.Component, error) {

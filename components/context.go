@@ -10,7 +10,14 @@ type Context struct {
 	Dimension int
 	Tree *trees.Tree
 	TopV int
+	Guards []Guard
 	vars map[contextVar]int
+}
+
+type Guard struct {
+	Target string
+	InScope []string
+	Value Const
 }
 
 type contextVar struct {

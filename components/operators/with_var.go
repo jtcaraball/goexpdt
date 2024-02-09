@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"stratifoiled/cnf"
 	"stratifoiled/components"
-	"stratifoiled/components/instances"
 )
 
 // =========================== //
@@ -13,7 +12,7 @@ import (
 // =========================== //
 
 type withVar struct {
-	instance instances.Var
+	instance components.Var
 	child components.Component
 }
 
@@ -22,7 +21,7 @@ type withVar struct {
 // =========================== //
 
 // Return withVar operator.
-func WithVar(inst instances.Var, child components.Component) *withVar {
+func WithVar(inst components.Var, child components.Component) *withVar {
 	return &withVar{instance: inst, child: child}
 }
 
@@ -31,6 +30,16 @@ func (wv *withVar) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 	if err := wv.nonNilChildren(); err != nil {
 		return nil, err
 	}
+	scopedInst := wv.instance.Scoped(ctx)
+	return wv.encode(scopedInst, wv.child, ctx)
+}
+
+// Generate CNF encoding.
+func (wv *withVar) encode(
+	varInstance components.Var,
+	child components.Component,
+	ctx *components.Context,
+) (*cnf.CNF, error) {
 	iCNF := wv.instance.Encoding(ctx)
 	cCNF, err := wv.child.Encoding(ctx)
 	if err != nil {

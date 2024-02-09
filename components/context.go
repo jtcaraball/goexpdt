@@ -1,6 +1,9 @@
 package components
 
-import "stratifoiled/trees"
+import (
+	"slices"
+	"stratifoiled/trees"
+)
 
 // =========================== //
 //           STRUCTS           //
@@ -18,6 +21,7 @@ type Guard struct {
 	Target string
 	InScope []string
 	Value Const
+	Rep string
 }
 
 type contextVar struct {
@@ -82,4 +86,15 @@ func (c* Context) MaxUpdateTopV(topv int) bool {
 		return true
 	}
 	return false
+}
+
+// Add var name to guard's scopes.
+func (c *Context) AddVarToScope(varInst Var) {
+	// The amount of vars in a formula should tend to be small so slices.Contain
+	// is more than good enough.
+	for _, guard := range c.Guards {
+		if !slices.Contains[[]string](guard.InScope, string(varInst)) {
+			guard.InScope = append(guard.InScope, string(varInst))
+		}
+	}
 }

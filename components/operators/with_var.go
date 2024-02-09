@@ -30,12 +30,13 @@ func (wv *withVar) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 	if err := wv.nonNilChildren(); err != nil {
 		return nil, err
 	}
+	ctx.AddVarToScope(wv.instance)
 	scopedInst := wv.instance.Scoped(ctx)
-	return wv.encode(scopedInst, wv.child, ctx)
+	return wv.buildEncoding(scopedInst, wv.child, ctx)
 }
 
 // Generate CNF encoding.
-func (wv *withVar) encode(
+func (wv *withVar) buildEncoding(
 	varInstance components.Var,
 	child components.Component,
 	ctx *components.Context,

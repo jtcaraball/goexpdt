@@ -14,7 +14,7 @@ type Context struct {
 	Tree *trees.Tree
 	TopV int
 	Guards []Guard
-	vars map[contextVar]int
+	vars map[ContextVar]int
 }
 
 type Guard struct {
@@ -24,11 +24,11 @@ type Guard struct {
 	Rep string
 }
 
-type contextVar struct {
-	name string
-	idx int
-	value int
-	inter bool
+type ContextVar struct {
+	Name string
+	Idx int
+	Value int
+	Inter bool
 }
 
 // =========================== //
@@ -38,13 +38,13 @@ type contextVar struct {
 // Generate new context according to passed arguments.
 func NewContext(dim int, tree *trees.Tree) *Context {
 	ctx := &Context{Dimension: dim, Tree: tree}
-	ctx.vars = make(map[contextVar]int)
+	ctx.vars = make(map[ContextVar]int)
 	return ctx
 }
 
 // Return assigned value to variable. If it does not exist it is added.
 func (c* Context) Var(name string, idx int, value int) int {
-	varS := contextVar{name: name, idx: idx, value: value}
+	varS := ContextVar{Name: name, Idx: idx, Value: value}
 	varValue := c.vars[varS]
 	if varValue == 0 {
 		c.TopV += 1
@@ -56,13 +56,13 @@ func (c* Context) Var(name string, idx int, value int) int {
 
 // Return true if variable exits in context. False otherwise.
 func (c *Context) VarExists(name string, idx int, value int) bool {
-	varS := contextVar{name: name, idx: idx, value: value}
+	varS := ContextVar{Name: name, Idx: idx, Value: value}
 	return c.vars[varS] != 0
 }
 
 // Return assigned value to internal variable. If it does not exist it is added.
 func (c* Context) IVar(name string, idx int, value int) int {
-	varS := contextVar{name: name, idx: idx, value: value, inter: true}
+	varS := ContextVar{Name: name, Idx: idx, Value: value, Inter: true}
 	varValue := c.vars[varS]
 	if varValue == 0 {
 		c.TopV += 1
@@ -74,7 +74,7 @@ func (c* Context) IVar(name string, idx int, value int) int {
 
 // Return true if internal variable exits in context. False otherwise.
 func (c *Context) IVarExists(name string, idx int, value int) bool {
-	varS := contextVar{name: name, idx: idx, value: value, inter: true}
+	varS := ContextVar{Name: name, Idx: idx, Value: value, Inter: true}
 	return c.vars[varS] != 0
 }
 
@@ -92,9 +92,14 @@ func (c* Context) MaxUpdateTopV(topv int) bool {
 func (c *Context) AddVarToScope(varInst Var) {
 	// The amount of vars in a formula should tend to be small so slices.Contain
 	// is more than good enough.
-	for _, guard := range c.Guards {
-		if !slices.Contains[[]string](guard.InScope, string(varInst)) {
-			guard.InScope = append(guard.InScope, string(varInst))
+	for i := 0; i < len(c.Guards); i++ {
+		if !slices.Contains[[]string](c.Guards[i].InScope, string(varInst)) {
+			c.Guards[i].InScope = append(c.Guards[i].InScope, string(varInst))
 		}
 	}
+}
+
+// Return context's vars.
+func (c *Context) GetVars() map[ContextVar]int {
+	return c.vars
 }

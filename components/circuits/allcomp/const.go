@@ -28,12 +28,28 @@ func Const(constInst components.Const, leafValue bool) *acConst {
 
 // Return CNF encoding of component.
 func (ac *acConst) Encoding(ctx *components.Context) (*cnf.CNF, error) {
-	if err := ac.validateInstances(ctx); err != nil {
-		return nil, err
-	}
 	if ctx.Tree == nil || ctx.Tree.Root == nil {
 		return nil, errors.New("Tree or it's root is nil")
 	}
+	scpConst, err := ac.constInst.Scoped(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if err = components.ValidateConstsDim(
+		"full.Const",
+		ctx,
+		scpConst,
+	); err != nil {
+		return nil, err
+	}
+	return ac.buildEncoding(scpConst, ctx)
+}
+
+// Generate cnf encoding.
+func (ac *acConst) buildEncoding(
+	constInst components.Const,
+	ctx *components.Context,
+) (*cnf.CNF, error) {
 	var node *trees.Node
 	var nStack  = []*trees.Node{ctx.Tree.Root}
 	for len(nStack) > 0 {
@@ -44,15 +60,15 @@ func (ac *acConst) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 			}
 			continue
 		}
-		if ac.constInst[node.Feat] == components.BOT {
+		if constInst[node.Feat] == components.BOT {
 			nStack = append(nStack, node.LChild, node.RChild)
 			continue
 		}
-		if ac.constInst[node.Feat] == components.ONE {
+		if constInst[node.Feat] == components.ONE {
 			nStack = append(nStack, node.RChild)
 			continue
 		}
-		if ac.constInst[node.Feat] == components.ZERO {
+		if constInst[node.Feat] == components.ZERO {
 			nStack = append(nStack, node.LChild)
 			continue
 		}
@@ -61,16 +77,31 @@ func (ac *acConst) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 }
 
 // Return pointer to simplified equivalent component which might be itself.
-// This method may change the state of the caller.
 func (ac *acConst) Simplified(
 	ctx *components.Context,
 ) (components.Component, error) {
-	if err := ac.validateInstances(ctx); err != nil {
-		return nil, err
-	}
 	if ctx.Tree == nil || ctx.Tree.Root == nil {
 		return nil, errors.New("Tree or it's root is nil")
 	}
+	scpConst, err := ac.constInst.Scoped(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if err = components.ValidateConstsDim(
+		"full.Const",
+		ctx,
+		scpConst,
+	); err != nil {
+		return nil, err
+	}
+	return ac.buildSimplified(scpConst, ctx)
+}
+
+// Generate simplified component.
+func (ac *acConst) buildSimplified(
+	constInst components.Const,
+	ctx *components.Context,
+) (components.Component, error) {
 	var node *trees.Node
 	var nStack  = []*trees.Node{ctx.Tree.Root}
 	for len(nStack) > 0 {
@@ -81,15 +112,15 @@ func (ac *acConst) Simplified(
 			}
 			continue
 		}
-		if ac.constInst[node.Feat] == components.BOT {
+		if constInst[node.Feat] == components.BOT {
 			nStack = append(nStack, node.LChild, node.RChild)
 			continue
 		}
-		if ac.constInst[node.Feat] == components.ONE {
+		if constInst[node.Feat] == components.ONE {
 			nStack = append(nStack, node.RChild)
 			continue
 		}
-		if ac.constInst[node.Feat] == components.ZERO {
+		if constInst[node.Feat] == components.ZERO {
 			nStack = append(nStack, node.LChild)
 			continue
 		}

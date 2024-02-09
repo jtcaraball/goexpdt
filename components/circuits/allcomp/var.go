@@ -26,11 +26,20 @@ func Var(varInst components.Var, leafValue bool) *acVar {
 
 // Return CNF encoding of component.
 func (ac *acVar) Encoding(ctx *components.Context) (*cnf.CNF, error) {
+	scpVar := ac.varInst.Scoped(ctx)
+	return ac.buildEncoding(scpVar, ctx)
+}
+
+// Generate cnf encoding.
+func (ac *acVar) buildEncoding(
+	varInst components.Var,
+	ctx *components.Context,
+) (*cnf.CNF, error) {
 	if ctx.Tree == nil || ctx.Tree.Root == nil {
 		return nil, errors.New("Tree or it's root is nil")
 	}
 	nCNF := &cnf.CNF{}
-	rVarName := "r" + string(ac.varInst)
+	rVarName := "r" + string(varInst)
 	// Root is always reachable
 	nCNF.AppendConsistency([]int{ctx.IVar(rVarName, ctx.Tree.Root.ID, 0)})
 	// Add progapation clauses
@@ -43,22 +52,22 @@ func (ac *acVar) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 		}
 		nCNF.ExtendConsistency([][]int{
 			{
-				-ctx.Var(string(ac.varInst), node.Feat, components.ZERO.Val()),
+				-ctx.Var(string(varInst), node.Feat, components.ZERO.Val()),
 				-ctx.IVar(rVarName, node.ID, 0),
 				ctx.IVar(rVarName, node.LChild.ID, 0),
 			},
 			{
-				-ctx.Var(string(ac.varInst), node.Feat, components.ONE.Val()),
+				-ctx.Var(string(varInst), node.Feat, components.ONE.Val()),
 				-ctx.IVar(rVarName, node.ID, 0),
 				ctx.IVar(rVarName, node.RChild.ID, 0),
 			},
 			{
-				-ctx.Var(string(ac.varInst), node.Feat, components.BOT.Val()),
+				-ctx.Var(string(varInst), node.Feat, components.BOT.Val()),
 				-ctx.IVar(rVarName, node.ID, 0),
 				ctx.IVar(rVarName, node.LChild.ID, 0),
 			},
 			{
-				-ctx.Var(string(ac.varInst), node.Feat, components.BOT.Val()),
+				-ctx.Var(string(varInst), node.Feat, components.BOT.Val()),
 				-ctx.IVar(rVarName, node.ID, 0),
 				ctx.IVar(rVarName, node.RChild.ID, 0),
 			},
@@ -68,8 +77,8 @@ func (ac *acVar) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 			},
 			{
 				-ctx.Var(rVarName, node.RChild.ID, 0),
-				ctx.Var(string(ac.varInst), node.Feat, components.ONE.Val()),
-				ctx.Var(string(ac.varInst), node.Feat, components.BOT.Val()),
+				ctx.Var(string(varInst), node.Feat, components.ONE.Val()),
+				ctx.Var(string(varInst), node.Feat, components.BOT.Val()),
 			},
 			{
 				-ctx.IVar(rVarName, node.LChild.ID, 0),
@@ -77,8 +86,8 @@ func (ac *acVar) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 			},
 			{
 				-ctx.Var(rVarName, node.LChild.ID, 0),
-				ctx.Var(string(ac.varInst), node.Feat, components.ZERO.Val()),
-				ctx.Var(string(ac.varInst), node.Feat, components.BOT.Val()),
+				ctx.Var(string(varInst), node.Feat, components.ZERO.Val()),
+				ctx.Var(string(varInst), node.Feat, components.BOT.Val()),
 			},
 		})
 	}

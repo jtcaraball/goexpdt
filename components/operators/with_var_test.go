@@ -1,9 +1,10 @@
 package operators
 
 import (
-	"testing"
+	"slices"
 	"stratifoiled/components"
 	"stratifoiled/sfdtest"
+	"testing"
 )
 
 func TestWithVar_Encoding(t *testing.T) {
@@ -30,6 +31,59 @@ func TestWithVar_Encoding(t *testing.T) {
 		{-5, -6},
 	}
 	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+}
+
+func TestWithVar_Encoding_AddVarToScope(t *testing.T) {
+	x := components.Var("x")
+	context := components.NewContext(1, nil)
+	context.Guards = append(
+		context.Guards,
+		components.Guard{
+			Target: "T",
+			Value: components.Const{components.BOT},
+			Rep: "1",
+		},
+	)
+	component := WithVar(x, components.NewTrivial(true))
+	expScope := []string{"x"}
+	_, err := component.Encoding(context)
+	if err != nil {
+		t.Errorf("CNF encoding error. %s", err.Error())
+		return
+	}
+	resultingScopes := context.Guards[0].InScope
+	if !slices.Equal[[]string](resultingScopes, expScope){
+		t.Errorf(
+			"Var not included in guard scope. Expected %s but got %s",
+			expScope,
+			resultingScopes,
+		)
+	}
+}
+
+func TestWithVar_Encoding_ScopedVariable(t *testing.T) {
+	x := components.Var("x")
+	context := components.NewContext(1, nil)
+	context.Guards = append(
+		context.Guards,
+		components.Guard{
+			Target: "T",
+			Value: components.Const{components.BOT},
+			Rep: "1",
+		},
+	)
+	component := WithVar(x, components.NewTrivial(true))
+	_, err := component.Encoding(context)
+	if err != nil {
+		t.Errorf("CNF encoding error. %s", err.Error())
+		return
+	}
+	for key := range context.GetVars() {
+		if key.Name != "x1" {
+			t.Errorf("Wrong scoped var name. Expected x1 but got %s", key.Name)
+			return
+		}
+	}
 }
 
 func TestWithVar_Simplified(t *testing.T) {

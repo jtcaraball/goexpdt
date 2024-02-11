@@ -57,7 +57,7 @@ func (c *CNF) Negate(opt_topv ...int) int {
 		return c.tv
 	}
 	// Handle empty clause in CNF case.
-	if c.hasEmptySemanticClause() {
+	if c.HasEmptySemanticClause() {
 		// A CNF with an empty clause is never SAT so to negate it we set it as
 		// an always true empty CNF.
 		c.sClauses = nil
@@ -160,7 +160,7 @@ func (c *CNF) Clauses() ([][]int, [][]int) {
 // =========================== //
 
 // Returns true if the CNF has an empty semantic clause.
-func (c *CNF) hasEmptySemanticClause() bool {
+func (c *CNF) HasEmptySemanticClause() bool {
 	for _, clause := range c.sClauses {
 		if len(clause) == 0 {
 			return true

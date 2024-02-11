@@ -15,7 +15,7 @@ type Context struct {
 	Tree *trees.Tree
 	TopV int
 	Guards []Guard
-	NodeConsts []Const
+	nodeConsts []Const
 	vars map[ContextVar]int
 }
 
@@ -41,7 +41,6 @@ type ContextVar struct {
 func NewContext(dim int, tree *trees.Tree) *Context {
 	ctx := &Context{Dimension: dim, Tree: tree}
 	ctx.vars = make(map[ContextVar]int)
-	ctx.NodeConsts, _ = ctx.nodesAsConsts()
 	return ctx
 }
 
@@ -108,7 +107,10 @@ func (c *Context) GetVars() map[ContextVar]int {
 }
 
 // Return all trees nodes as slice of constants.
-func (c *Context) nodesAsConsts() ([]Const, error) {
+func (c *Context) NodesAsConsts() ([]Const, error) {
+	if c.nodeConsts != nil {
+		return c.nodeConsts, nil
+	}
 	var node *trees.Node
 	var nConst, lnConst, rnConst Const
 	var nStack = []*trees.Node{c.Tree.Root}
@@ -139,5 +141,6 @@ func (c *Context) nodesAsConsts() ([]Const, error) {
 		rnConst[node.Feat] = ONE
 		ncStack = append(ncStack, rnConst)
 	}
-	return nConsts, nil
+	c.nodeConsts = nConsts
+	return c.nodeConsts, nil
 }

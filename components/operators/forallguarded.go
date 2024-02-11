@@ -41,9 +41,14 @@ func (fag *forAllGuarded) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 	defer func() {
 		ctx.Guards = ctx.Guards[:gIdx]
 	}()
-	for i := 0; i < len(ctx.NodeConsts); i++ {
+	// Get trees nodes from context.
+	nodeConsts, err := ctx.NodesAsConsts()
+	if err != nil {
+		return nil, err
+	}
+	for i := 0; i < len(nodeConsts); i++ {
 		// Update guard value to current node.
-		ctx.Guards[gIdx].Value = ctx.NodeConsts[i]
+		ctx.Guards[gIdx].Value = nodeConsts[i]
 		ctx.Guards[gIdx].Rep = strconv.Itoa(i)
 		// Encode.
 		iCNF, err := fag.child.Encoding(ctx)

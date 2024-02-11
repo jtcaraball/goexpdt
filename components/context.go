@@ -2,6 +2,7 @@ package components
 
 import (
 	"slices"
+	"errors"
 	"stratifoiled/trees"
 )
 
@@ -14,6 +15,7 @@ type Context struct {
 	Tree *trees.Tree
 	TopV int
 	Guards []Guard
+	NodeConsts []Const
 	vars map[ContextVar]int
 }
 
@@ -39,6 +41,7 @@ type ContextVar struct {
 func NewContext(dim int, tree *trees.Tree) *Context {
 	ctx := &Context{Dimension: dim, Tree: tree}
 	ctx.vars = make(map[ContextVar]int)
+	ctx.NodeConsts, _ = ctx.nodesAsConsts()
 	return ctx
 }
 
@@ -102,4 +105,39 @@ func (c *Context) AddVarToScope(varInst Var) {
 // Return context's vars.
 func (c *Context) GetVars() map[ContextVar]int {
 	return c.vars
+}
+
+// Return all trees nodes as slice of constants.
+func (c *Context) nodesAsConsts() ([]Const, error) {
+	var node *trees.Node
+	var nConst, lnConst, rnConst Const
+	var nStack = []*trees.Node{c.Tree.Root}
+	var ncStack = []Const{AllBotConst(c.Dimension)}
+	var nConsts = []Const{}
+	for len(nStack) > 0 {
+		node, nStack = nStack[len(nStack) - 1], nStack[:len(nStack) - 1]
+		nConst, ncStack = ncStack[len(ncStack) - 1], ncStack[:len(ncStack) - 1]
+		// Check for valid indexing.
+		if node.Feat >= c.Dimension {
+			return nil, errors.New("Node with invalid feature index.")
+		}
+		// Add node const to slice.
+		nConsts = append(nConsts, nConst)
+		if node.IsLeaf() {
+			continue
+		}
+		// Add left node and const to stack.
+		nStack = append(nStack, node.LChild)
+		lnConst = AllBotConst(c.Dimension)
+		copy(lnConst, nConst)
+		lnConst[node.Feat] = ZERO
+		ncStack = append(ncStack, lnConst)
+		// Add right node and const to stack.
+		nStack = append(nStack, node.RChild)
+		rnConst = AllBotConst(c.Dimension)
+		copy(rnConst, nConst)
+		rnConst[node.Feat] = ONE
+		ncStack = append(ncStack, rnConst)
+	}
+	return nConsts, nil
 }

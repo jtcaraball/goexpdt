@@ -100,6 +100,15 @@ func (v Var) Scoped(ctx *Context) Var {
 	return v
 }
 
+// Return all bots const of len dim.
+func AllBotConst(dim int) Const {
+	feats := []featV{}
+	for i := 0; i < dim; i++ {
+		feats = append(feats, BOT)
+	}
+	return feats
+}
+
 // Return caller always.
 func (c Const) Scoped(ctx *Context) (Const, error) {
 	return c, nil

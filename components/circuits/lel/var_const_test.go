@@ -9,6 +9,7 @@ import (
 )
 
 const varConstSUFIX = "lel.varconst"
+const guardedVarConstSUFIX = "lel.Gvarconst"
 
 // =========================== //
 //           HELPERS           //
@@ -20,11 +21,9 @@ func runLELVarConst(
 	c1, c2 components.Const,
 	simplify bool,
 ) {
-	var err error
-	var formula components.Component
 	x := components.NewVar("x")
 	context := components.NewContext(DIM, nil)
-	formula = operators.WithVar(
+	formula := operators.WithVar(
 		x,
 		operators.And(
 			operators.And(
@@ -35,23 +34,34 @@ func runLELVarConst(
 		),
 	)
 	filePath := sfdtest.CNFName(varConstSUFIX, id, simplify)
-	if simplify {
-		formula, err = formula.Simplified(context)
-		if err != nil {
-			t.Errorf("Formula simplification error. %s", err.Error())
-			return
-		}
-	}
-	cnf, err := formula.Encoding(context)
-	if err != nil {
-		t.Errorf("Formula encoding error. %s", err.Error())
-		return
-	}
-	if err = cnf.ToFile(filePath); err != nil {
-		t.Errorf("CNF writing error. %s", err.Error())
-		return
-	}
-	sfdtest.RunFormulaTest(t, id, expCode, filePath)
+	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
+}
+
+func runGuardedLELVarConst(
+	t *testing.T,
+	id, expCode int,
+	c1, c2 components.Const,
+	simplify bool,
+) {
+	x := components.NewVar("x")
+	y := components.GuardedConst("y")
+	context := components.NewContext(DIM, nil)
+	context.Guards = append(
+		context.Guards,
+		components.Guard{Target: "y", Value: c2, Rep: "1"},
+	)
+	formula := operators.WithVar(
+		x,
+		operators.And(
+			operators.And(
+				subsumption.VarConst(x, c1),
+				subsumption.ConstVar(c1, x),
+			),
+			VarConst(x, y),
+		),
+	)
+	filePath := sfdtest.CNFName(guardedVarConstSUFIX, id, simplify)
+	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
 
 // =========================== //
@@ -63,6 +73,15 @@ func TestVarConst_Encoding(t *testing.T) {
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runLELVarConst(t, i, tc.expCode, tc.val1, tc.val2, false)
+		})
+	}
+}
+
+func TestVarConst_Encoding_Guarded(t *testing.T) {
+	sfdtest.AddCleanup(t, guardedVarConstSUFIX, false)
+	for i, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			runGuardedLELVarConst(t, i, tc.expCode, tc.val1, tc.val2, false)
 		})
 	}
 }

@@ -72,11 +72,11 @@ func (s *constConst) Simplified(
 ) (components.Component, error) {
 	scpConst1, err := s.constInst1.Scoped(ctx)
 	if err != nil {
-		return nil, err
+		return nil, nil  // No simplification can be done here.
 	}
 	scpConst2, err := s.constInst2.Scoped(ctx)
 	if err != nil {
-		return nil, err
+		return nil, nil  // No simplification can be done here.
 	}
 	if err = components.ValidateConstsDim(
 		"lel.ConstConst",

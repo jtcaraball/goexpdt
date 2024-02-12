@@ -1,12 +1,60 @@
 package operators
 
 import (
-	"testing"
-	"stratifoiled/sfdtest"
 	"stratifoiled/components"
+	"stratifoiled/sfdtest"
+	"stratifoiled/trees"
+	"testing"
 )
 
+// =========================== //
+//           HELPERS           //
+// =========================== //
+
+func buildFAGTree() *trees.Tree {
+	// Tree
+	// root: _
+	//   leaf_1: 0
+	//	 leaf_2: 1
+	leaf1 := &trees.Node{ID: 1}
+	leaf2 := &trees.Node{ID: 2}
+	root := &trees.Node{ID: 0, Feat: 0, LChild: leaf1, RChild: leaf2}
+	return &trees.Tree{
+		Root: root,
+		NodeCount: 3,
+		FeatCount: 3,
+		NegLeafs: []*trees.Node{leaf1, leaf2},
+	}
+}
+
+// =========================== //
+//            TESTS            //
+// =========================== //
+
 func TestForAllGuarded_Encoding(t *testing.T) {
+	x := components.GuardedConst("x")
+	y := components.Var("y")
+	component := ForAllGuarded(
+		x,
+		WithVar(y, components.NewTrivial(true)),
+	)
+	context := components.NewContext(1, buildFAGTree())
+	encCNF, err := component.Encoding(context)
+	if err != nil {
+		t.Errorf("CNF encoding error. %s", err.Error())
+		return
+	}
+	sClauses, cClauses := encCNF.Clauses()
+	expSClauses := [][]int{}
+	expCClauses := [][]int{
+		{1, 2, 3}, {-1, -2}, {-1, -3}, {-2, -3},
+		{4, 5, 6}, {-4, -5}, {-4, -6}, {-5, -6},
+		{7, 8, 9}, {-7, -8}, {-7, -9}, {-8, -9},
+	}
+	for key := range context.GetVars() {
+		t.Log(key.Name)
+	}
+	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestForAllGuarded_Simplified(t *testing.T) {

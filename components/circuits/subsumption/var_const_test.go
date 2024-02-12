@@ -106,6 +106,22 @@ func TestVarConst_Simplified(t *testing.T) {
 	}
 }
 
+func TestVarConst_Simplified_Guarded(t *testing.T) {
+	sfdtest.AddCleanup(t, guardedVarConstSUFIX, true)
+	for i, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			runGuardedSubsumptionVarConst(
+				t,
+				i,
+				tc.expCode,
+				tc.val1,
+				tc.val2,
+				true,
+			)
+		})
+	}
+}
+
 func TestVarConst_GetChildren(t *testing.T) {
 	x := components.NewVar("x")
 	y := components.Const{components.BOT, components.BOT, components.BOT}

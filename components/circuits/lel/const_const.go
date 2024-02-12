@@ -10,8 +10,8 @@ import (
 // =========================== //
 
 type constConst struct {
-	constInst1 components.Const
-	constInst2 components.Const
+	constInst1 components.ConstInstance
+	constInst2 components.ConstInstance
 }
 
 // =========================== //
@@ -20,7 +20,7 @@ type constConst struct {
 
 
 // Return constConst lel.
-func ConstConst(constInst1, constInst2 components.Const) *constConst {
+func ConstConst(constInst1, constInst2 components.ConstInstance) *constConst {
 	return &constConst{constInst1: constInst1, constInst2: constInst2}
 }
 

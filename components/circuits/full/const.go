@@ -10,7 +10,7 @@ import (
 // =========================== //
 
 type fConst struct {
-	constInst components.Const
+	constInst components.ConstInstance
 }
 
 // =========================== //
@@ -18,7 +18,7 @@ type fConst struct {
 // =========================== //
 
 // Return const full.
-func Const(constInst components.Const) *fConst {
+func Const(constInst components.ConstInstance) *fConst {
 	return &fConst{constInst: constInst}
 }
 

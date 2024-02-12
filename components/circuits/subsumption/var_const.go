@@ -19,7 +19,10 @@ type varConst struct {
 // =========================== //
 
 // Return varConst subsumption.
-func VarConst(varInst components.Var, constInst components.Const) *varConst {
+func VarConst(
+	varInst components.Var,
+	constInst components.ConstInstance,
+) *varConst {
 	return &varConst{varInst: varInst, constInst: constInst}
 }
 

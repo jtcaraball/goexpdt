@@ -83,6 +83,15 @@ func TestConst_Simplified(t *testing.T) {
 	}
 }
 
+func TestConst_Simplified_Guarded(t *testing.T) {
+	sfdtest.AddCleanup(t, guardedConstSUFIX, true)
+	for i, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			runGuardedFullConst(t, i, tc.expCode, tc.val, true)
+		})
+	}
+}
+
 func TestConstConst_Simplified_WrongDim(t *testing.T) {
 	x := components.Const{components.BOT, components.BOT, components.BOT}
 	formula := Const(x)

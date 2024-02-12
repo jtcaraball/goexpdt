@@ -117,12 +117,32 @@ func TestConst_Simplified_AllPos(t *testing.T) {
 	}
 }
 
+func TestConst_Simplified_AllPos_Guarded(t *testing.T) {
+	sfdtest.AddCleanup(t, compGuardedConstSufix(true), true)
+	tree := genTree()
+	for i, tc := range allPosTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runGuardedAllCompConst(t, i, tc.expCode, tc.val, tree, true, true)
+		})
+	}
+}
+
 func TestConst_Simplified_AllNeg(t *testing.T) {
 	sfdtest.AddCleanup(t, compConstSufix(false), true)
 	tree := genTree()
 	for i, tc := range allNegTests {
 		t.Run(tc.name, func(t *testing.T) {
 			runAllCompConst(t, i, tc.expCode, tc.val, tree, false, true)
+		})
+	}
+}
+
+func TestConst_Simplified_AllNeg_Guraded(t *testing.T) {
+	sfdtest.AddCleanup(t, compGuardedConstSufix(false), true)
+	tree := genTree()
+	for i, tc := range allNegTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runGuardedAllCompConst(t, i, tc.expCode, tc.val, tree, false, true)
 		})
 	}
 }

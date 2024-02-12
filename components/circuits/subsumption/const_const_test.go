@@ -6,7 +6,8 @@ import (
 	"testing"
 )
 
-const constConstSUFIX = "subsumtpion.varvar"
+const constConstSUFIX = "subsumtpion.constconst"
+const guardedConstConstSUFIX = "subsumtpion.Gconstconst"
 
 // =========================== //
 //           HELPERS           //
@@ -18,28 +19,29 @@ func runSubsumptionConstConst(
 	c1, c2 components.Const,
 	simplify bool,
 ) {
-	var err error
-	var formula components.Component
 	context := components.NewContext(DIM, nil)
-	formula = ConstConst(c1, c2)
+	formula := ConstConst(c1, c2)
 	filePath := sfdtest.CNFName(constConstSUFIX, id, simplify)
-	if simplify {
-		formula, err = formula.Simplified(context)
-		if err != nil {
-			t.Errorf("Formula simplification error. %s", err.Error())
-			return
-		}
-	}
-	cnf, err := formula.Encoding(context)
-	if err != nil {
-		t.Errorf("Formula encoding error. %s", err.Error())
-		return
-	}
-	if err = cnf.ToFile(filePath); err != nil {
-		t.Errorf("CNF writing error. %s", err.Error())
-		return
-	}
-	sfdtest.RunFormulaTest(t, id, expCode, filePath)
+	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
+}
+
+func runGuardedSubsumptionConstConst(
+	t *testing.T,
+	id, expCode int,
+	c1, c2 components.Const,
+	simplify bool,
+) {
+	x := components.GuardedConst("x")
+	y := components.GuardedConst("y")
+	context := components.NewContext(DIM, nil)
+	context.Guards = append(
+		context.Guards,
+		components.Guard{Target: "x", Value: c1, Rep: "1"},
+		components.Guard{Target: "y", Value: c2, Rep: "2"},
+	)
+	formula := ConstConst(x, y)
+	filePath := sfdtest.CNFName(guardedConstConstSUFIX, id, simplify)
+	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
 
 // =========================== //
@@ -51,6 +53,22 @@ func TestConstConst_Encoding(t *testing.T) {
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runSubsumptionConstConst(t, i, tc.expCode, tc.val1, tc.val2, false)
+		})
+	}
+}
+
+func TestConstConst_Encoding_Guarded(t *testing.T) {
+	sfdtest.AddCleanup(t, guardedConstConstSUFIX, false)
+	for i, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			runGuardedSubsumptionConstConst(
+				t,
+				i,
+				tc.expCode,
+				tc.val1,
+				tc.val2,
+				false,
+			)
 		})
 	}
 }

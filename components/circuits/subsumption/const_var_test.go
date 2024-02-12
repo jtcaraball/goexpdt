@@ -8,6 +8,7 @@ import (
 )
 
 const constVarSUFIX = "subsumtpion.constvar"
+const guardedConstVarSUFIX = "subsumtpion.Gconstvar"
 
 // =========================== //
 //           HELPERS           //
@@ -19,11 +20,9 @@ func runSubsumptionConstVar(
 	c1, c2 components.Const,
 	simplify bool,
 ) {
-	var err error
-	var formula components.Component
 	y := components.NewVar("y")
 	context := components.NewContext(DIM, nil)
-	formula = operators.WithVar(
+	formula := operators.WithVar(
 		y,
 		operators.And(
 			operators.And(VarConst(y, c2), ConstVar(c2, y)),
@@ -31,23 +30,31 @@ func runSubsumptionConstVar(
 		),
 	)
 	filePath := sfdtest.CNFName(constVarSUFIX, id, simplify)
-	if simplify {
-		formula, err = formula.Simplified(context)
-		if err != nil {
-			t.Errorf("Formula simplification error. %s", err.Error())
-			return
-		}
-	}
-	cnf, err := formula.Encoding(context)
-	if err != nil {
-		t.Errorf("Formula encoding error. %s", err.Error())
-		return
-	}
-	if err = cnf.ToFile(filePath); err != nil {
-		t.Errorf("CNF writing error. %s", err.Error())
-		return
-	}
-	sfdtest.RunFormulaTest(t, id, expCode, filePath)
+	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
+}
+
+func runGuardedSubsumptionConstVar(
+	t *testing.T,
+	id, expCode int,
+	c1, c2 components.Const,
+	simplify bool,
+) {
+	x := components.GuardedConst("x")
+	y := components.Var("y")
+	context := components.NewContext(DIM, nil)
+	context.Guards = append(
+		context.Guards,
+		components.Guard{Target: "x", Value: c1, Rep: "1"},
+	)
+	formula := operators.WithVar(
+		y,
+		operators.And(
+			operators.And(VarConst(y, c2), ConstVar(c2, y)),
+			ConstVar(x, y),
+		),
+	)
+	filePath := sfdtest.CNFName(guardedConstVarSUFIX, id, simplify)
+	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
 
 // =========================== //
@@ -59,6 +66,22 @@ func TestConstVar_Encoding(t *testing.T) {
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runSubsumptionConstVar(t, i, tc.expCode, tc.val1, tc.val2, false)
+		})
+	}
+}
+
+func TestConstVar_Encoding_Guarded(t *testing.T) {
+	sfdtest.AddCleanup(t, guardedConstVarSUFIX, false)
+	for i, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			runGuardedSubsumptionConstVar(
+				t,
+				i,
+				tc.expCode,
+				tc.val1,
+				tc.val2,
+				false,
+			)
 		})
 	}
 }

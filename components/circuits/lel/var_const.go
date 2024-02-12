@@ -66,13 +66,14 @@ func (l *varConst) buildEncoding(
 	return cnf, nil
 }
 
+// TODO: Add correct simplification for guarded const.
 // Return pointer to simplified equivalent component which might be itself.
 func (l *varConst) Simplified(
 	ctx *components.Context,
 ) (components.Component, error) {
 	scpConst, err := l.constInst.Scoped(ctx)
 	if err != nil {
-		return nil, err
+		return l, nil
 	}
 	if err = components.ValidateConstsDim(
 		"lel.VarConst",

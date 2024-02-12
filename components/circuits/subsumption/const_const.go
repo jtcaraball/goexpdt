@@ -58,17 +58,18 @@ func (s *constConst) buildEncoding(
 	return &cnf.CNF{}, nil
 }
 
+// TODO: Add correct simplification for guarded const.
 // Return pointer to simplified equivalent component which might be itself.
 func (s *constConst) Simplified(
 	ctx *components.Context,
 ) (components.Component, error) {
 	scpConst1, err := s.constInst1.Scoped(ctx)
 	if err != nil {
-		return nil, err
+		return s, nil
 	}
 	scpConst2, err := s.constInst2.Scoped(ctx)
 	if err != nil {
-		return nil, err
+		return s, nil
 	}
 	if err = components.ValidateConstsDim(
 		"subsumption.ConstConst",

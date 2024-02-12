@@ -57,7 +57,7 @@ func (f *fConst) Simplified(
 ) (components.Component, error) {
 	scpConst, err := f.constInst.Scoped(ctx)
 	if err != nil {
-		return nil, err
+		return f, nil
 	}
 	if err = components.ValidateConstsDim(
 		"full.Const",

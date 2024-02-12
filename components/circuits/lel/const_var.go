@@ -66,13 +66,14 @@ func (l *constVar) buildEncoding(
 	return cnf, nil
 }
 
+// TODO: Add correct simplification for guarded const.
 // Return pointer to simplified equivalent component which might be itself.
-func (s *constVar) Simplified(
+func (l *constVar) Simplified(
 	ctx *components.Context,
 ) (components.Component, error) {
-	scpConst, err := s.constInst.Scoped(ctx)
+	scpConst, err := l.constInst.Scoped(ctx)
 	if err != nil {
-		return nil, nil  // No simplification can be done here.
+		return l, nil
 	}
 	if err = components.ValidateConstsDim(
 		"lel.ConstVar",
@@ -81,7 +82,7 @@ func (s *constVar) Simplified(
 	); err != nil {
 		return nil, err
 	}
-	return s.buildSimplification(scpConst, ctx)
+	return l.buildSimplification(scpConst, ctx)
 }
 
 // Generate simplified component.

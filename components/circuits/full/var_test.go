@@ -20,11 +20,9 @@ func runFullVar(
 	c components.Const,
 	simplify bool,
 ) {
-	var err error
-	var formula components.Component
 	x := components.NewVar("x")
 	context := components.NewContext(DIM, nil)
-	formula = operators.WithVar(
+	formula := operators.WithVar(
 		x,
 		operators.And(
 			operators.And(
@@ -35,23 +33,7 @@ func runFullVar(
 		),
 	)
 	filePath := sfdtest.CNFName(varSUFIX, id, simplify)
-	if simplify {
-		formula, err = formula.Simplified(context)
-		if err != nil {
-			t.Errorf("Formula simplification error. %s", err.Error())
-			return
-		}
-	}
-	cnf, err := formula.Encoding(context)
-	if err != nil {
-		t.Errorf("Formula encoding error. %s", err.Error())
-		return
-	}
-	if err = cnf.ToFile(filePath); err != nil {
-		t.Errorf("CNF writing error. %s", err.Error())
-		return
-	}
-	sfdtest.RunFormulaTest(t, id, expCode, filePath)
+	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
 
 // =========================== //

@@ -106,6 +106,15 @@ func TestConstVar_Simplified(t *testing.T) {
 	}
 }
 
+func TestConstVar_Simplified_Guarded(t *testing.T) {
+	sfdtest.AddCleanup(t, guardedConstVarSUFIX, true)
+	for i, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			runGuardedLELConstVar(t, i, tc.expCode, tc.val1, tc.val2, true)
+		})
+	}
+}
+
 func TestConstVar_Simplified_WrongDim(t *testing.T) {
 	x := components.Const{components.BOT, components.BOT, components.BOT}
 	y := components.NewVar("y")

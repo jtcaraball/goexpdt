@@ -11,7 +11,7 @@ import (
 
 type constVar struct {
 	varInst components.Var
-	constInst components.Const
+	constInst components.ConstInstance
 }
 
 // =========================== //
@@ -19,7 +19,10 @@ type constVar struct {
 // =========================== //
 
 // Return constVar lel.
-func ConstVar(constInst components.Const, varInst components.Var) *constVar {
+func ConstVar(
+	constInst components.ConstInstance,
+	varInst components.Var,
+) *constVar {
 	return &constVar{constInst: constInst, varInst: varInst}
 }
 
@@ -69,7 +72,7 @@ func (s *constVar) Simplified(
 ) (components.Component, error) {
 	scpConst, err := s.constInst.Scoped(ctx)
 	if err != nil {
-		return nil, err
+		return nil, nil  // No simplification can be done here.
 	}
 	if err = components.ValidateConstsDim(
 		"lel.ConstVar",

@@ -1,7 +1,6 @@
 package allcomp
 
 import (
-	"fmt"
 	"errors"
 	"stratifoiled/cnf"
 	"stratifoiled/trees"
@@ -13,7 +12,7 @@ import (
 // =========================== //
 
 type acConst struct {
-	constInst components.Const
+	constInst components.ConstInstance
 	leafValue bool
 }
 
@@ -22,7 +21,7 @@ type acConst struct {
 // =========================== //
 
 // Return varVar lel.
-func Const(constInst components.Const, leafValue bool) *acConst {
+func Const(constInst components.ConstInstance, leafValue bool) *acConst {
 	return &acConst{constInst: constInst, leafValue: leafValue}
 }
 
@@ -136,18 +135,4 @@ func (ac *acConst) GetChildren() []components.Component {
 // yes is true if struct is trivial and value represents its truthiness.
 func (ac *acConst) IsTrivial() (yes bool, value bool) {
 	return false, false
-}
-
-// Return error if constInst value is invalid.
-func (ac *acConst) validateInstances(ctx *components.Context) error {
-	if len(ac.constInst) != ctx.Dimension {
-		return errors.New(
-			fmt.Sprintf(
-				"allComp.Const -> constant: wrong dim %d (%d feats in context)",
-				len(ac.constInst),
-				ctx.Dimension,
-			),
-		)
-	}
-	return nil
 }

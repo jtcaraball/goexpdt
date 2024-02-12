@@ -19,7 +19,10 @@ type constVar struct {
 // =========================== //
 
 // Return constVar subsumption.
-func ConstVar(constInst components.Const, varInst components.Var) *constVar {
+func ConstVar(
+	constInst components.ConstInstance,
+	varInst components.Var,
+) *constVar {
 	return &constVar{constInst: constInst, varInst: varInst}
 }
 

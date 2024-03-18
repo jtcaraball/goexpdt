@@ -36,7 +36,7 @@ func (ac *acConst) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 	}
 	if err = components.ValidateConstsDim(
 		"full.Const",
-		ctx,
+		ctx.Dimension,
 		scpConst,
 	); err != nil {
 		return nil, err
@@ -88,7 +88,7 @@ func (ac *acConst) Simplified(
 	}
 	if err = components.ValidateConstsDim(
 		"full.Const",
-		ctx,
+		ctx.Dimension,
 		scpConst,
 	); err != nil {
 		return nil, err

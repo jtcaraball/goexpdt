@@ -35,7 +35,7 @@ func (s *constVar) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 	scpVar := s.varInst.Scoped(ctx)
 	if err = components.ValidateConstsDim(
 		"subsumption.ConstVar",
-		ctx,
+		ctx.Dimension,
 		scpConst,
 	); err != nil {
 		return nil, err
@@ -72,7 +72,7 @@ func (s *constVar) Simplified(
 	}
 	if err = components.ValidateConstsDim(
 		"subsumption.ConstVar",
-		ctx,
+		ctx.Dimension,
 		scpConst,
 	); err != nil {
 		return nil, err

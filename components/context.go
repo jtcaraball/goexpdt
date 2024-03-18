@@ -106,6 +106,16 @@ func (c *Context) GetVars() map[ContextVar]int {
 	return c.vars
 }
 
+// Add guard with the given target.
+func (c *Context) AddGuard(target string) {
+	c.Guards = append(c.Guards, Guard{Target: target})
+}
+
+// Remove last guard.
+func (c *Context) PopGuard() {
+	c.Guards = c.Guards[:len(c.Guards)]
+}
+
 // Return all trees nodes as slice of constants.
 func (c *Context) NodesAsConsts() ([]Const, error) {
 	if c.nodeConsts != nil {

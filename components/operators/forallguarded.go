@@ -33,14 +33,9 @@ func ForAllGuarded(
 func (fag *forAllGuarded) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 	nCNF := &cnf.CNF{}
 	gIdx := len(ctx.Guards)
-	ctx.Guards = append(
-		ctx.Guards,
-		components.Guard{Target: string(fag.instance)},
-	)
-	// Remove guard after encoding.
-	defer func() {
-		ctx.Guards = ctx.Guards[:gIdx]
-	}()
+	// Add guard and remove guard after encoding.
+	ctx.AddGuard(string(fag.instance))
+	defer ctx.PopGuard()
 	// Get trees nodes from context.
 	nodeConsts, err := ctx.NodesAsConsts()
 	if err != nil {

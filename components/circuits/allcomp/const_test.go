@@ -3,13 +3,15 @@ package allcomp
 import (
 	"fmt"
 	"stratifoiled/components"
-	"stratifoiled/components/instances"
 	"stratifoiled/sfdtest"
 	"stratifoiled/trees"
 	"testing"
 )
 
-const constSUFIX = "allComp.const"
+const (
+	constSUFIX = "allComp.const"
+	guardedConstSUFIX = "allComp.Gconst"
+)
 
 // =========================== //
 //           HELPERS           //
@@ -18,37 +20,37 @@ const constSUFIX = "allComp.const"
 func runAllCompConst(
 	t *testing.T,
 	id, expCode int,
-	c instances.Const,
+	c components.Const,
 	tree *trees.Tree,
 	leafValue bool,
 	simplify bool,
 ) {
-	var err error
-	var formula components.Component
 	context := components.NewContext(DIM, tree)
-	formula = Const(c, leafValue)
+	formula := Const(c, leafValue)
 	filePath := sfdtest.CNFName(compConstSufix(leafValue), id, simplify)
-	if simplify {
-		formula, err = formula.Simplified(context)
-		if err != nil {
-			t.Errorf("Formula simplification error. %s", err.Error())
-			return
-		}
-	}
-	cnf, err := formula.Encoding(context)
-	if err != nil {
-		t.Errorf("Formula encoding error. %s", err.Error())
-		return
-	}
-	if err = cnf.ToFile(filePath); err != nil {
-		t.Errorf("CNF writing error. %s", err.Error())
-		return
-	}
-	sfdtest.RunFormulaTest(t, id, expCode, filePath)
+	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
+}
+
+func runGuardedAllCompConst(
+	t *testing.T,
+	id, expCode int,
+	c components.Const,
+	tree *trees.Tree,
+	leafValue bool,
+	simplify bool,
+) {
+	context := components.NewContext(DIM, tree)
+	formula := Const(c, leafValue)
+	filePath := sfdtest.CNFName(compGuardedConstSufix(leafValue), id, simplify)
+	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
 
 func compConstSufix(val bool) string {
 	return constSUFIX + fmt.Sprintf("%t", val)
+}
+
+func compGuardedConstSufix(val bool) string {
+	return guardedConstSUFIX + fmt.Sprintf("%t", val)
 }
 
 // =========================== //
@@ -65,6 +67,16 @@ func TestConst_Encoding_AllPos(t *testing.T) {
 	}
 }
 
+func TestConst_Encoding_AllPos_Guarded(t *testing.T) {
+	sfdtest.AddCleanup(t, compGuardedConstSufix(true), false)
+	tree := genTree()
+	for i, tc := range allPosTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runGuardedAllCompConst(t, i, tc.expCode, tc.val, tree, true, false)
+		})
+	}
+}
+
 func TestConst_Encoding_AllNeg(t *testing.T) {
 	sfdtest.AddCleanup(t, compConstSufix(false), false)
 	tree := genTree()
@@ -75,8 +87,18 @@ func TestConst_Encoding_AllNeg(t *testing.T) {
 	}
 }
 
+func TestConst_Encoding_AllNeg_Guraded(t *testing.T) {
+	sfdtest.AddCleanup(t, compGuardedConstSufix(false), false)
+	tree := genTree()
+	for i, tc := range allNegTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runGuardedAllCompConst(t, i, tc.expCode, tc.val, tree, false, false)
+		})
+	}
+}
+
 func TestConst_Encoding_WrongDim(t *testing.T) {
-	x := instances.Const{instances.BOT, instances.BOT, instances.BOT}
+	x := components.Const{components.BOT, components.BOT, components.BOT}
 	formula := Const(x, true)
 	context := components.NewContext(4, &trees.Tree{Root: &trees.Node{}})
 	_, err := formula.Encoding(context)
@@ -95,6 +117,16 @@ func TestConst_Simplified_AllPos(t *testing.T) {
 	}
 }
 
+func TestConst_Simplified_AllPos_Guarded(t *testing.T) {
+	sfdtest.AddCleanup(t, compGuardedConstSufix(true), true)
+	tree := genTree()
+	for i, tc := range allPosTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runGuardedAllCompConst(t, i, tc.expCode, tc.val, tree, true, true)
+		})
+	}
+}
+
 func TestConst_Simplified_AllNeg(t *testing.T) {
 	sfdtest.AddCleanup(t, compConstSufix(false), true)
 	tree := genTree()
@@ -105,8 +137,18 @@ func TestConst_Simplified_AllNeg(t *testing.T) {
 	}
 }
 
+func TestConst_Simplified_AllNeg_Guraded(t *testing.T) {
+	sfdtest.AddCleanup(t, compGuardedConstSufix(false), true)
+	tree := genTree()
+	for i, tc := range allNegTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runGuardedAllCompConst(t, i, tc.expCode, tc.val, tree, false, true)
+		})
+	}
+}
+
 func TestConstConst_Simplified_WrongDim(t *testing.T) {
-	x := instances.Const{instances.BOT, instances.BOT, instances.BOT}
+	x := components.Const{components.BOT, components.BOT, components.BOT}
 	formula := Const(x, true)
 	context := components.NewContext(4, &trees.Tree{Root: &trees.Node{}})
 	_, err := formula.Simplified(context)
@@ -116,7 +158,7 @@ func TestConstConst_Simplified_WrongDim(t *testing.T) {
 }
 
 func TestConst_GetChildren(t *testing.T) {
-	x := instances.NewVar("x")
+	x := components.NewVar("x")
 	formula := Var(x, true)
 	children := formula.GetChildren()
 	if len(children) != 0 {
@@ -129,7 +171,7 @@ func TestConst_GetChildren(t *testing.T) {
 }
 
 func TestConst_IsTrivial(t *testing.T) {
-	x := instances.NewVar("x")
+	x := components.NewVar("x")
 	formula := Var(x, true)
 	isTrivial, _ := formula.IsTrivial()
 	if isTrivial {

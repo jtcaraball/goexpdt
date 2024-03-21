@@ -1,11 +1,8 @@
 package subsumption
 
 import (
-	"errors"
-	"fmt"
 	"stratifoiled/cnf"
 	"stratifoiled/components"
-	"stratifoiled/components/instances"
 )
 
 // =========================== //
@@ -13,8 +10,8 @@ import (
 // =========================== //
 
 type constConst struct {
-	constInst1 instances.Const
-	constInst2 instances.Const
+	constInst1 components.ConstInstance
+	constInst2 components.ConstInstance
 }
 
 // =========================== //
@@ -23,33 +20,76 @@ type constConst struct {
 
 
 // Return constConst subsumption.
-func ConstConst(constInst1, constInst2 instances.Const) *constConst {
+func ConstConst(constInst1, constInst2 components.ConstInstance) *constConst {
 	return &constConst{constInst1: constInst1, constInst2: constInst2}
 }
 
 // Return CNF encoding of component.
 func (s *constConst) Encoding(ctx *components.Context) (*cnf.CNF, error) {
-	if err := s.validateInstances(ctx); err != nil {
+	scpConst1, err := s.constInst1.Scoped(ctx)
+	if err != nil {
 		return nil, err
 	}
-	for i, f := range s.constInst1 {
-		if f != instances.BOT && f != s.constInst2[i] {
+	scpConst2, err := s.constInst2.Scoped(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if err = components.ValidateConstsDim(
+		"subsumption.ConstConst",
+		ctx.Dimension,
+		scpConst1,
+		scpConst2,
+	); err != nil {
+		return nil, err
+	}
+	return s.buildEncoding(scpConst1, scpConst2, ctx)
+}
+
+// Generate cnf encoding.
+func (s *constConst) buildEncoding(
+	constInst1, constInst2 components.Const,
+	ctx *components.Context,
+) (*cnf.CNF, error) {
+	for i, ft := range constInst1 {
+		if ft != components.BOT && ft != constInst2[i] {
 			return cnf.CNFFromClauses([][]int{{}}), nil
 		}
 	}
 	return &cnf.CNF{}, nil
 }
 
+// TODO: Add correct simplification for guarded const.
 // Return pointer to simplified equivalent component which might be itself.
-// This method may change the state of the caller.
 func (s *constConst) Simplified(
 	ctx *components.Context,
 ) (components.Component, error) {
-	if err := s.validateInstances(ctx); err != nil {
+	scpConst1, err := s.constInst1.Scoped(ctx)
+	if err != nil {
+		return s, nil
+	}
+	scpConst2, err := s.constInst2.Scoped(ctx)
+	if err != nil {
+		return s, nil
+	}
+	if err = components.ValidateConstsDim(
+		"subsumption.ConstConst",
+		ctx.Dimension,
+		scpConst1,
+		scpConst2,
+	); err != nil {
 		return nil, err
 	}
-	for i, f := range s.constInst1 {
-		if f != instances.BOT && f != s.constInst2[i] {
+	return s.buildSimplification(scpConst1, scpConst2, ctx)
+}
+
+// Generate simplified component.
+func (s *constConst) buildSimplification(
+	constInst1 components.Const,
+	constInst2 components.Const,
+	ctx *components.Context,
+) (components.Component, error) {
+	for i, ft := range constInst1 {
+		if ft != components.BOT && ft != constInst2[i] {
 			return components.NewTrivial(false), nil
 		}
 	}
@@ -64,30 +104,4 @@ func (s *constConst) GetChildren() []components.Component {
 // yes is true if struct is trivial and value represents its truthiness.
 func (s *constConst) IsTrivial() (yes bool, value bool) {
 	return false, false
-}
-
-func (s *constConst) validateInstances(ctx *components.Context) error {
-	if len(s.constInst1) != ctx.Dimension {
-		return errors.New(
-			fmt.Sprintf(
-				`subsumption.constConst -> constant%d: wrong dim %d
-				(%d feats in context)`,
-				1,
-				len(s.constInst1),
-				ctx.Dimension,
-			),
-		)
-	}
-	if len(s.constInst2) != ctx.Dimension {
-		return errors.New(
-			fmt.Sprintf(
-				`subsumption.constConst -> constant%d: wrong dim %d
-				(%d feats in context)`,
-				2,
-				len(s.constInst2),
-				ctx.Dimension,
-			),
-		)
-	}
-	return nil
 }

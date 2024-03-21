@@ -8,11 +8,7 @@ RUN apt-get update && apt-get install unzip
 WORKDIR /stratiFOILed-Go
 
 # Copy project
-COPY main.go go.mod ./
-COPY components ./components
-COPY cnf ./cnf
-COPY trees ./trees
-COPY sfdtest ./sfdtest
+COPY . .
 
 # Get kissat repo
 ADD https://github.com/arminbiere/kissat/archive/refs/tags/rel-3.1.1.zip rel-3.1.1.zip

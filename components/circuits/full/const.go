@@ -1,11 +1,8 @@
 package full
 
 import (
-	"fmt"
-	"errors"
 	"stratifoiled/cnf"
 	"stratifoiled/components"
-	"stratifoiled/components/instances"
 )
 
 // =========================== //
@@ -13,7 +10,7 @@ import (
 // =========================== //
 
 type fConst struct {
-	constInst instances.Const
+	constInst components.ConstInstance
 }
 
 // =========================== //
@@ -21,17 +18,33 @@ type fConst struct {
 // =========================== //
 
 // Return const full.
-func Const(constInst instances.Const) *fConst {
+func Const(constInst components.ConstInstance) *fConst {
 	return &fConst{constInst: constInst}
 }
 
 // Return CNF encoding of component.
 func (f *fConst) Encoding(ctx *components.Context) (*cnf.CNF, error) {
-	if err := f.validateInstances(ctx); err != nil {
+	scpConst, err := f.constInst.Scoped(ctx)
+	if err != nil {
 		return nil, err
 	}
-	for _, ft := range f.constInst {
-		if ft == instances.BOT {
+	if err = components.ValidateConstsDim(
+		"full.Const",
+		ctx.Dimension,
+		scpConst,
+	); err != nil {
+		return nil, err
+	}
+	return f.buildEncoding(scpConst, ctx)
+}
+
+// Generate cnf encoding.
+func (f *fConst) buildEncoding(
+	constInst components.Const,
+	ctx *components.Context,
+) (*cnf.CNF, error) {
+	for _, ft := range constInst {
+		if ft == components.BOT {
 			return cnf.CNFFromClauses([][]int{{}}), nil
 		}
 	}
@@ -39,15 +52,30 @@ func (f *fConst) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 }
 
 // Return pointer to simplified equivalent component which might be itself.
-// This method may change the state of the caller.
 func (f *fConst) Simplified(
 	ctx *components.Context,
 ) (components.Component, error) {
-	if err := f.validateInstances(ctx); err != nil {
+	scpConst, err := f.constInst.Scoped(ctx)
+	if err != nil {
+		return f, nil
+	}
+	if err = components.ValidateConstsDim(
+		"full.Const",
+		ctx.Dimension,
+		scpConst,
+	); err != nil {
 		return nil, err
 	}
-	for _, ft := range f.constInst {
-		if ft == instances.BOT {
+	return f.buildSimplified(scpConst, ctx)
+}
+
+// Generate simplified component.
+func (f *fConst) buildSimplified(
+	constInst components.Const,
+	ctx *components.Context,
+) (components.Component, error) {
+	for _, ft := range constInst {
+		if ft == components.BOT {
 			return components.NewTrivial(false), nil
 		}
 	}
@@ -62,17 +90,4 @@ func (f *fConst) GetChildren() []components.Component {
 // yes is true if struct is trivial and value represents its truthiness.
 func (f *fConst) IsTrivial() (yes bool, value bool) {
 	return false, false
-}
-
-func (f *fConst) validateInstances(ctx *components.Context) error {
-	if len(f.constInst) != ctx.Dimension {
-		return errors.New(
-			fmt.Sprintf(
-				"full -> constant: wrong dim %d (%d feats in context)",
-				len(f.constInst),
-				ctx.Dimension,
-			),
-		)
-	}
-	return nil
 }

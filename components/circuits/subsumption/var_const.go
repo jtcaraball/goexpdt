@@ -1,11 +1,8 @@
 package subsumption
 
 import (
-	"errors"
-	"fmt"
 	"stratifoiled/cnf"
 	"stratifoiled/components"
-	"stratifoiled/components/instances"
 )
 
 // =========================== //
@@ -13,8 +10,8 @@ import (
 // =========================== //
 
 type varConst struct {
-	varInst instances.Var
-	constInst instances.Const
+	varInst components.Var
+	constInst components.ConstInstance
 }
 
 // =========================== //
@@ -22,48 +19,65 @@ type varConst struct {
 // =========================== //
 
 // Return varConst subsumption.
-func VarConst(varInst instances.Var, constInst instances.Const) *varConst {
+func VarConst(
+	varInst components.Var,
+	constInst components.ConstInstance,
+) *varConst {
 	return &varConst{varInst: varInst, constInst: constInst}
 }
 
 // Return CNF encoding of component.
 func (s *varConst) Encoding(ctx *components.Context) (*cnf.CNF, error) {
-	if err := s.validateInstances(ctx); err != nil {
+	scpConst, err := s.constInst.Scoped(ctx)
+	if err != nil {
 		return nil, err
 	}
+	scpVar := s.varInst.Scoped(ctx)
+	if err = components.ValidateConstsDim(
+		"subsumption.VarConst",
+		ctx.Dimension,
+		scpConst,
+	); err != nil {
+		return nil, err
+	}
+	return s.buildEncoding(scpVar, scpConst, ctx)
+}
+
+// Generate cnf encoding.
+func (s *varConst) buildEncoding(
+	varInst components.Var,
+	constInst components.Const,
+	ctx *components.Context,
+) (*cnf.CNF, error) {
 	clauses := [][]int{}
-	for i, f := range s.constInst {
-		if f == instances.ONE {
+	for i, ft := range constInst {
+		if ft == components.ONE {
 			clauses = append(
 				clauses,
-				[]int{-ctx.Var(string(s.varInst), i, instances.ZERO.Val())},
+				[]int{-ctx.Var(string(varInst), i, components.ZERO.Val())},
 			)
 			continue
 		}
-		if f == instances.ZERO {
+		if ft == components.ZERO {
 			clauses = append(
 				clauses,
-				[]int{-ctx.Var(string(s.varInst), i, instances.ONE.Val())},
+				[]int{-ctx.Var(string(varInst), i, components.ONE.Val())},
 			)
 			continue
 		}
 		clauses = append(
 			clauses,
-			[]int{-ctx.Var(string(s.varInst), i, instances.ONE.Val())},
-			[]int{-ctx.Var(string(s.varInst), i, instances.ZERO.Val())},
+			[]int{-ctx.Var(string(varInst), i, components.ONE.Val())},
+			[]int{-ctx.Var(string(varInst), i, components.ZERO.Val())},
 		)
 	}
 	return cnf.CNFFromClauses(clauses), nil
 }
 
 // Return pointer to simplified equivalent component which might be itself.
-// This method may change the state of the caller.
 func (s *varConst) Simplified(
 	ctx *components.Context,
 ) (components.Component, error) {
-	if err := s.validateInstances(ctx); err != nil {
-		return nil, err
-	}
 	return s, nil
 }
 
@@ -75,18 +89,4 @@ func (s *varConst) GetChildren() []components.Component {
 // yes is true if struct is trivial and value represents its truthiness.
 func (s *varConst) IsTrivial() (yes bool, value bool) {
 	return false, false
-}
-
-func (s *varConst) validateInstances(ctx *components.Context) error {
-	if len(s.constInst) != ctx.Dimension {
-		return errors.New(
-			fmt.Sprintf(
-				`subsumption.constVar -> constant: wrong dim %d
-				(%d feats in context)`,
-				len(s.constInst),
-				ctx.Dimension,
-			),
-		)
-	}
-	return nil
 }

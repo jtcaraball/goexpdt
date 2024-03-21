@@ -1,9 +1,6 @@
 package lel
 
-import (
-	"stratifoiled/components"
-	"stratifoiled/components/instances"
-)
+import "stratifoiled/components"
 
 func genCountClauses(varName string, ctx *components.Context) [][]int {
 	var i, j int
@@ -14,7 +11,7 @@ func genCountClauses(varName string, ctx *components.Context) [][]int {
 			clauses,
 			[]int{
 				-ctx.IVar(cVarName, i, 0),
-				-ctx.Var(varName, i, instances.BOT.Val()),
+				-ctx.Var(varName, i, components.BOT.Val()),
 			},
 			[]int{
 				-ctx.IVar(cVarName, i, 0),
@@ -22,7 +19,7 @@ func genCountClauses(varName string, ctx *components.Context) [][]int {
 			},
 			[]int{
 				-ctx.IVar(cVarName, i - 1, 0),
-				ctx.Var(varName, i, instances.BOT.Val()),
+				ctx.Var(varName, i, components.BOT.Val()),
 				ctx.IVar(cVarName, i, 0),
 			},
 		)
@@ -35,7 +32,7 @@ func genCountClauses(varName string, ctx *components.Context) [][]int {
 					// -context.V[(var.name, i, Symbol.BOT)]
 					-ctx.IVar(cVarName, i, j),
 					ctx.IVar(cVarName, i - 1, j - 1),
-					-ctx.Var(varName, i, instances.BOT.Val()),
+					-ctx.Var(varName, i, components.BOT.Val()),
 				},
 				[]int {
 					// context.V[('c', var.name, i, j)],
@@ -43,7 +40,7 @@ func genCountClauses(varName string, ctx *components.Context) [][]int {
 					// -context.V[(var.name, i, Symbol.BOT)]
 					ctx.IVar(cVarName, i, j),
 					-ctx.IVar(cVarName, i - 1, j - 1),
-					-ctx.Var(varName, i, instances.BOT.Val()),
+					-ctx.Var(varName, i, components.BOT.Val()),
 				},
 				[]int{
 					// -context.V[('c', var.name, i, j)],
@@ -51,7 +48,7 @@ func genCountClauses(varName string, ctx *components.Context) [][]int {
 					// context.V[(var.name, i, Symbol.BOT)]
 					-ctx.IVar(cVarName, i, j),
 					ctx.IVar(cVarName, i - 1, j),
-					ctx.Var(varName, i, instances.Bot().Val()),
+					ctx.Var(varName, i, components.BOT.Val()),
 				},
 				[]int {
 					// context.V[('c', var.name, i, j)],
@@ -59,7 +56,7 @@ func genCountClauses(varName string, ctx *components.Context) [][]int {
 					// context.V[(var.name, i, Symbol.BOT)]
 					ctx.IVar(cVarName, i, j),
 					-ctx.IVar(cVarName, i - 1, j),
-					ctx.Var(varName, i, instances.BOT.Val()),
+					ctx.Var(varName, i, components.BOT.Val()),
 				},
 			)
 		}
@@ -75,24 +72,24 @@ func genCountClauses(varName string, ctx *components.Context) [][]int {
 			// -context.V[('c', var.name, 0, 1)],
 			// context.V[(var.name, 0, Symbol.BOT)]
 			-ctx.IVar(cVarName, 0, 1),
-			ctx.Var(varName, 0, instances.BOT.Val()),
+			ctx.Var(varName, 0, components.BOT.Val()),
 		},
 		[]int{
 			// -context.V[(var.name, 0, Symbol.BOT)],
 			// context.V[('c', var.name, 0, 1)]
-			-ctx.Var(varName, 0, instances.BOT.Val()),
+			-ctx.Var(varName, 0, components.BOT.Val()),
 			ctx.IVar(cVarName, 0, 1),
 		},
 		[]int{
 			// -context.V[('c', var.name, 0, 0)],
 			// -context.V[(var.name, 0, Symbol.BOT)]
 			-ctx.IVar(cVarName, 0, 0),
-			-ctx.Var(varName, 0, instances.BOT.Val()),
+			-ctx.Var(varName, 0, components.BOT.Val()),
 		},
 		[]int{
 			// context.V[(var.name, 0, Symbol.BOT)],
 			// context.V[('c', var.name, 0, 0)]
-			ctx.Var(varName, 0, instances.BOT.Val()),
+			ctx.Var(varName, 0, components.BOT.Val()),
 			ctx.IVar(cVarName, 0, 0),
 		},
 	)

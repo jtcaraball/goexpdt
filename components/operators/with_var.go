@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"stratifoiled/cnf"
 	"stratifoiled/components"
-	"stratifoiled/components/instances"
 )
 
 // =========================== //
@@ -13,7 +12,7 @@ import (
 // =========================== //
 
 type withVar struct {
-	instance instances.Var
+	instance components.Var
 	child components.Component
 }
 
@@ -22,7 +21,7 @@ type withVar struct {
 // =========================== //
 
 // Return withVar operator.
-func WithVar(inst instances.Var, child components.Component) *withVar {
+func WithVar(inst components.Var, child components.Component) *withVar {
 	return &withVar{instance: inst, child: child}
 }
 
@@ -31,8 +30,19 @@ func (wv *withVar) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 	if err := wv.nonNilChildren(); err != nil {
 		return nil, err
 	}
-	iCNF := wv.instance.Encoding(ctx)
-	cCNF, err := wv.child.Encoding(ctx)
+	ctx.AddVarToScope(wv.instance)
+	scopedInst := wv.instance.Scoped(ctx)
+	return wv.buildEncoding(scopedInst, wv.child, ctx)
+}
+
+// Generate CNF encoding.
+func (wv *withVar) buildEncoding(
+	varInstance components.Var,
+	child components.Component,
+	ctx *components.Context,
+) (*cnf.CNF, error) {
+	iCNF := varInstance.Encoding(ctx)
+	cCNF, err := child.Encoding(ctx)
 	if err != nil {
 		return nil, withVarErr(err)
 	}
@@ -40,8 +50,7 @@ func (wv *withVar) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 	return iCNF, nil
 }
 
-// Return pointer to simplified equivalent component which might be itself.
-// This method may change the state of the caller.
+// Return pointer to simplified equivalent component.
 func (wv *withVar) Simplified(
 	ctx *components.Context,
 ) (components.Component, error) {
@@ -56,8 +65,7 @@ func (wv *withVar) Simplified(
 	if trivial {
 		return components.NewTrivial(value), nil
 	}
-	wv.child = simpleChild
-	return wv, nil
+	return &withVar{instance: wv.instance, child: simpleChild}, nil
 }
 
 // Return slice of pointers to component's children.

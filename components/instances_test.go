@@ -1,24 +1,9 @@
-package instances
+package components
 
 import (
-	"slices"
-	"stratifoiled/components"
 	"testing"
+	"stratifoiled/sfdtest"
 )
-
-// =========================== //
-//           HELPERS           //
-// =========================== //
-
-func clausesEq(c1, c2 [][]int) bool {
-	return slices.EqualFunc[[][]int](
-		c1,
-		c2,
-		func (l1, l2 []int) bool {
-			return slices.Equal[[]int](l1, l2)
-		},
-	)
-}
 
 // =========================== //
 //            TESTS            //
@@ -26,7 +11,7 @@ func clausesEq(c1, c2 [][]int) bool {
 
 func TestVar_Encode(t *testing.T) {
 	var Variable Var = "testVar"
-	ctx := components.NewContext(1, nil)
+	ctx := NewContext(1, nil)
 	encCNF := Variable.Encoding(ctx)
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{}
@@ -36,14 +21,14 @@ func TestVar_Encode(t *testing.T) {
 		{-1, -3},
 		{-2, -3},
 	}
-	if !clausesEq(sClauses, expSClauses) {
+	if !sfdtest.ClausesEq(sClauses, expSClauses) {
 		t.Errorf(
 			"Clauses not equal. Expected %d but got %d",
 			expSClauses,
 			sClauses,
 		)
 	}
-	if !clausesEq(cClauses, expCClauses) {
+	if !sfdtest.ClausesEq(cClauses, expCClauses) {
 		t.Errorf(
 			"Clauses not equal. Expected %d but got %d",
 			expCClauses,
@@ -51,3 +36,4 @@ func TestVar_Encode(t *testing.T) {
 		)
 	}
 }
+

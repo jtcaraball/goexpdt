@@ -38,9 +38,10 @@ func (n *not) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 	return cnf, nil
 }
 
-// Return pointer to simplified equivalent component which might be itself.
-// This method may change the state of the caller.
-func (n *not) Simplified(ctx *components.Context) (components.Component, error) {
+// Return pointer to simplified equivalent component.
+func (n *not) Simplified(
+	ctx *components.Context,
+) (components.Component, error) {
 	if err := n.nonNilChildren(); err != nil {
 		return nil, err
 	}
@@ -52,8 +53,7 @@ func (n *not) Simplified(ctx *components.Context) (components.Component, error) 
 	if trivial {
 		return components.NewTrivial(!value), nil
 	}
-	n.child = simpleChild
-	return n, nil
+	return &not{child: simpleChild}, nil
 }
 
 // Return slice of pointers to component's children.

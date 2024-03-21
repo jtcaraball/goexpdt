@@ -3,12 +3,11 @@ package operators
 import (
 	"testing"
 	"stratifoiled/components"
-	"stratifoiled/components/instances"
 	"stratifoiled/sfdtest"
 )
 
 func TestNot_Encoding(t *testing.T) {
-	x := instances.NewVar("x")
+	x := components.NewVar("x")
 	trivial := components.NewTrivial(false)
 	context := components.NewContext(1, nil)
 	component := Not(WithVar(x, trivial))
@@ -24,7 +23,7 @@ func TestNot_Encoding(t *testing.T) {
 }
 
 func TestNot_Simplified(t *testing.T) {
-	x := instances.NewVar("x")
+	x := components.NewVar("x")
 	trivial := components.NewTrivial(true)
 	context := components.NewContext(1, nil)
 	component := Not(WithVar(x, trivial))
@@ -45,7 +44,7 @@ func TestNot_Simplified(t *testing.T) {
 }
 
 func TestNot_GetChildren(t *testing.T) {
-	x := instances.NewVar("x")
+	x := components.NewVar("x")
 	trivial := components.NewTrivial(true)
 	childComp := WithVar(x, trivial)
 	component := Not(childComp)
@@ -68,7 +67,7 @@ func TestNot_GetChildren(t *testing.T) {
 }
 
 func TestNot_IsTrivial(t *testing.T) {
-	x := instances.NewVar("x")
+	x := components.NewVar("x")
 	trivial := components.NewTrivial(false)
 	component := Not(WithVar(x, trivial))
 	isTrivial, _ := component.IsTrivial()

@@ -2,12 +2,12 @@ package full
 
 import (
 	"stratifoiled/components"
-	"stratifoiled/components/instances"
 	"stratifoiled/sfdtest"
 	"testing"
 )
 
 const constSUFIX = "full.const"
+const guardedConstSUFIX = "full.Gconst"
 
 // =========================== //
 //           HELPERS           //
@@ -16,31 +16,30 @@ const constSUFIX = "full.const"
 func runFullConst(
 	t *testing.T,
 	id, expCode int,
-	c instances.Const,
+	c components.Const,
 	simplify bool,
 ) {
-	var err error
-	var formula components.Component
 	context := components.NewContext(DIM, nil)
-	formula = Const(c)
+	formula := Const(c)
 	filePath := sfdtest.CNFName(varSUFIX, id, simplify)
-	if simplify {
-		formula, err = formula.Simplified(context)
-		if err != nil {
-			t.Errorf("Formula simplification error. %s", err.Error())
-			return
-		}
-	}
-	cnf, err := formula.Encoding(context)
-	if err != nil {
-		t.Errorf("Formula encoding error. %s", err.Error())
-		return
-	}
-	if err = cnf.ToFile(filePath); err != nil {
-		t.Errorf("CNF writing error. %s", err.Error())
-		return
-	}
-	sfdtest.RunFormulaTest(t, id, expCode, filePath)
+	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
+}
+
+func runGuardedFullConst(
+	t *testing.T,
+	id, expCode int,
+	c components.Const,
+	simplify bool,
+) {
+	x := components.GuardedConst("x")
+	context := components.NewContext(DIM, nil)
+	context.Guards = append(
+		context.Guards,
+		components.Guard{Target: "x", Value: c, Rep: "1"},
+	)
+	formula := Const(x)
+	filePath := sfdtest.CNFName(guardedConstSUFIX, id, simplify)
+	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
 
 // =========================== //
@@ -48,7 +47,7 @@ func runFullConst(
 // =========================== //
 
 func TestConst_Encoding(t *testing.T) {
-	sfdtest.AddCleanup(t, varSUFIX, false)
+	sfdtest.AddCleanup(t, constSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runFullConst(t, i, tc.expCode, tc.val, false)
@@ -56,8 +55,17 @@ func TestConst_Encoding(t *testing.T) {
 	}
 }
 
+func TestConst_Encoding_Guarded(t *testing.T) {
+	sfdtest.AddCleanup(t, guardedConstSUFIX, false)
+	for i, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			runGuardedFullConst(t, i, tc.expCode, tc.val, false)
+		})
+	}
+}
+
 func TestConstConst_Encoding_WrongDim(t *testing.T) {
-	x := instances.Const{instances.BOT, instances.BOT, instances.BOT}
+	x := components.Const{components.BOT, components.BOT, components.BOT}
 	formula := Const(x)
 	context := components.NewContext(4, nil)
 	_, err := formula.Encoding(context)
@@ -75,8 +83,17 @@ func TestConst_Simplified(t *testing.T) {
 	}
 }
 
+func TestConst_Simplified_Guarded(t *testing.T) {
+	sfdtest.AddCleanup(t, guardedConstSUFIX, true)
+	for i, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			runGuardedFullConst(t, i, tc.expCode, tc.val, true)
+		})
+	}
+}
+
 func TestConstConst_Simplified_WrongDim(t *testing.T) {
-	x := instances.Const{instances.BOT, instances.BOT, instances.BOT}
+	x := components.Const{components.BOT, components.BOT, components.BOT}
 	formula := Const(x)
 	context := components.NewContext(4, nil)
 	_, err := formula.Simplified(context)
@@ -86,7 +103,7 @@ func TestConstConst_Simplified_WrongDim(t *testing.T) {
 }
 
 func TestConst_GetChildren(t *testing.T) {
-	x := instances.Const{instances.BOT, instances.BOT, instances.BOT}
+	x := components.Const{components.BOT, components.BOT, components.BOT}
 	formula := Const(x)
 	children := formula.GetChildren()
 	if len(children) != 0 {
@@ -99,7 +116,7 @@ func TestConst_GetChildren(t *testing.T) {
 }
 
 func TestConst_IsTrivial(t *testing.T) {
-	x := instances.Const{instances.BOT, instances.BOT, instances.BOT}
+	x := components.Const{components.BOT, components.BOT, components.BOT}
 	formula := Const(x)
 	isTrivial, _ := formula.IsTrivial()
 	if isTrivial {

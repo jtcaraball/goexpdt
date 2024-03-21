@@ -2,14 +2,13 @@ package operators
 
 import (
 	"stratifoiled/components"
-	"stratifoiled/components/instances"
 	"stratifoiled/sfdtest"
 	"testing"
 )
 
 func TestOr_Encoding_DTrue(t *testing.T) {
-	x := instances.NewVar("x")
-	y := instances.NewVar("y")
+	x := components.NewVar("x")
+	y := components.NewVar("y")
 	childX := WithVar(x, components.NewTrivial(true))
 	childY := WithVar(y, components.NewTrivial(true))
 	context := components.NewContext(1, nil)
@@ -26,8 +25,8 @@ func TestOr_Encoding_DTrue(t *testing.T) {
 }
 
 func TestOr_Encoding_DFalse(t *testing.T) {
-	x := instances.NewVar("x")
-	y := instances.NewVar("y")
+	x := components.NewVar("x")
+	y := components.NewVar("y")
 	childX := WithVar(x, components.NewTrivial(false))
 	childY := WithVar(y, components.NewTrivial(false))
 	context := components.NewContext(1, nil)
@@ -44,8 +43,8 @@ func TestOr_Encoding_DFalse(t *testing.T) {
 }
 
 func TestOr_Encoding_Mixed(t *testing.T) {
-	x := instances.NewVar("x")
-	y := instances.NewVar("y")
+	x := components.NewVar("x")
+	y := components.NewVar("y")
 	childX := WithVar(x, components.NewTrivial(true))
 	childY := WithVar(y, components.NewTrivial(false))
 	context := components.NewContext(1, nil)
@@ -62,8 +61,8 @@ func TestOr_Encoding_Mixed(t *testing.T) {
 }
 
 func TestOr_Simplified_DTrue(t *testing.T) {
-	x := instances.NewVar("x")
-	y := instances.NewVar("y")
+	x := components.NewVar("x")
+	y := components.NewVar("y")
 	childX := WithVar(x, components.NewTrivial(true))
 	childY := WithVar(y, components.NewTrivial(true))
 	context := components.NewContext(1, nil)
@@ -85,8 +84,8 @@ func TestOr_Simplified_DTrue(t *testing.T) {
 }
 
 func TestOr_Simplified_DFalse(t *testing.T) {
-	x := instances.NewVar("x")
-	y := instances.NewVar("y")
+	x := components.NewVar("x")
+	y := components.NewVar("y")
 	childX := WithVar(x, components.NewTrivial(false))
 	childY := WithVar(y, components.NewTrivial(false))
 	context := components.NewContext(1, nil)
@@ -108,8 +107,8 @@ func TestOr_Simplified_DFalse(t *testing.T) {
 }
 
 func TestOr_Simplified_Mixed(t *testing.T) {
-	x := instances.NewVar("x")
-	y := instances.NewVar("y")
+	x := components.NewVar("x")
+	y := components.NewVar("y")
 	childX := WithVar(x, components.NewTrivial(true))
 	childY := WithVar(y, components.NewTrivial(false))
 	context := components.NewContext(1, nil)
@@ -131,8 +130,8 @@ func TestOr_Simplified_Mixed(t *testing.T) {
 }
 
 func TestOr_GetChildren(t *testing.T) {
-	x := instances.NewVar("x")
-	y := instances.NewVar("y")
+	x := components.NewVar("x")
+	y := components.NewVar("y")
 	childX := WithVar(x, components.NewTrivial(true))
 	childY := WithVar(y, components.NewTrivial(false))
 	component := Or(childX, childY)
@@ -158,8 +157,8 @@ func TestOr_GetChildren(t *testing.T) {
 }
 
 func TestOr_IsTrivial(t *testing.T) {
-	x := instances.NewVar("x")
-	y := instances.NewVar("y")
+	x := components.NewVar("x")
+	y := components.NewVar("y")
 	childX := WithVar(x, components.NewTrivial(true))
 	childY := WithVar(y, components.NewTrivial(false))
 	component := Or(childX, childY)

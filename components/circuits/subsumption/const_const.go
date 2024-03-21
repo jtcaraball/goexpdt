@@ -50,8 +50,8 @@ func (s *constConst) buildEncoding(
 	constInst1, constInst2 components.Const,
 	ctx *components.Context,
 ) (*cnf.CNF, error) {
-	for i, f := range constInst1 {
-		if f != components.BOT && f != constInst2[i] {
+	for i, ft := range constInst1 {
+		if ft != components.BOT && ft != constInst2[i] {
 			return cnf.CNFFromClauses([][]int{{}}), nil
 		}
 	}
@@ -88,8 +88,8 @@ func (s *constConst) buildSimplification(
 	constInst2 components.Const,
 	ctx *components.Context,
 ) (components.Component, error) {
-	for i, f := range constInst1 {
-		if f != components.BOT && f != constInst2[i] {
+	for i, ft := range constInst1 {
+		if ft != components.BOT && ft != constInst2[i] {
 			return components.NewTrivial(false), nil
 		}
 	}

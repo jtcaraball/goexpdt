@@ -50,15 +50,15 @@ func (s *varConst) buildEncoding(
 	ctx *components.Context,
 ) (*cnf.CNF, error) {
 	clauses := [][]int{}
-	for i, f := range constInst {
-		if f == components.ONE {
+	for i, ft := range constInst {
+		if ft == components.ONE {
 			clauses = append(
 				clauses,
 				[]int{-ctx.Var(string(varInst), i, components.ZERO.Val())},
 			)
 			continue
 		}
-		if f == components.ZERO {
+		if ft == components.ZERO {
 			clauses = append(
 				clauses,
 				[]int{-ctx.Var(string(varInst), i, components.ONE.Val())},

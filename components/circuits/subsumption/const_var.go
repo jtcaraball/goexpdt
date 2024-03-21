@@ -85,8 +85,8 @@ func (s *constVar) buildSimplification(
 	constInst components.Const,
 	ctx *components.Context,
 ) (components.Component, error) {
-	for _, f := range constInst {
-		if f != components.BOT {
+	for _, ft := range constInst {
+		if ft != components.BOT {
 			return s, nil
 		}
 	}

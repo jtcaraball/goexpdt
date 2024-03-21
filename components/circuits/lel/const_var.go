@@ -53,8 +53,8 @@ func (l *constVar) buildEncoding(
 	cnf.ExtendConsistency(genCountClauses(string(varInst), ctx))
 	// Count amount of bots in constant.
 	botsInConst := 0
-	for _, f := range constInst {
-		if f == components.BOT {
+	for _, ft := range constInst {
+		if ft == components.BOT {
 			botsInConst += 1
 		}
 	}
@@ -91,8 +91,8 @@ func (l *constVar) buildSimplification(
 	ctx *components.Context,
 ) (components.Component, error) {
 	// If const has only bottoms then this predicate is trivialy true.
-	for _, f := range constInst {
-		if f != components.BOT {
+	for _, ft := range constInst {
+		if ft != components.BOT {
 			return l, nil
 		}
 	}

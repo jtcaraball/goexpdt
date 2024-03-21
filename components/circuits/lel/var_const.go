@@ -53,8 +53,8 @@ func (l *varConst) buildEncoding(
 	cnf.ExtendConsistency(genCountClauses(string(varInst), ctx))
 	// Count amount of bots in constant.
 	botsInConst := 0
-	for _, f := range constInst {
-		if f == components.BOT {
+	for _, ft := range constInst {
+		if ft == components.BOT {
 			botsInConst += 1
 		}
 	}
@@ -90,8 +90,8 @@ func (l *varConst) buildSimplified(
 	constInst components.Const,
 	ctx *components.Context,
 ) (components.Component, error) {
-	for _, f := range constInst {
-		if f == components.BOT {
+	for _, ft := range constInst {
+		if ft == components.BOT {
 			return l, nil
 		}
 	}

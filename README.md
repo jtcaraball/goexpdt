@@ -18,3 +18,4 @@ docker build -f dockerfiles/Dockerfile.Tests -t stratifoiled-go-tests --progress
   arguments.
 - Remove extra ContextVar `Inter` attribute and instead separate internal and
   external vars into two maps.
+- Add nill children test for operators.

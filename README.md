@@ -16,3 +16,5 @@ docker build -f dockerfiles/Dockerfile.Tests -t stratifoiled-go-tests --progress
 - Look into re-adding redundancy check to `Var` encoding.
 - Add correct simplification to circuits when passing `GuardedConst` as
   arguments.
+- Remove extra ContextVar `Inter` attribute and instead separate internal and
+  external vars into two maps.

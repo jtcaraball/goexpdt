@@ -31,6 +31,9 @@ func ForAllGuarded(
 
 // Return CNF encoding of component.
 func (fag *forAllGuarded) Encoding(ctx *components.Context) (*cnf.CNF, error) {
+	if err := fag.nonNilChildren(); err != nil {
+		return nil, err
+	}
 	nCNF := &cnf.CNF{}
 	gIdx := len(ctx.Guards)
 	// Add guard and remove guard after encoding.
@@ -63,6 +66,9 @@ func (fag *forAllGuarded) Encoding(ctx *components.Context) (*cnf.CNF, error) {
 func (fag *forAllGuarded) Simplified(
 	ctx *components.Context,
 ) (components.Component, error) {
+	if err := fag.nonNilChildren(); err != nil {
+		return nil, err
+	}
 	simpleChild, err := fag.child.Simplified(ctx)
 	if err != nil {
 		return nil, forAllGuardedErr(err)

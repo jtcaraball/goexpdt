@@ -3,7 +3,6 @@ package cnf
 import (
 	"os"
 	"slices"
-	"stratifoiled/sfdtest"
 	"testing"
 )
 
@@ -11,20 +10,30 @@ import (
 //           HELPERS           //
 // =========================== //
 
+func SlicesEq(c1, c2 [][]int) bool {
+	return slices.EqualFunc[[][]int](
+		c1,
+		c2,
+		func (l1, l2 []int) bool {
+			return slices.Equal[[]int](l1, l2)
+		},
+	)
+}
+
 func errorInClauses(
 	t *testing.T,
 	sClauses, cClauses, expSClauses, expCClauses [][]int,
 	topv, expTopV int,
 ) {
 	t.Helper()
-	if !sfdtest.ClausesEq(sClauses, expSClauses) {
+	if !SlicesEq(sClauses, expSClauses) {
 		t.Errorf(
 			"Semantic clauses not equal. Expected %d but got %d",
 			sClauses,
 			expSClauses,
 		)
 	}
-	if !sfdtest.ClausesEq(cClauses, expCClauses) {
+	if !SlicesEq(cClauses, expCClauses) {
 		t.Errorf(
 			"Consistency clauses not equal. Expected %d but got %d",
 			cClauses,

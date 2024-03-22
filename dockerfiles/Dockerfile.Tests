@@ -7,9 +7,6 @@ RUN apt-get update && apt-get install unzip
 
 WORKDIR /stratiFOILed-Go
 
-# Copy project
-COPY . .
-
 # Get kissat repo
 ADD https://github.com/arminbiere/kissat/archive/refs/tags/rel-3.1.1.zip rel-3.1.1.zip
 RUN unzip rel-3.1.1.zip
@@ -25,6 +22,9 @@ RUN make
 WORKDIR /stratiFOILed-Go
 RUN mv kissat/build/kissat /kissat
 RUN rm -rf kissat
+
+# Copy project
+COPY . .
 
 FROM build-stage AS run-tests-stage
 # Run the tests in the container

@@ -4,7 +4,7 @@ import (
 	"stratifoiled/base"
 	"stratifoiled/circuits/subsumption"
 	"stratifoiled/operators"
-	"stratifoiled/internal/test"
+	"stratifoiled/circuits/internal/test"
 	"testing"
 )
 
@@ -33,7 +33,7 @@ func runFullVar(
 		),
 	)
 	filePath := test.CNFName(varSUFIX, id, simplify)
-	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
+	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
 
 // =========================== //

@@ -2,7 +2,7 @@ package subsumption
 
 import (
 	"stratifoiled/base"
-	"stratifoiled/internal/test"
+	"stratifoiled/circuits/internal/test"
 	"testing"
 )
 
@@ -22,7 +22,7 @@ func runSubsumptionConstConst(
 	context := base.NewContext(DIM, nil)
 	formula := ConstConst(c1, c2)
 	filePath := test.CNFName(constConstSUFIX, id, simplify)
-	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
+	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
 
 func runGuardedSubsumptionConstConst(
@@ -41,7 +41,7 @@ func runGuardedSubsumptionConstConst(
 	)
 	formula := ConstConst(x, y)
 	filePath := test.CNFName(guardedConstConstSUFIX, id, simplify)
-	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
+	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
 
 // =========================== //

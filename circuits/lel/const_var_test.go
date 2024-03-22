@@ -4,7 +4,7 @@ import (
 	"stratifoiled/base"
 	"stratifoiled/circuits/subsumption"
 	"stratifoiled/operators"
-	"stratifoiled/internal/test"
+	"stratifoiled/circuits/internal/test"
 	"testing"
 )
 
@@ -34,7 +34,7 @@ func runLELConstVar(
 		),
 	)
 	filePath := test.CNFName(constVarSUFIX, id, simplify)
-	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
+	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
 
 func runGuardedLELConstVar(
@@ -61,7 +61,7 @@ func runGuardedLELConstVar(
 		),
 	)
 	filePath := test.CNFName(guardedConstVarSUFIX, id, simplify)
-	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
+	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
 
 // =========================== //

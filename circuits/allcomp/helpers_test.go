@@ -1,9 +1,7 @@
 package allcomp
 
 import (
-	"testing"
 	"stratifoiled/trees"
-	"stratifoiled/internal/test"
 	"stratifoiled/base"
 )
 
@@ -323,32 +321,4 @@ func genTree() *trees.Tree {
 		PosLeafs: []*trees.Node{leaf1, leaf2, leaf3, leaf5},
 		NegLeafs: []*trees.Node{leaf4, leaf6},
 	}
-}
-
-func encodeAndRun(
-	t *testing.T,
-	formula base.Component,
-	context *base.Context,
-	filePath string,
-	id, expCode int,
-	simplify bool,
-) {
-	var err error
-	if simplify {
-		formula, err = formula.Simplified(context)
-		if err != nil {
-			t.Errorf("Formula simplification error. %s", err.Error())
-			return
-		}
-	}
-	cnf, err := formula.Encoding(context)
-	if err != nil {
-		t.Errorf("Formula encoding error. %s", err.Error())
-		return
-	}
-	if err = cnf.ToFile(filePath); err != nil {
-		t.Errorf("CNF writing error. %s", err.Error())
-		return
-	}
-	test.RunFormulaTest(t, id, expCode, filePath)
 }

@@ -5,7 +5,7 @@ import (
 	"stratifoiled/base"
 	"stratifoiled/circuits/subsumption"
 	"stratifoiled/operators"
-	"stratifoiled/internal/test"
+	"stratifoiled/circuits/internal/test"
 	"stratifoiled/trees"
 	"testing"
 )
@@ -37,7 +37,7 @@ func runAllCompVar(
 		),
 	)
 	filePath := test.CNFName(compVarSufix(leafValue), id, simplify)
-	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
+	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
 
 func compVarSufix(val bool) string {

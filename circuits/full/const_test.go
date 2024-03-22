@@ -2,7 +2,7 @@ package full
 
 import (
 	"stratifoiled/base"
-	"stratifoiled/internal/test"
+	"stratifoiled/circuits/internal/test"
 	"testing"
 )
 
@@ -22,7 +22,7 @@ func runFullConst(
 	context := base.NewContext(DIM, nil)
 	formula := Const(c)
 	filePath := test.CNFName(varSUFIX, id, simplify)
-	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
+	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
 
 func runGuardedFullConst(
@@ -39,7 +39,7 @@ func runGuardedFullConst(
 	)
 	formula := Const(x)
 	filePath := test.CNFName(guardedConstSUFIX, id, simplify)
-	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
+	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
 
 // =========================== //

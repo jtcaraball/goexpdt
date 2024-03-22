@@ -1,10 +1,6 @@
 package full
 
-import (
-	"testing"
-	"stratifoiled/internal/test"
-	"stratifoiled/base"
-)
+import "stratifoiled/base"
 
 const DIM = 3
 
@@ -33,32 +29,4 @@ var tests = []struct {
 		val: base.Const{base.ZERO, base.ONE, base.ONE},
 		expCode: 10,
 	},
-}
-
-func encodeAndRun(
-	t *testing.T,
-	formula base.Component,
-	context *base.Context,
-	filePath string,
-	id, expCode int,
-	simplify bool,
-) {
-	var err error
-	if simplify {
-		formula, err = formula.Simplified(context)
-		if err != nil {
-			t.Errorf("Formula simplification error. %s", err.Error())
-			return
-		}
-	}
-	cnf, err := formula.Encoding(context)
-	if err != nil {
-		t.Errorf("Formula encoding error. %s", err.Error())
-		return
-	}
-	if err = cnf.ToFile(filePath); err != nil {
-		t.Errorf("CNF writing error. %s", err.Error())
-		return
-	}
-	test.RunFormulaTest(t, id, expCode, filePath)
 }

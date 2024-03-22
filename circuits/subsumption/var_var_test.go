@@ -3,7 +3,7 @@ package subsumption
 import (
 	"stratifoiled/base"
 	"stratifoiled/operators"
-	"stratifoiled/internal/test"
+	"stratifoiled/circuits/internal/test"
 	"testing"
 )
 
@@ -36,7 +36,7 @@ func runSubsumptionVarVar(
 		),
 	)
 	filePath := test.CNFName(varVarSUFIX, id, simplify)
-	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
+	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
 
 // =========================== //

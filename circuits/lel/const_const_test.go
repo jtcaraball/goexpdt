@@ -2,7 +2,7 @@ package lel
 
 import (
 	"stratifoiled/base"
-	"stratifoiled/internal/test"
+	"stratifoiled/circuits/internal/test"
 	"testing"
 )
 
@@ -22,7 +22,7 @@ func runLELConstConst(
 	context := base.NewContext(DIM, nil)
 	formula := ConstConst(c1, c2)
 	filePath := test.CNFName(constConstSUFIX, id, simplify)
-	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
+	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
 
 func runGuardedLELConstConst(
@@ -41,7 +41,7 @@ func runGuardedLELConstConst(
 	)
 	formula := ConstConst(x, y)
 	filePath := test.CNFName(guardedConstConstSUFIX, id, simplify)
-	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
+	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
 
 // =========================== //

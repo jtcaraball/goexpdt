@@ -3,7 +3,7 @@ package allcomp
 import (
 	"fmt"
 	"stratifoiled/base"
-	"stratifoiled/internal/test"
+	"stratifoiled/circuits/internal/test"
 	"stratifoiled/trees"
 	"testing"
 )
@@ -28,7 +28,7 @@ func runAllCompConst(
 	context := base.NewContext(DIM, tree)
 	formula := Const(c, leafValue)
 	filePath := test.CNFName(compConstSufix(leafValue), id, simplify)
-	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
+	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
 
 func runGuardedAllCompConst(
@@ -42,7 +42,7 @@ func runGuardedAllCompConst(
 	context := base.NewContext(DIM, tree)
 	formula := Const(c, leafValue)
 	filePath := test.CNFName(compGuardedConstSufix(leafValue), id, simplify)
-	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
+	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
 
 func compConstSufix(val bool) string {

@@ -8,7 +8,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"testing"
-	"stratifoiled/base"
+	"goexpdt/base"
 )
 
 const (

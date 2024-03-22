@@ -1,8 +1,8 @@
 package allcomp
 
 import (
-	"stratifoiled/trees"
-	"stratifoiled/base"
+	"goexpdt/trees"
+	"goexpdt/base"
 )
 
 const DIM = 3

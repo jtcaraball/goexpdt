@@ -3,8 +3,8 @@ package operators
 import (
 	"errors"
 	"fmt"
-	"stratifoiled/cnf"
-	"stratifoiled/base"
+	"goexpdt/cnf"
+	"goexpdt/base"
 	"strconv"
 )
 

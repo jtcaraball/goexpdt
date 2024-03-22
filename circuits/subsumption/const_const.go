@@ -1,8 +1,8 @@
 package subsumption
 
 import (
-	"stratifoiled/cnf"
-	"stratifoiled/base"
+	"goexpdt/cnf"
+	"goexpdt/base"
 )
 
 // =========================== //

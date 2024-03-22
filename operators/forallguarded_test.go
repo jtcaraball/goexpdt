@@ -1,8 +1,8 @@
 package operators
 
 import (
-	"stratifoiled/base"
-	"stratifoiled/trees"
+	"goexpdt/base"
+	"goexpdt/trees"
 	"testing"
 )
 

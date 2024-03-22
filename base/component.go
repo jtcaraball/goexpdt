@@ -1,6 +1,6 @@
 package base
 
-import "stratifoiled/cnf"
+import "goexpdt/cnf"
 
 type Component interface {
 	Encoding(ctx *Context) (*cnf.CNF, error)

@@ -1,6 +1,6 @@
 package lel
 
-import "stratifoiled/base"
+import "goexpdt/base"
 
 func genCountClauses(varName string, ctx *base.Context) [][]int {
 	var i, j int

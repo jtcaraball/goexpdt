@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"slices"
-	"stratifoiled/cnf"
+	"goexpdt/cnf"
 )
 
 

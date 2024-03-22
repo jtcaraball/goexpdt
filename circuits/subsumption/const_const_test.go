@@ -1,8 +1,8 @@
 package subsumption
 
 import (
-	"stratifoiled/base"
-	"stratifoiled/circuits/internal/test"
+	"goexpdt/base"
+	"goexpdt/circuits/internal/test"
 	"testing"
 )
 

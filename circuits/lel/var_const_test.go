@@ -1,10 +1,10 @@
 package lel
 
 import (
-	"stratifoiled/base"
-	"stratifoiled/circuits/subsumption"
-	"stratifoiled/operators"
-	"stratifoiled/circuits/internal/test"
+	"goexpdt/base"
+	"goexpdt/circuits/subsumption"
+	"goexpdt/operators"
+	"goexpdt/circuits/internal/test"
 	"testing"
 )
 

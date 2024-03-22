@@ -2,9 +2,9 @@ package allcomp
 
 import (
 	"errors"
-	"stratifoiled/cnf"
-	"stratifoiled/trees"
-	"stratifoiled/base"
+	"goexpdt/cnf"
+	"goexpdt/trees"
+	"goexpdt/base"
 )
 
 // =========================== //

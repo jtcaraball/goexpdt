@@ -3,7 +3,7 @@ package subsumption
 import (
 	"stratifoiled/base"
 	"stratifoiled/operators"
-	"stratifoiled/sfdtest"
+	"stratifoiled/internal/test"
 	"testing"
 )
 
@@ -35,7 +35,7 @@ func runSubsumptionVarVar(
 			),
 		),
 	)
-	filePath := sfdtest.CNFName(varVarSUFIX, id, simplify)
+	filePath := test.CNFName(varVarSUFIX, id, simplify)
 	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
 
@@ -44,7 +44,7 @@ func runSubsumptionVarVar(
 // =========================== //
 
 func TestVarVar_Encoding(t *testing.T) {
-	sfdtest.AddCleanup(t, varVarSUFIX, false)
+	test.AddCleanup(t, varVarSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runSubsumptionVarVar(t, i, tc.expCode, tc.val1, tc.val2, false)
@@ -53,7 +53,7 @@ func TestVarVar_Encoding(t *testing.T) {
 }
 
 func TestVarVar_Simplified(t *testing.T) {
-	sfdtest.AddCleanup(t, varVarSUFIX, true)
+	test.AddCleanup(t, varVarSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runSubsumptionVarVar(t, i, tc.expCode, tc.val1, tc.val2, true)

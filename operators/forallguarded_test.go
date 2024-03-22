@@ -2,7 +2,7 @@ package operators
 
 import (
 	"stratifoiled/base"
-	"stratifoiled/sfdtest"
+	"stratifoiled/internal/test"
 	"stratifoiled/trees"
 	"testing"
 )
@@ -54,7 +54,7 @@ func TestForAllGuarded_Encoding(t *testing.T) {
 	for key := range context.GetVars() {
 		t.Log(key.Name)
 	}
-	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	test.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestForAllGuarded_Simplified(t *testing.T) {
@@ -76,7 +76,7 @@ func TestForAllGuarded_Simplified(t *testing.T) {
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{{}}
 	expCClauses := [][]int{}
-	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	test.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestForAllGuarded_GetChildren(t *testing.T) {

@@ -1,4 +1,4 @@
-package sfdtest
+package test
 
 import (
 	"slices"

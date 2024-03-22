@@ -3,7 +3,7 @@ package allcomp
 import (
 	"fmt"
 	"stratifoiled/base"
-	"stratifoiled/sfdtest"
+	"stratifoiled/internal/test"
 	"stratifoiled/trees"
 	"testing"
 )
@@ -27,7 +27,7 @@ func runAllCompConst(
 ) {
 	context := base.NewContext(DIM, tree)
 	formula := Const(c, leafValue)
-	filePath := sfdtest.CNFName(compConstSufix(leafValue), id, simplify)
+	filePath := test.CNFName(compConstSufix(leafValue), id, simplify)
 	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
 
@@ -41,7 +41,7 @@ func runGuardedAllCompConst(
 ) {
 	context := base.NewContext(DIM, tree)
 	formula := Const(c, leafValue)
-	filePath := sfdtest.CNFName(compGuardedConstSufix(leafValue), id, simplify)
+	filePath := test.CNFName(compGuardedConstSufix(leafValue), id, simplify)
 	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
 
@@ -58,7 +58,7 @@ func compGuardedConstSufix(val bool) string {
 // =========================== //
 
 func TestConst_Encoding_AllPos(t *testing.T) {
-	sfdtest.AddCleanup(t, compConstSufix(true), false)
+	test.AddCleanup(t, compConstSufix(true), false)
 	tree := genTree()
 	for i, tc := range allPosTests {
 		t.Run(tc.name, func(t *testing.T) {
@@ -68,7 +68,7 @@ func TestConst_Encoding_AllPos(t *testing.T) {
 }
 
 func TestConst_Encoding_AllPos_Guarded(t *testing.T) {
-	sfdtest.AddCleanup(t, compGuardedConstSufix(true), false)
+	test.AddCleanup(t, compGuardedConstSufix(true), false)
 	tree := genTree()
 	for i, tc := range allPosTests {
 		t.Run(tc.name, func(t *testing.T) {
@@ -78,7 +78,7 @@ func TestConst_Encoding_AllPos_Guarded(t *testing.T) {
 }
 
 func TestConst_Encoding_AllNeg(t *testing.T) {
-	sfdtest.AddCleanup(t, compConstSufix(false), false)
+	test.AddCleanup(t, compConstSufix(false), false)
 	tree := genTree()
 	for i, tc := range allNegTests {
 		t.Run(tc.name, func(t *testing.T) {
@@ -88,7 +88,7 @@ func TestConst_Encoding_AllNeg(t *testing.T) {
 }
 
 func TestConst_Encoding_AllNeg_Guraded(t *testing.T) {
-	sfdtest.AddCleanup(t, compGuardedConstSufix(false), false)
+	test.AddCleanup(t, compGuardedConstSufix(false), false)
 	tree := genTree()
 	for i, tc := range allNegTests {
 		t.Run(tc.name, func(t *testing.T) {
@@ -108,7 +108,7 @@ func TestConst_Encoding_WrongDim(t *testing.T) {
 }
 
 func TestConst_Simplified_AllPos(t *testing.T) {
-	sfdtest.AddCleanup(t, compConstSufix(true), true)
+	test.AddCleanup(t, compConstSufix(true), true)
 	tree := genTree()
 	for i, tc := range allPosTests {
 		t.Run(tc.name, func(t *testing.T) {
@@ -118,7 +118,7 @@ func TestConst_Simplified_AllPos(t *testing.T) {
 }
 
 func TestConst_Simplified_AllPos_Guarded(t *testing.T) {
-	sfdtest.AddCleanup(t, compGuardedConstSufix(true), true)
+	test.AddCleanup(t, compGuardedConstSufix(true), true)
 	tree := genTree()
 	for i, tc := range allPosTests {
 		t.Run(tc.name, func(t *testing.T) {
@@ -128,7 +128,7 @@ func TestConst_Simplified_AllPos_Guarded(t *testing.T) {
 }
 
 func TestConst_Simplified_AllNeg(t *testing.T) {
-	sfdtest.AddCleanup(t, compConstSufix(false), true)
+	test.AddCleanup(t, compConstSufix(false), true)
 	tree := genTree()
 	for i, tc := range allNegTests {
 		t.Run(tc.name, func(t *testing.T) {
@@ -138,7 +138,7 @@ func TestConst_Simplified_AllNeg(t *testing.T) {
 }
 
 func TestConst_Simplified_AllNeg_Guraded(t *testing.T) {
-	sfdtest.AddCleanup(t, compGuardedConstSufix(false), true)
+	test.AddCleanup(t, compGuardedConstSufix(false), true)
 	tree := genTree()
 	for i, tc := range allNegTests {
 		t.Run(tc.name, func(t *testing.T) {

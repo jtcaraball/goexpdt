@@ -3,7 +3,7 @@ package operators
 import (
 	"slices"
 	"stratifoiled/base"
-	"stratifoiled/sfdtest"
+	"stratifoiled/internal/test"
 	"testing"
 )
 
@@ -30,7 +30,7 @@ func TestWithVar_Encoding(t *testing.T) {
 		{-4, -6},
 		{-5, -6},
 	}
-	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	test.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestWithVar_Encoding_AddVarToScope(t *testing.T) {
@@ -105,7 +105,7 @@ func TestWithVar_Simplified(t *testing.T) {
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{{}}
 	expCClauses := [][]int{}
-	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	test.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestWithVar_GetChildren(t *testing.T) {

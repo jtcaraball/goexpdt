@@ -3,7 +3,7 @@ package cnf
 import (
 	"os"
 	"slices"
-	"stratifoiled/sfdtest"
+	"stratifoiled/internal/test"
 	"testing"
 )
 
@@ -17,14 +17,14 @@ func errorInClauses(
 	topv, expTopV int,
 ) {
 	t.Helper()
-	if !sfdtest.ClausesEq(sClauses, expSClauses) {
+	if !test.ClausesEq(sClauses, expSClauses) {
 		t.Errorf(
 			"Semantic clauses not equal. Expected %d but got %d",
 			sClauses,
 			expSClauses,
 		)
 	}
-	if !sfdtest.ClausesEq(cClauses, expCClauses) {
+	if !test.ClausesEq(cClauses, expCClauses) {
 		t.Errorf(
 			"Consistency clauses not equal. Expected %d but got %d",
 			cClauses,

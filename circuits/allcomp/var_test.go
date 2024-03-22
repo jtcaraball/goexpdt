@@ -5,7 +5,7 @@ import (
 	"stratifoiled/base"
 	"stratifoiled/circuits/subsumption"
 	"stratifoiled/operators"
-	"stratifoiled/sfdtest"
+	"stratifoiled/internal/test"
 	"stratifoiled/trees"
 	"testing"
 )
@@ -36,7 +36,7 @@ func runAllCompVar(
 			Var(x, leafValue),
 		),
 	)
-	filePath := sfdtest.CNFName(compVarSufix(leafValue), id, simplify)
+	filePath := test.CNFName(compVarSufix(leafValue), id, simplify)
 	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
 
@@ -49,7 +49,7 @@ func compVarSufix(val bool) string {
 // =========================== //
 
 func TestVar_Encoding_AllPos(t *testing.T) {
-	sfdtest.AddCleanup(t, compVarSufix(true), false)
+	test.AddCleanup(t, compVarSufix(true), false)
 	tree := genTree()
 	for i, tc := range allPosTests {
 		t.Run(tc.name, func(t *testing.T) {
@@ -59,7 +59,7 @@ func TestVar_Encoding_AllPos(t *testing.T) {
 }
 
 func TestVar_Encoding_AllNeg(t *testing.T) {
-	sfdtest.AddCleanup(t, compVarSufix(false), false)
+	test.AddCleanup(t, compVarSufix(false), false)
 	tree := genTree()
 	for i, tc := range allNegTests {
 		t.Run(tc.name, func(t *testing.T) {
@@ -69,7 +69,7 @@ func TestVar_Encoding_AllNeg(t *testing.T) {
 }
 
 func TestVar_Simplified_AllPos(t *testing.T) {
-	sfdtest.AddCleanup(t, compVarSufix(true), true)
+	test.AddCleanup(t, compVarSufix(true), true)
 	tree := genTree()
 	for i, tc := range allPosTests {
 		t.Run(tc.name, func(t *testing.T) {
@@ -79,7 +79,7 @@ func TestVar_Simplified_AllPos(t *testing.T) {
 }
 
 func TestVar_Simplified_AllNeg(t *testing.T) {
-	sfdtest.AddCleanup(t, compVarSufix(false), true)
+	test.AddCleanup(t, compVarSufix(false), true)
 	tree := genTree()
 	for i, tc := range allNegTests {
 		t.Run(tc.name, func(t *testing.T) {

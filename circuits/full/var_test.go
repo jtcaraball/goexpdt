@@ -4,7 +4,7 @@ import (
 	"stratifoiled/base"
 	"stratifoiled/circuits/subsumption"
 	"stratifoiled/operators"
-	"stratifoiled/sfdtest"
+	"stratifoiled/internal/test"
 	"testing"
 )
 
@@ -32,7 +32,7 @@ func runFullVar(
 			Var(x),
 		),
 	)
-	filePath := sfdtest.CNFName(varSUFIX, id, simplify)
+	filePath := test.CNFName(varSUFIX, id, simplify)
 	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
 
@@ -41,7 +41,7 @@ func runFullVar(
 // =========================== //
 
 func TestVar_Encoding(t *testing.T) {
-	sfdtest.AddCleanup(t, varSUFIX, false)
+	test.AddCleanup(t, varSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runFullVar(t, i, tc.expCode, tc.val, false)
@@ -50,7 +50,7 @@ func TestVar_Encoding(t *testing.T) {
 }
 
 func TestVar_Simplified(t *testing.T) {
-	sfdtest.AddCleanup(t, varSUFIX, true)
+	test.AddCleanup(t, varSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runFullVar(t, i, tc.expCode, tc.val, true)

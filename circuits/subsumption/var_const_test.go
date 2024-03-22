@@ -3,7 +3,7 @@ package subsumption
 import (
 	"stratifoiled/base"
 	"stratifoiled/operators"
-	"stratifoiled/sfdtest"
+	"stratifoiled/internal/test"
 	"testing"
 )
 
@@ -29,7 +29,7 @@ func runSubsumptionVarConst(
 			VarConst(x, c2),
 		),
 	)
-	filePath := sfdtest.CNFName(varConstSUFIX, id, simplify)
+	filePath := test.CNFName(varConstSUFIX, id, simplify)
 	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
 
@@ -53,7 +53,7 @@ func runGuardedSubsumptionVarConst(
 			VarConst(x, y),
 		),
 	)
-	filePath := sfdtest.CNFName(guardedVarConstSUFIX, id, simplify)
+	filePath := test.CNFName(guardedVarConstSUFIX, id, simplify)
 	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
 
@@ -62,7 +62,7 @@ func runGuardedSubsumptionVarConst(
 // =========================== //
 
 func TestVarConst_Encoding(t *testing.T) {
-	sfdtest.AddCleanup(t, varConstSUFIX, false)
+	test.AddCleanup(t, varConstSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runSubsumptionVarConst(t, i, tc.expCode, tc.val1, tc.val2, false)
@@ -71,7 +71,7 @@ func TestVarConst_Encoding(t *testing.T) {
 }
 
 func TestVarConst_Encoding_Guarded(t *testing.T) {
-	sfdtest.AddCleanup(t, guardedVarConstSUFIX, false)
+	test.AddCleanup(t, guardedVarConstSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runGuardedSubsumptionVarConst(
@@ -98,7 +98,7 @@ func TestVarConst_Encoding_WrongDim(t *testing.T) {
 }
 
 func TestVarConst_Simplified(t *testing.T) {
-	sfdtest.AddCleanup(t, varConstSUFIX, true)
+	test.AddCleanup(t, varConstSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runSubsumptionVarConst(t, i, tc.expCode, tc.val1, tc.val2, true)
@@ -107,7 +107,7 @@ func TestVarConst_Simplified(t *testing.T) {
 }
 
 func TestVarConst_Simplified_Guarded(t *testing.T) {
-	sfdtest.AddCleanup(t, guardedVarConstSUFIX, true)
+	test.AddCleanup(t, guardedVarConstSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runGuardedSubsumptionVarConst(

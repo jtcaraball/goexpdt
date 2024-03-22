@@ -4,7 +4,7 @@ import (
 	"stratifoiled/base"
 	"stratifoiled/circuits/subsumption"
 	"stratifoiled/operators"
-	"stratifoiled/sfdtest"
+	"stratifoiled/internal/test"
 	"testing"
 )
 
@@ -33,7 +33,7 @@ func runLELConstVar(
 			ConstVar(c1, x),
 		),
 	)
-	filePath := sfdtest.CNFName(constVarSUFIX, id, simplify)
+	filePath := test.CNFName(constVarSUFIX, id, simplify)
 	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
 
@@ -60,7 +60,7 @@ func runGuardedLELConstVar(
 			ConstVar(y, x),
 		),
 	)
-	filePath := sfdtest.CNFName(guardedConstVarSUFIX, id, simplify)
+	filePath := test.CNFName(guardedConstVarSUFIX, id, simplify)
 	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
 
@@ -69,7 +69,7 @@ func runGuardedLELConstVar(
 // =========================== //
 
 func TestConstVar_Encoding(t *testing.T) {
-	sfdtest.AddCleanup(t, constVarSUFIX, false)
+	test.AddCleanup(t, constVarSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runLELConstVar(t, i, tc.expCode, tc.val1, tc.val2, false)
@@ -78,7 +78,7 @@ func TestConstVar_Encoding(t *testing.T) {
 }
 
 func TestConstVar_Encoding_Guarded(t *testing.T) {
-	sfdtest.AddCleanup(t, guardedConstVarSUFIX, false)
+	test.AddCleanup(t, guardedConstVarSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runGuardedLELConstVar(t, i, tc.expCode, tc.val1, tc.val2, false)
@@ -98,7 +98,7 @@ func TestConstVar_Encoding_WrongDim(t *testing.T) {
 }
 
 func TestConstVar_Simplified(t *testing.T) {
-	sfdtest.AddCleanup(t, constVarSUFIX, true)
+	test.AddCleanup(t, constVarSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runLELConstVar(t, i, tc.expCode, tc.val1, tc.val2, true)
@@ -107,7 +107,7 @@ func TestConstVar_Simplified(t *testing.T) {
 }
 
 func TestConstVar_Simplified_Guarded(t *testing.T) {
-	sfdtest.AddCleanup(t, guardedConstVarSUFIX, true)
+	test.AddCleanup(t, guardedConstVarSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runGuardedLELConstVar(t, i, tc.expCode, tc.val1, tc.val2, true)

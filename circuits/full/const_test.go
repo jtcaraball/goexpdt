@@ -2,7 +2,7 @@ package full
 
 import (
 	"stratifoiled/base"
-	"stratifoiled/sfdtest"
+	"stratifoiled/internal/test"
 	"testing"
 )
 
@@ -21,7 +21,7 @@ func runFullConst(
 ) {
 	context := base.NewContext(DIM, nil)
 	formula := Const(c)
-	filePath := sfdtest.CNFName(varSUFIX, id, simplify)
+	filePath := test.CNFName(varSUFIX, id, simplify)
 	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
 
@@ -38,7 +38,7 @@ func runGuardedFullConst(
 		base.Guard{Target: "x", Value: c, Rep: "1"},
 	)
 	formula := Const(x)
-	filePath := sfdtest.CNFName(guardedConstSUFIX, id, simplify)
+	filePath := test.CNFName(guardedConstSUFIX, id, simplify)
 	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
 
@@ -47,7 +47,7 @@ func runGuardedFullConst(
 // =========================== //
 
 func TestConst_Encoding(t *testing.T) {
-	sfdtest.AddCleanup(t, constSUFIX, false)
+	test.AddCleanup(t, constSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runFullConst(t, i, tc.expCode, tc.val, false)
@@ -56,7 +56,7 @@ func TestConst_Encoding(t *testing.T) {
 }
 
 func TestConst_Encoding_Guarded(t *testing.T) {
-	sfdtest.AddCleanup(t, guardedConstSUFIX, false)
+	test.AddCleanup(t, guardedConstSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runGuardedFullConst(t, i, tc.expCode, tc.val, false)
@@ -75,7 +75,7 @@ func TestConstConst_Encoding_WrongDim(t *testing.T) {
 }
 
 func TestConst_Simplified(t *testing.T) {
-	sfdtest.AddCleanup(t, varSUFIX, true)
+	test.AddCleanup(t, varSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runFullConst(t, i, tc.expCode, tc.val, true)
@@ -84,7 +84,7 @@ func TestConst_Simplified(t *testing.T) {
 }
 
 func TestConst_Simplified_Guarded(t *testing.T) {
-	sfdtest.AddCleanup(t, guardedConstSUFIX, true)
+	test.AddCleanup(t, guardedConstSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runGuardedFullConst(t, i, tc.expCode, tc.val, true)

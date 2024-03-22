@@ -2,7 +2,7 @@ package operators
 
 import (
 	"stratifoiled/base"
-	"stratifoiled/sfdtest"
+	"stratifoiled/internal/test"
 	"testing"
 )
 
@@ -21,7 +21,7 @@ func TestOr_Encoding_DTrue(t *testing.T) {
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{}
 	expCClauses := [][]int{}
-	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	test.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestOr_Encoding_DFalse(t *testing.T) {
@@ -39,7 +39,7 @@ func TestOr_Encoding_DFalse(t *testing.T) {
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{{}}
 	expCClauses := [][]int{}
-	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	test.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestOr_Encoding_Mixed(t *testing.T) {
@@ -57,7 +57,7 @@ func TestOr_Encoding_Mixed(t *testing.T) {
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{}
 	expCClauses := [][]int{}
-	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	test.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestOr_Simplified_DTrue(t *testing.T) {
@@ -80,7 +80,7 @@ func TestOr_Simplified_DTrue(t *testing.T) {
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{}
 	expCClauses := [][]int{}
-	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	test.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestOr_Simplified_DFalse(t *testing.T) {
@@ -103,7 +103,7 @@ func TestOr_Simplified_DFalse(t *testing.T) {
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{{}}
 	expCClauses := [][]int{}
-	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	test.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestOr_Simplified_Mixed(t *testing.T) {
@@ -126,7 +126,7 @@ func TestOr_Simplified_Mixed(t *testing.T) {
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{}
 	expCClauses := [][]int{}
-	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	test.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestOr_GetChildren(t *testing.T) {

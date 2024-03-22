@@ -2,7 +2,7 @@ package operators
 
 import (
 	"stratifoiled/base"
-	"stratifoiled/sfdtest"
+	"stratifoiled/internal/test"
 	"testing"
 )
 
@@ -30,7 +30,7 @@ func TestAnd_Encoding_DTrue(t *testing.T) {
 		{-4, -6},
 		{-5, -6},
 	}
-	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	test.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestAnd_Encoding_DFalse(t *testing.T) {
@@ -57,7 +57,7 @@ func TestAnd_Encoding_DFalse(t *testing.T) {
 		{-4, -6},
 		{-5, -6},
 	}
-	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	test.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestAnd_Encoding_Mixed(t *testing.T) {
@@ -84,7 +84,7 @@ func TestAnd_Encoding_Mixed(t *testing.T) {
 		{-4, -6},
 		{-5, -6},
 	}
-	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	test.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestAnd_Simplified_DTrue(t *testing.T) {
@@ -107,7 +107,7 @@ func TestAnd_Simplified_DTrue(t *testing.T) {
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{}
 	expCClauses := [][]int{}
-	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	test.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestAnd_Simplified_DFalse(t *testing.T) {
@@ -130,7 +130,7 @@ func TestAnd_Simplified_DFalse(t *testing.T) {
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{{}}
 	expCClauses := [][]int{}
-	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	test.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestAnd_Simplified_Mixed(t *testing.T) {
@@ -153,7 +153,7 @@ func TestAnd_Simplified_Mixed(t *testing.T) {
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{{}}
 	expCClauses := [][]int{}
-	sfdtest.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	test.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestAnd_Children(t *testing.T) {

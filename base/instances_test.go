@@ -2,7 +2,7 @@ package base
 
 import (
 	"testing"
-	"stratifoiled/sfdtest"
+	"stratifoiled/internal/test"
 )
 
 // =========================== //
@@ -21,14 +21,14 @@ func TestVar_Encode(t *testing.T) {
 		{-1, -3},
 		{-2, -3},
 	}
-	if !sfdtest.ClausesEq(sClauses, expSClauses) {
+	if !test.ClausesEq(sClauses, expSClauses) {
 		t.Errorf(
 			"Clauses not equal. Expected %d but got %d",
 			expSClauses,
 			sClauses,
 		)
 	}
-	if !sfdtest.ClausesEq(cClauses, expCClauses) {
+	if !test.ClausesEq(cClauses, expCClauses) {
 		t.Errorf(
 			"Clauses not equal. Expected %d but got %d",
 			expCClauses,

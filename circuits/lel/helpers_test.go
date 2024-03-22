@@ -2,7 +2,7 @@ package lel
 
 import (
 	"testing"
-	"stratifoiled/sfdtest"
+	"stratifoiled/internal/test"
 	"stratifoiled/base"
 )
 
@@ -77,5 +77,5 @@ func encodeAndRun(
 		t.Errorf("CNF writing error. %s", err.Error())
 		return
 	}
-	sfdtest.RunFormulaTest(t, id, expCode, filePath)
+	test.RunFormulaTest(t, id, expCode, filePath)
 }

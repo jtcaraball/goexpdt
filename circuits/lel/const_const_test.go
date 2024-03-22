@@ -2,7 +2,7 @@ package lel
 
 import (
 	"stratifoiled/base"
-	"stratifoiled/sfdtest"
+	"stratifoiled/internal/test"
 	"testing"
 )
 
@@ -21,7 +21,7 @@ func runLELConstConst(
 ) {
 	context := base.NewContext(DIM, nil)
 	formula := ConstConst(c1, c2)
-	filePath := sfdtest.CNFName(constConstSUFIX, id, simplify)
+	filePath := test.CNFName(constConstSUFIX, id, simplify)
 	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
 
@@ -40,7 +40,7 @@ func runGuardedLELConstConst(
 		base.Guard{Target: "y", Value: c2, Rep: "2"},
 	)
 	formula := ConstConst(x, y)
-	filePath := sfdtest.CNFName(guardedConstConstSUFIX, id, simplify)
+	filePath := test.CNFName(guardedConstConstSUFIX, id, simplify)
 	encodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
 
@@ -49,7 +49,7 @@ func runGuardedLELConstConst(
 // =========================== //
 
 func TestConstConst_Encoding(t *testing.T) {
-	sfdtest.AddCleanup(t, constConstSUFIX, false)
+	test.AddCleanup(t, constConstSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runLELConstConst(t, i, tc.expCode, tc.val1, tc.val2, false)
@@ -58,7 +58,7 @@ func TestConstConst_Encoding(t *testing.T) {
 }
 
 func TestConstConst_Encoding_Guarded(t *testing.T) {
-	sfdtest.AddCleanup(t, guardedConstConstSUFIX, false)
+	test.AddCleanup(t, guardedConstConstSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runGuardedLELConstConst(t, i, tc.expCode, tc.val1, tc.val2, false)
@@ -78,7 +78,7 @@ func TestConstConst_Encoding_WrongDim(t *testing.T) {
 }
 
 func TestConstConst_Simplified(t *testing.T) {
-	sfdtest.AddCleanup(t, constConstSUFIX, true)
+	test.AddCleanup(t, constConstSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runLELConstConst(t, i, tc.expCode, tc.val1, tc.val2, true)
@@ -87,7 +87,7 @@ func TestConstConst_Simplified(t *testing.T) {
 }
 
 func TestConstConst_Simplified_Guarded(t *testing.T) {
-	sfdtest.AddCleanup(t, guardedConstConstSUFIX, true)
+	test.AddCleanup(t, guardedConstConstSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runGuardedLELConstConst(t, i, tc.expCode, tc.val1, tc.val2, true)

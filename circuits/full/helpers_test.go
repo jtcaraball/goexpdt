@@ -1,6 +1,6 @@
 package full
 
-import "stratifoiled/base"
+import "goexpdt/base"
 
 const DIM = 3
 

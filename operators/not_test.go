@@ -2,7 +2,7 @@ package operators
 
 import (
 	"testing"
-	"stratifoiled/base"
+	"goexpdt/base"
 )
 
 func TestNot_Encoding(t *testing.T) {

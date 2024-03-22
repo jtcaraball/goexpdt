@@ -1,7 +1,7 @@
 package operators
 
 import (
-	"stratifoiled/base"
+	"goexpdt/base"
 	"testing"
 )
 

@@ -1,7 +1,7 @@
 package base
 
 import (
-	"stratifoiled/cnf"
+	"goexpdt/cnf"
 )
 
 // =========================== //

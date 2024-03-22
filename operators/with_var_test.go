@@ -2,7 +2,7 @@ package operators
 
 import (
 	"slices"
-	"stratifoiled/base"
+	"goexpdt/base"
 	"testing"
 )
 

@@ -3,7 +3,7 @@ package base
 import (
 	"slices"
 	"errors"
-	"stratifoiled/trees"
+	"goexpdt/trees"
 )
 
 // =========================== //

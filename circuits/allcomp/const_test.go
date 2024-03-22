@@ -2,9 +2,9 @@ package allcomp
 
 import (
 	"fmt"
-	"stratifoiled/base"
-	"stratifoiled/circuits/internal/test"
-	"stratifoiled/trees"
+	"goexpdt/base"
+	"goexpdt/circuits/internal/test"
+	"goexpdt/trees"
 	"testing"
 )
 

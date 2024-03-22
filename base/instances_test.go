@@ -1,9 +1,19 @@
 package base
 
 import (
+	"slices"
 	"testing"
-	"stratifoiled/internal/test"
 )
+
+func slicesEq(c1, c2 [][]int) bool {
+	return slices.EqualFunc[[][]int](
+		c1,
+		c2,
+		func (l1, l2 []int) bool {
+			return slices.Equal[[]int](l1, l2)
+		},
+	)
+}
 
 // =========================== //
 //            TESTS            //
@@ -21,14 +31,14 @@ func TestVar_Encode(t *testing.T) {
 		{-1, -3},
 		{-2, -3},
 	}
-	if !test.ClausesEq(sClauses, expSClauses) {
+	if !slicesEq(sClauses, expSClauses) {
 		t.Errorf(
 			"Clauses not equal. Expected %d but got %d",
 			expSClauses,
 			sClauses,
 		)
 	}
-	if !test.ClausesEq(cClauses, expCClauses) {
+	if !slicesEq(cClauses, expCClauses) {
 		t.Errorf(
 			"Clauses not equal. Expected %d but got %d",
 			expCClauses,

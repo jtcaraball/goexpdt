@@ -3,7 +3,6 @@ package operators
 import (
 	"testing"
 	"stratifoiled/base"
-	"stratifoiled/internal/test"
 )
 
 func TestNot_Encoding(t *testing.T) {
@@ -19,7 +18,7 @@ func TestNot_Encoding(t *testing.T) {
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{}
 	expCClauses := [][]int{}
-	test.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestNot_Simplified(t *testing.T) {
@@ -40,7 +39,7 @@ func TestNot_Simplified(t *testing.T) {
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{{}}
 	expCClauses := [][]int{}
-	test.ErrorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestNot_GetChildren(t *testing.T) {

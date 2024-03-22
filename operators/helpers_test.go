@@ -1,11 +1,11 @@
-package test
+package operators
 
 import (
 	"slices"
 	"testing"
 )
 
-func ClausesEq(c1, c2 [][]int) bool {
+func slicesEq(c1, c2 [][]int) bool {
 	return slices.EqualFunc[[][]int](
 		c1,
 		c2,
@@ -15,19 +15,19 @@ func ClausesEq(c1, c2 [][]int) bool {
 	)
 }
 
-func ErrorInClauses(
+func errorInClauses(
 	t *testing.T,
 	sClauses, cClauses, expSClauses, expCClauses [][]int,
 ) {
 	t.Helper()
-	if !ClausesEq(sClauses, expSClauses) {
+	if !slicesEq(sClauses, expSClauses) {
 		t.Errorf(
 			"Semantic clauses not equal. Expected %d but got %d",
 			expSClauses,
 			sClauses,
 		)
 	}
-	if !ClausesEq(cClauses, expCClauses) {
+	if !slicesEq(cClauses, expCClauses) {
 		t.Errorf(
 			"Consistency clauses not equal. Expected %d but got %d",
 			expCClauses,

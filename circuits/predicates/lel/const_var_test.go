@@ -2,7 +2,7 @@ package lel
 
 import (
 	"goexpdt/base"
-	"goexpdt/circuits/subsumption"
+	"goexpdt/circuits/predicates/subsumption"
 	"goexpdt/operators"
 	"goexpdt/circuits/internal/test"
 	"testing"

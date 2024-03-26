@@ -21,7 +21,7 @@ func runFullConst(
 ) {
 	context := base.NewContext(DIM, nil)
 	formula := Const(c)
-	filePath := test.CNFName(varSUFIX, id, simplify)
+	filePath := test.CNFName(constSUFIX, id, simplify)
 	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
 

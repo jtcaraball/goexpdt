@@ -31,6 +31,7 @@ func runSubsumptionConstVar(
 	)
 	filePath := test.CNFName(constVarSUFIX, id, simplify)
 	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
+	test.OnlyFeatVariables(t, context, "y")
 }
 
 func runGuardedSubsumptionConstVar(
@@ -39,8 +40,8 @@ func runGuardedSubsumptionConstVar(
 	c1, c2 base.Const,
 	simplify bool,
 ) {
-	x := base.GuardedConst("x")
 	y := base.Var("y")
+	x := base.GuardedConst("x")
 	context := base.NewContext(DIM, nil)
 	context.Guards = append(
 		context.Guards,
@@ -55,6 +56,7 @@ func runGuardedSubsumptionConstVar(
 	)
 	filePath := test.CNFName(guardedConstVarSUFIX, id, simplify)
 	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
+	test.OnlyFeatVariables(t, context, "x", "y1")
 }
 
 // =========================== //

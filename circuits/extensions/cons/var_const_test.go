@@ -8,8 +8,8 @@ import (
 	"testing"
 )
 
-const varConstSUFIX = "cons.constvar"
-const guardedVarConstSUFIX = "cons.Gconstvar"
+const varConstSUFIX = "cons.varconst"
+const guardedVarConstSUFIX = "cons.Gvarconst"
 
 // =========================== //
 //           HELPERS           //

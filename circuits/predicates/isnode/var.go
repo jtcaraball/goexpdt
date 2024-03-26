@@ -66,7 +66,7 @@ func (f *inVar) buildEncoding(
 	nCNF.ExtendSemantics(featClauses)
 	// Root is always reachable
 	nCNF.AppendConsistency([]int{ctx.IVar(rVarName, ctx.Tree.Root.ID, 0)})
-	// Add progapation clauses
+	// Add non-bot progapation clauses
 	for _, node := range ctx.Tree.Nodes() {
 		if node.IsLeaf() {
 			continue

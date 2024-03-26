@@ -24,20 +24,20 @@ func ConstConst(constInst1, constInst2 base.ConstInstance) *constConst {
 }
 
 // Return CNF encoding of component.
-func (s *constConst) Encoding(ctx *base.Context) (*cnf.CNF, error) {
-	scpConst1, err := s.constInst1.Scoped(ctx)
+func (c *constConst) Encoding(ctx *base.Context) (*cnf.CNF, error) {
+	scpConst1, err := c.constInst1.Scoped(ctx)
 	if err != nil {
 		return nil, err
 	}
-	scpConst2, err := s.constInst2.Scoped(ctx)
+	scpConst2, err := c.constInst2.Scoped(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return s.buildEncoding(scpConst1, scpConst2, ctx)
+	return c.buildEncoding(scpConst1, scpConst2, ctx)
 }
 
 // Generate cnf encoding.
-func (l *constConst) buildEncoding(
+func (c *constConst) buildEncoding(
 	constInst1, constInst2 base.Const,
 	ctx *base.Context,
 ) (*cnf.CNF, error) {
@@ -60,22 +60,22 @@ func (l *constConst) buildEncoding(
 
 // TODO: Add correct simplification for guarded const.
 // Return pointer to simplified equivalent component which might be itself.
-func (l *constConst) Simplified(
+func (c *constConst) Simplified(
 	ctx *base.Context,
 ) (base.Component, error) {
-	scpConst1, err := l.constInst1.Scoped(ctx)
+	scpConst1, err := c.constInst1.Scoped(ctx)
 	if err != nil {
-		return l, nil
+		return c, nil
 	}
-	scpConst2, err := l.constInst2.Scoped(ctx)
+	scpConst2, err := c.constInst2.Scoped(ctx)
 	if err != nil {
-		return l, nil
+		return c, nil
 	}
-	return l.buildSimplification(scpConst1, scpConst2, ctx)
+	return c.buildSimplification(scpConst1, scpConst2, ctx)
 }
 
 // Generate simplified component.
-func (l *constConst) buildSimplification(
+func (c *constConst) buildSimplification(
 	constInst1, constInst2 base.Const,
 	ctx *base.Context,
 ) (base.Component, error) {
@@ -97,11 +97,11 @@ func (l *constConst) buildSimplification(
 }
 
 // Return slice of pointers to component's children.
-func (l *constConst) GetChildren() []base.Component {
+func (c *constConst) GetChildren() []base.Component {
 	return []base.Component{}
 }
 
 // yes is true if struct is trivial and value represents its truthiness.
-func (l *constConst) IsTrivial() (yes bool, value bool) {
+func (c *constConst) IsTrivial() (yes bool, value bool) {
 	return false, false
 }

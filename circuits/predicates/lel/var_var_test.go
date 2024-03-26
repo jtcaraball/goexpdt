@@ -44,6 +44,7 @@ func runLELVarVar(
 	)
 	filePath := test.CNFName(varVarSUFIX, id, simplify)
 	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
+	test.OnlyFeatVariables(t, context, "x", "y")
 }
 
 // =========================== //

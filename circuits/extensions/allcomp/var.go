@@ -19,7 +19,7 @@ type acVar struct {
 //           METHODS           //
 // =========================== //
 
-// Return varVar lel.
+// Return var allComp.
 func Var(varInst base.Var, leafValue bool) *acVar {
 	return &acVar{varInst: varInst, leafValue: leafValue}
 }

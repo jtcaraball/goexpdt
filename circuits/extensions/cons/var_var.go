@@ -1,4 +1,4 @@
-package lel
+package cons
 
 import (
 	"goexpdt/cnf"
@@ -18,53 +18,50 @@ type varVar struct {
 //           METHODS           //
 // =========================== //
 
-// Return varVar lel.
+// Return varVar cons.
 func VarVar(varInst1, varInst2 base.Var) *varVar {
 	return &varVar{varInst1: varInst1, varInst2: varInst2}
 }
 
 // Return CNF encoding of component.
-func (l *varVar) Encoding(ctx *base.Context) (*cnf.CNF, error) {
-	scpVar1 := l.varInst1.Scoped(ctx)
-	scpVar2 := l.varInst2.Scoped(ctx)
-	return l.buildEncoding(scpVar1, scpVar2, ctx)
+func (c *varVar) Encoding(ctx *base.Context) (*cnf.CNF, error) {
+	scpVar1 := c.varInst1.Scoped(ctx)
+	scpVar2 := c.varInst2.Scoped(ctx)
+	return c.buildEncoding(scpVar1, scpVar2, ctx)
 }
 
 // Generate cnf encoding.
-func (l *varVar) buildEncoding(
+func (c *varVar) buildEncoding(
 	varInst1, varInst2 base.Var,
 	ctx *base.Context,
 ) (*cnf.CNF, error) {
-	cnf := &cnf.CNF{}
-	cnf.ExtendConsistency(genCountClauses(string(varInst1), ctx))
-	cnf.ExtendConsistency(genCountClauses(string(varInst2), ctx))
-	// If we see a number of bots in x then we must see less or equal on y
-	var i, j int
-	cVarName1 := "c" + string(varInst1)
-	cVarName2 := "c" + string(varInst2)
-	for i = 0; i < ctx.Dimension; i++ {
-		lel_clauses := []int{-ctx.IVar(cVarName1, ctx.Dimension - 1, i)}
-		for j = 0; j <= i; j++ {
-			lel_clauses = append(
-				lel_clauses,
-				ctx.IVar(cVarName2, ctx.Dimension - 1, j),
-			)
-		}
-		cnf.AppendSemantics(lel_clauses)
+	clauses := [][]int{}
+	for i := 0; i < ctx.Dimension; i++ {
+		clauses = append(
+			clauses,
+			[]int{
+				-ctx.Var(string(varInst1), i, base.ONE.Val()),
+				-ctx.Var(string(varInst2), i, base.ZERO.Val()),
+			},
+			[]int{
+				-ctx.Var(string(varInst1), i, base.ZERO.Val()),
+				-ctx.Var(string(varInst2), i, base.ONE.Val()),
+			},
+		)
 	}
-	return cnf, nil
+	return cnf.CNFFromClauses(clauses), nil
 }
 
 // Return pointer to simplified equivalent component which might be itself.
 // This method may change the state of the caller.
-func (l *varVar) Simplified(
+func (c *varVar) Simplified(
 	ctx *base.Context,
 ) (base.Component, error) {
-	return l, nil
+	return c, nil
 }
 
 // Return slice of pointers to component's children.
-func (l *varVar) GetChildren() []base.Component {
+func (c *varVar) GetChildren() []base.Component {
 	return []base.Component{}
 }
 
@@ -72,3 +69,4 @@ func (l *varVar) GetChildren() []base.Component {
 func (l *varVar) IsTrivial() (yes bool, value bool) {
 	return false, false
 }
+

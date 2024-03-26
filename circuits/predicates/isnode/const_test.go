@@ -64,7 +64,7 @@ func TestConst_Encoding_Guarded(t *testing.T) {
 	}
 }
 
-func TestConstConst_Encoding_WrongDim(t *testing.T) {
+func TestConst_Encoding_WrongDim(t *testing.T) {
 	x := base.Const{base.BOT, base.BOT, base.BOT}
 	formula := Const(x)
 	context := base.NewContext(4, nil)
@@ -92,7 +92,7 @@ func TestConst_Simplified_Guarded(t *testing.T) {
 	}
 }
 
-func TestConstConst_Simplified_WrongDim(t *testing.T) {
+func TestConst_Simplified_WrongDim(t *testing.T) {
 	x := base.Const{base.BOT, base.BOT, base.BOT}
 	formula := Const(x)
 	context := base.NewContext(4, nil)

@@ -62,6 +62,9 @@ func NewVar(name string) Var {
 func (v Var) Encoding(ctx *Context) *cnf.CNF {
 	nCNF := &cnf.CNF{}
 	// Add consistency clauses
+	if ctx.VarExists(string(v), 0, BOT.Val()) {
+		return nCNF
+	}
 	// Every feature must have at least one value
 	reqAllFeats := [][]int{}
 	for i := 0; i < ctx.Dimension; i++ {

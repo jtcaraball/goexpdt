@@ -20,7 +20,7 @@ type acConst struct {
 //           METHODS           //
 // =========================== //
 
-// Return varVar lel.
+// Return const allComp.
 func Const(constInst base.ConstInstance, leafValue bool) *acConst {
 	return &acConst{constInst: constInst, leafValue: leafValue}
 }

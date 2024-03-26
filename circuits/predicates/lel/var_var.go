@@ -24,10 +24,10 @@ func VarVar(varInst1, varInst2 base.Var) *varVar {
 }
 
 // Return CNF encoding of component.
-func (s *varVar) Encoding(ctx *base.Context) (*cnf.CNF, error) {
-	scpVar1 := s.varInst1.Scoped(ctx)
-	scpVar2 := s.varInst2.Scoped(ctx)
-	return s.buildEncoding(scpVar1, scpVar2, ctx)
+func (l *varVar) Encoding(ctx *base.Context) (*cnf.CNF, error) {
+	scpVar1 := l.varInst1.Scoped(ctx)
+	scpVar2 := l.varInst2.Scoped(ctx)
+	return l.buildEncoding(scpVar1, scpVar2, ctx)
 }
 
 // Generate cnf encoding.

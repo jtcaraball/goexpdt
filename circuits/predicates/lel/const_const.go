@@ -25,12 +25,12 @@ func ConstConst(constInst1, constInst2 base.ConstInstance) *constConst {
 }
 
 // Return CNF encoding of component.
-func (s *constConst) Encoding(ctx *base.Context) (*cnf.CNF, error) {
-	scpConst1, err := s.constInst1.Scoped(ctx)
+func (l *constConst) Encoding(ctx *base.Context) (*cnf.CNF, error) {
+	scpConst1, err := l.constInst1.Scoped(ctx)
 	if err != nil {
 		return nil, err
 	}
-	scpConst2, err := s.constInst2.Scoped(ctx)
+	scpConst2, err := l.constInst2.Scoped(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +41,7 @@ func (s *constConst) Encoding(ctx *base.Context) (*cnf.CNF, error) {
 	); err != nil {
 		return nil, err
 	}
-	return s.buildEncoding(scpConst1, scpConst2, ctx)
+	return l.buildEncoding(scpConst1, scpConst2, ctx)
 }
 
 // Generate cnf encoding.

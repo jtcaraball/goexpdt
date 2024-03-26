@@ -76,7 +76,7 @@ func (ac *acVar) buildEncoding(
 				ctx.IVar(rVarName, node.ID, 0),
 			},
 			{
-				-ctx.Var(rVarName, node.RChild.ID, 0),
+				-ctx.IVar(rVarName, node.RChild.ID, 0),
 				ctx.Var(string(varInst), node.Feat, base.ONE.Val()),
 				ctx.Var(string(varInst), node.Feat, base.BOT.Val()),
 			},
@@ -85,7 +85,7 @@ func (ac *acVar) buildEncoding(
 				ctx.IVar(rVarName, node.ID, 0),
 			},
 			{
-				-ctx.Var(rVarName, node.LChild.ID, 0),
+				-ctx.IVar(rVarName, node.LChild.ID, 0),
 				ctx.Var(string(varInst), node.Feat, base.ZERO.Val()),
 				ctx.Var(string(varInst), node.Feat, base.BOT.Val()),
 			},

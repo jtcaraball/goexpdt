@@ -9,12 +9,14 @@ docker build -f dockerfiles/Dockerfile.Tests -t goexpdt-tests --progress plain -
 ```
 
 ### TODO
-- Look into passing `CNF` struct in `Encoding` methods to avoid creating to much
-  garbage.
+- !!! Add check to confirm that all non-intenral contextVars correspond to
+  "variables fitures" in all tests.
+- Look into re-adding redundancy check to `Var` encoding.
 - Add `and` optimisation to return blank `CNF` if any of its children are
   trivially false.
-- Look into re-adding redundancy check to `Var` encoding.
-- Add correct simplification to circuits when passing `GuardedConst` as
-  arguments.
 - Remove extra ContextVar `Inter` attribute and instead separate internal and
   external vars into two maps.
+- Add correct simplification to circuits when passing `GuardedConst` as
+  arguments.
+- Look into passing `CNF` struct in `Encoding` methods to avoid creating to much
+  garbage.

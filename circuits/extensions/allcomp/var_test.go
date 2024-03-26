@@ -3,7 +3,7 @@ package allcomp
 import (
 	"fmt"
 	"goexpdt/base"
-	"goexpdt/circuits/subsumption"
+	"goexpdt/circuits/predicates/subsumption"
 	"goexpdt/operators"
 	"goexpdt/circuits/internal/test"
 	"goexpdt/trees"

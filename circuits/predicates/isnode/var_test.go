@@ -1,27 +1,27 @@
-package full
+package isnode
 
 import (
 	"goexpdt/base"
-	"goexpdt/circuits/subsumption"
+	"goexpdt/circuits/predicates/subsumption"
 	"goexpdt/operators"
 	"goexpdt/circuits/internal/test"
 	"testing"
 )
 
-const varSUFIX = "full.var"
+const varSUFIX = "isnode.var"
 
 // =========================== //
 //           HELPERS           //
 // =========================== //
 
-func runFullVar(
+func runIsNodeVar(
 	t *testing.T,
 	id, expCode int,
 	c base.Const,
 	simplify bool,
 ) {
 	x := base.NewVar("x")
-	context := base.NewContext(DIM, nil)
+	context := base.NewContext(DIM, genTree())
 	formula := operators.WithVar(
 		x,
 		operators.And(
@@ -44,7 +44,7 @@ func TestVar_Encoding(t *testing.T) {
 	test.AddCleanup(t, varSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			runFullVar(t, i, tc.expCode, tc.val, false)
+			runIsNodeVar(t, i, tc.expCode, tc.val, false)
 		})
 	}
 }
@@ -53,7 +53,7 @@ func TestVar_Simplified(t *testing.T) {
 	test.AddCleanup(t, varSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			runFullVar(t, i, tc.expCode, tc.val, true)
+			runIsNodeVar(t, i, tc.expCode, tc.val, true)
 		})
 	}
 }

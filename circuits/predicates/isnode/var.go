@@ -19,7 +19,7 @@ type inVar struct {
 //           METHODS           //
 // =========================== //
 
-// Return varVar lel.
+// Return var isnode.
 func Var(varInst base.Var) *inVar {
 	return &inVar{varInst: varInst}
 }

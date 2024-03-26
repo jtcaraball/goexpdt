@@ -62,6 +62,9 @@ func NewVar(name string) Var {
 func (v Var) Encoding(ctx *Context) *cnf.CNF {
 	nCNF := &cnf.CNF{}
 	// Add consistency clauses
+	if ctx.VarExists(string(v), 0, BOT.Val()) {
+		return nCNF
+	}
 	// Every feature must have at least one value
 	reqAllFeats := [][]int{}
 	for i := 0; i < ctx.Dimension; i++ {
@@ -96,6 +99,10 @@ func (v Var) Encoding(ctx *Context) *cnf.CNF {
 // Return corresponding scoped var. If no scope is found in guard returns the
 // method caller.
 func (v Var) Scoped(ctx *Context) Var {
+	// This can generate a conflict in feature variable names as Var is always
+	// saved to ctx.featVars so if any variable outside of scope is named
+	// v + scopeName they will collide.
+	// I have to much on my life to deal with this rn thou :c
 	rVar := ""
 	for _, guard := range ctx.Guards {
 		if slices.Contains[[]string](guard.InScope, string(v)) {

@@ -38,6 +38,7 @@ func runAllCompVar(
 	)
 	filePath := test.CNFName(compVarSufix(leafValue), id, simplify)
 	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
+	test.OnlyFeatVariables(t, context, "x")
 }
 
 func compVarSufix(val bool) string {

@@ -16,7 +16,8 @@ type Context struct {
 	TopV int
 	Guards []Guard
 	nodeConsts []Const
-	vars map[ContextVar]int
+	featVars map[ContextVar]int
+	interVars map[ContextVar]int
 }
 
 type Guard struct {
@@ -30,7 +31,6 @@ type ContextVar struct {
 	Name string
 	Idx int
 	Value int
-	Inter bool
 }
 
 // =========================== //
@@ -40,17 +40,18 @@ type ContextVar struct {
 // Generate new context according to passed arguments.
 func NewContext(dim int, tree *trees.Tree) *Context {
 	ctx := &Context{Dimension: dim, Tree: tree}
-	ctx.vars = make(map[ContextVar]int)
+	ctx.featVars = make(map[ContextVar]int)
+	ctx.interVars = make(map[ContextVar]int)
 	return ctx
 }
 
 // Return assigned value to variable. If it does not exist it is added.
 func (c* Context) Var(name string, idx int, value int) int {
 	varS := ContextVar{Name: name, Idx: idx, Value: value}
-	varValue := c.vars[varS]
+	varValue := c.featVars[varS]
 	if varValue == 0 {
 		c.TopV += 1
-		c.vars[varS] = c.TopV
+		c.featVars[varS] = c.TopV
 		return c.TopV
 	}
 	return varValue
@@ -59,16 +60,16 @@ func (c* Context) Var(name string, idx int, value int) int {
 // Return true if variable exits in context. False otherwise.
 func (c *Context) VarExists(name string, idx int, value int) bool {
 	varS := ContextVar{Name: name, Idx: idx, Value: value}
-	return c.vars[varS] != 0
+	return c.featVars[varS] != 0
 }
 
 // Return assigned value to internal variable. If it does not exist it is added.
 func (c* Context) IVar(name string, idx int, value int) int {
-	varS := ContextVar{Name: name, Idx: idx, Value: value, Inter: true}
-	varValue := c.vars[varS]
+	varS := ContextVar{Name: name, Idx: idx, Value: value}
+	varValue := c.interVars[varS]
 	if varValue == 0 {
 		c.TopV += 1
-		c.vars[varS] = c.TopV
+		c.interVars[varS] = c.TopV
 		return c.TopV
 	}
 	return varValue
@@ -76,8 +77,8 @@ func (c* Context) IVar(name string, idx int, value int) int {
 
 // Return true if internal variable exits in context. False otherwise.
 func (c *Context) IVarExists(name string, idx int, value int) bool {
-	varS := ContextVar{Name: name, Idx: idx, Value: value, Inter: true}
-	return c.vars[varS] != 0
+	varS := ContextVar{Name: name, Idx: idx, Value: value}
+	return c.interVars[varS] != 0
 }
 
 // Set context's TopV to the max between the current value and value passed.
@@ -102,8 +103,13 @@ func (c *Context) AddVarToScope(varInst Var) {
 }
 
 // Return context's vars.
-func (c *Context) GetVars() map[ContextVar]int {
-	return c.vars
+func (c *Context) GetFeatVars() map[ContextVar]int {
+	return c.featVars
+}
+
+// Return context's vars.
+func (c *Context) GetInterVars() map[ContextVar]int {
+	return c.interVars
 }
 
 // Add guard with the given target.

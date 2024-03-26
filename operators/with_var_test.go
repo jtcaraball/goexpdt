@@ -77,7 +77,7 @@ func TestWithVar_Encoding_ScopedVariable(t *testing.T) {
 		t.Errorf("CNF encoding error. %s", err.Error())
 		return
 	}
-	for key := range context.GetVars() {
+	for key := range context.GetFeatVars() {
 		if key.Name != "x1" {
 			t.Errorf("Wrong scoped var name. Expected x1 but got %s", key.Name)
 			return

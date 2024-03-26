@@ -20,7 +20,7 @@ type inConst struct {
 //           METHODS           //
 // =========================== //
 
-// Return const full.
+// Return const isnode.
 func Const(constInst base.ConstInstance) *inConst {
 	return &inConst{constInst: constInst}
 }

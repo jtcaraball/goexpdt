@@ -75,7 +75,7 @@ func TestConstConst_Encoding_WrongDim(t *testing.T) {
 }
 
 func TestConst_Simplified(t *testing.T) {
-	test.AddCleanup(t, varSUFIX, true)
+	test.AddCleanup(t, constSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runFullConst(t, i, tc.expCode, tc.val, true)

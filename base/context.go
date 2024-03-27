@@ -1,9 +1,11 @@
 package base
 
 import (
-	"slices"
+	"fmt"
 	"errors"
 	"goexpdt/trees"
+	"slices"
+	"strconv"
 )
 
 // =========================== //
@@ -24,7 +26,7 @@ type Guard struct {
 	Target string
 	InScope []string
 	Value Const
-	Rep string
+	Idx int
 }
 
 type ContextVar struct {
@@ -122,6 +124,39 @@ func (c *Context) PopGuard() {
 	c.Guards = c.Guards[:len(c.Guards)]
 }
 
+// Set guard iterable values.
+func (c *Context) SetGuard(gIdx, vIdx int, value Const) error {
+	if gIdx > len(c.Guards) {
+		return errors.New("Guard index out of range")
+	}
+	c.Guards[gIdx].Idx = vIdx
+	c.Guards[gIdx].Value = value
+	return nil
+}
+
+// Return variable scope suffix.
+func (c *Context) ScopeSuffix(vName string) string {
+	suffix := ""
+	for _, guard := range c.Guards {
+		if slices.Contains[[]string](guard.InScope, vName) {
+			suffix += "#" + guard.Rep()
+		}
+	}
+	return suffix
+}
+
+// Return matching target guard's value.
+func (c *Context) GuardValueByTarget(target string) (Const, error) {
+	for _, guard := range c.Guards {
+		if guard.Target == target {
+			return guard.Value, nil
+		}
+	}
+	return nil, errors.New(
+		fmt.Sprintf("No guard with target '%s'", target),
+	)
+}
+
 // Return all trees nodes as slice of constants.
 func (c *Context) NodesAsConsts() ([]Const, error) {
 	if c.nodeConsts != nil {
@@ -159,4 +194,9 @@ func (c *Context) NodesAsConsts() ([]Const, error) {
 	}
 	c.nodeConsts = nConsts
 	return c.nodeConsts, nil
+}
+
+// Return guard's representation.
+func (g Guard) Rep() string {
+	return g.Target + "#" + strconv.Itoa(g.Idx)
 }

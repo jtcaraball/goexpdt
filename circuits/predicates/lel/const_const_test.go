@@ -36,8 +36,8 @@ func runGuardedLELConstConst(
 	context := base.NewContext(DIM, nil)
 	context.Guards = append(
 		context.Guards,
-		base.Guard{Target: "x", Value: c1, Rep: "1"},
-		base.Guard{Target: "y", Value: c2, Rep: "2"},
+		base.Guard{Target: "x", Value: c1, Idx: 1},
+		base.Guard{Target: "y", Value: c2, Idx: 2},
 	)
 	formula := ConstConst(x, y)
 	filePath := test.CNFName(guardedConstConstSUFIX, id, simplify)

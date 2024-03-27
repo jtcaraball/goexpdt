@@ -35,7 +35,7 @@ func runGuardedIsNodeConst(
 	context := base.NewContext(DIM, genTree())
 	context.Guards = append(
 		context.Guards,
-		base.Guard{Target: "x", Value: c, Rep: "1"},
+		base.Guard{Target: "x", Value: c, Idx: 1},
 	)
 	formula := Const(x)
 	filePath := test.CNFName(guardedConstSUFIX, id, simplify)

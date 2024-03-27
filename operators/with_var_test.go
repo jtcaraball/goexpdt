@@ -40,7 +40,7 @@ func TestWithVar_Encoding_AddVarToScope(t *testing.T) {
 		base.Guard{
 			Target: "T",
 			Value: base.Const{base.BOT},
-			Rep: "1",
+			Idx: 1,
 		},
 	)
 	component := WithVar(x, base.NewTrivial(true))
@@ -68,7 +68,7 @@ func TestWithVar_Encoding_ScopedVariable(t *testing.T) {
 		base.Guard{
 			Target: "T",
 			Value: base.Const{base.BOT},
-			Rep: "1",
+			Idx: 1,
 		},
 	)
 	component := WithVar(x, base.NewTrivial(true))
@@ -78,7 +78,7 @@ func TestWithVar_Encoding_ScopedVariable(t *testing.T) {
 		return
 	}
 	for key := range context.GetFeatVars() {
-		if key.Name != "x1" {
+		if key.Name != "x#T#1" {
 			t.Errorf("Wrong scoped var name. Expected x1 but got %s", key.Name)
 			return
 		}

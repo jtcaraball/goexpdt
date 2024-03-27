@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"goexpdt/cnf"
 	"goexpdt/base"
-	"strconv"
 )
 
 // =========================== //
@@ -44,10 +43,9 @@ func (fag *forAllGuarded) Encoding(ctx *base.Context) (*cnf.CNF, error) {
 	if err != nil {
 		return nil, err
 	}
-	for i := 0; i < len(nodeConsts); i++ {
+	for i, nodeConst := range nodeConsts {
 		// Update guard value to current node.
-		ctx.Guards[gIdx].Value = nodeConsts[i]
-		ctx.Guards[gIdx].Rep = strconv.Itoa(i)
+		ctx.SetGuard(gIdx, i, nodeConst)
 		// Encode.
 		iCNF, err := fag.child.Encoding(ctx)
 		if err != nil {

@@ -3,25 +3,20 @@ package base
 import (
 	"errors"
 	"fmt"
-	"slices"
 	"goexpdt/cnf"
 )
-
 
 // =========================== //
 //         INTERFACES          //
 // =========================== //
 
-
 type ConstInstance interface {
 	Scoped(ctx *Context) (Const, error)
 }
 
-
 // =========================== //
 //           STRUCTS           //
 // =========================== //
-
 
 type Var string
 
@@ -33,11 +28,9 @@ type featV struct {
 	val int
 }
 
-
 // =========================== //
 //          VARIABLES          //
 // =========================== //
-
 
 var (
 	ZERO = featV{val: 0}
@@ -46,11 +39,9 @@ var (
 	FeatValues = []featV{ZERO, ONE, BOT}
 )
 
-
 // =========================== //
 //          VAR METHODS        //
 // =========================== //
-
 
 // Return new var instance with name equal to string passed.
 func NewVar(name string) Var {
@@ -102,24 +93,17 @@ func (v Var) Scoped(ctx *Context) Var {
 	// This can generate a conflict in feature variable names as Var is always
 	// saved to ctx.featVars so if any variable outside of scope is named
 	// v + scopeName they will collide.
-	// I have to much on my life to deal with this rn thou :c
-	rVar := ""
-	for _, guard := range ctx.Guards {
-		if slices.Contains[[]string](guard.InScope, string(v)) {
-			rVar += guard.Rep
-		}
-	}
+	// I have too much on my life to deal with this rn thou :c
+	rVar := ctx.ScopeSuffix(string(v))
 	if rVar != "" {
 		return Var(string(v) + rVar)
 	}
 	return v
 }
 
-
 // =========================== //
 //        CONST METHODS        //
 // =========================== //
-
 
 // Return all bots const of len dim.
 func AllBotConst(dim int) Const {
@@ -137,14 +121,7 @@ func (c Const) Scoped(ctx *Context) (Const, error) {
 
 // Return corresponding const from list of guards.
 func (gc GuardedConst) Scoped(ctx *Context) (Const, error) {
-	for _, guard := range ctx.Guards {
-		if guard.Target == string(gc) {
-			return guard.Value, nil
-		}
-	}
-	return nil, errors.New(
-		fmt.Sprintf("No guard with target '%s'", string(gc)),
-	)
+	return ctx.GuardValueByTarget(string(gc))
 }
 
 // Return featV value.
@@ -152,7 +129,7 @@ func (f featV) Val() int {
 	return f.val
 }
 
-//
+// Returns an error if any of passed consts have lenght different to Dim.
 func ValidateConstsDim(
 	constDim int,
 	consts ...Const,

@@ -45,7 +45,7 @@ func runGuardedSubsumptionConstVar(
 	context := base.NewContext(DIM, nil)
 	context.Guards = append(
 		context.Guards,
-		base.Guard{Target: "x", Value: c1, Rep: "1"},
+		base.Guard{Target: "x", Value: c1, Idx: 1},
 	)
 	formula := operators.WithVar(
 		y,
@@ -56,7 +56,7 @@ func runGuardedSubsumptionConstVar(
 	)
 	filePath := test.CNFName(guardedConstVarSUFIX, id, simplify)
 	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
-	test.OnlyFeatVariables(t, context, "x", "y1")
+	test.OnlyFeatVariables(t, context, "x", "y#x#1")
 }
 
 // =========================== //

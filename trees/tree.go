@@ -16,6 +16,7 @@ type Node struct {
 	Value bool
 	LChild *Node
 	RChild *Node
+	Parent *Node
 }
 
 type Tree struct {
@@ -73,13 +74,13 @@ func (t *Tree) populateTree(treeJSON *TreeInJSON) error {
 			)
 		}
 
-		node := &Node{ID: nInfo.ID}
+		node := &Node{ID: nInfo.ID, Parent: nInfo.Parent}
 		if nInfo.Parent == nil {
 			t.Root = node
 		} else if nInfo.Right {
-			nInfo.Parent.RChild = node
+			node.Parent.RChild = node
 		} else {
-			nInfo.Parent.LChild = node
+			node.Parent.LChild = node
 		}
 
 		if nodeJSON.Type == "leaf" {

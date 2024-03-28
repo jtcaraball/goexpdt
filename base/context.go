@@ -18,6 +18,8 @@ type Context struct {
 	TopV int
 	Guards []Guard
 	nodeConsts []Const
+	posLeafConsts []Const
+	negLeafConsts []Const
 	featVars map[ContextVar]int
 	interVars map[ContextVar]int
 }
@@ -157,6 +159,12 @@ func (c *Context) GuardValueByTarget(target string) (Const, error) {
 	)
 }
 
+// Node iteration struct.
+type nodeElem struct {
+	Node *trees.Node
+	Value Const
+}
+
 // Return all trees nodes as slice of constants.
 func (c *Context) NodesAsConsts() ([]Const, error) {
 	if c.nodeConsts != nil {
@@ -164,14 +172,16 @@ func (c *Context) NodesAsConsts() ([]Const, error) {
 	}
 	var node *trees.Node
 	var nConst, lnConst, rnConst Const
-	var nStack = []*trees.Node{c.Tree.Root}
-	var ncStack = []Const{AllBotConst(c.Dimension)}
 	var nConsts = []Const{}
+	var nInfo nodeElem
+	var nStack = []nodeElem{
+		{Node: c.Tree.Root, Value: AllBotConst(c.Dimension)},
+	}
 	for len(nStack) > 0 {
-		node, nStack = nStack[len(nStack) - 1], nStack[:len(nStack) - 1]
-		nConst, ncStack = ncStack[len(ncStack) - 1], ncStack[:len(ncStack) - 1]
+		nInfo, nStack = nStack[len(nStack) - 1], nStack[:len(nStack) - 1]
+		node, nConst = nInfo.Node, nInfo.Value
 		// Check for valid indexing.
-		if node.Feat >= c.Dimension {
+		if node.Feat >= c.Dimension || node.Feat < 0 {
 			return nil, errors.New("Node with invalid feature index.")
 		}
 		// Add node const to slice.
@@ -179,21 +189,67 @@ func (c *Context) NodesAsConsts() ([]Const, error) {
 		if node.IsLeaf() {
 			continue
 		}
-		// Add left node and const to stack.
-		nStack = append(nStack, node.LChild)
-		lnConst = AllBotConst(c.Dimension)
+		// Add children nodes to stack.
+		lnConst = make(Const, c.Dimension)
+		rnConst = make(Const, c.Dimension)
 		copy(lnConst, nConst)
-		lnConst[node.Feat] = ZERO
-		ncStack = append(ncStack, lnConst)
-		// Add right node and const to stack.
-		nStack = append(nStack, node.RChild)
-		rnConst = AllBotConst(c.Dimension)
 		copy(rnConst, nConst)
+		lnConst[node.Feat] = ZERO
 		rnConst[node.Feat] = ONE
-		ncStack = append(ncStack, rnConst)
+		nStack = append(
+			nStack,
+			nodeElem{Node: node.LChild, Value: lnConst},
+			nodeElem{Node: node.RChild, Value: rnConst},
+		)
 	}
 	c.nodeConsts = nConsts
 	return c.nodeConsts, nil
+}
+
+// Return positive and negative leaf nodes as consts.
+func (c *Context) LeafsAsConsts() ([]Const, []Const, error) {
+	if c.posLeafConsts != nil && c.negLeafConsts != nil {
+		return c.posLeafConsts, c.negLeafConsts, nil
+	}
+	var node *trees.Node
+	var nConst, lnConst, rnConst Const
+	var pnConsts, nnConsts []Const
+	var nInfo nodeElem
+	var nStack = []nodeElem{
+		{Node: c.Tree.Root, Value: AllBotConst(c.Dimension)},
+	}
+	for len(nStack) > 0 {
+		nInfo, nStack = nStack[len(nStack) - 1], nStack[:len(nStack) - 1]
+		node, nConst = nInfo.Node, nInfo.Value
+		// Check for valid indexing.
+		if node.Feat >= c.Dimension || node.Feat < 0 {
+			return nil, nil, errors.New("Node with invalid feature index.")
+		}
+		// Add node const to slice.
+		if node.IsLeaf() {
+			if node.Value {
+				pnConsts = append(pnConsts, nConst)
+				continue
+			}
+			nnConsts = append(nnConsts, nConst)
+			continue
+		}
+		// Add children nodes to stack.
+		lnConst = make(Const, c.Dimension)
+		rnConst = make(Const, c.Dimension)
+		copy(lnConst, nConst)
+		copy(rnConst, nConst)
+		lnConst[node.Feat] = ZERO
+		rnConst[node.Feat] = ONE
+		nStack = append(
+			nStack,
+			nodeElem{Node: node.LChild, Value: lnConst},
+			nodeElem{Node: node.RChild, Value: rnConst},
+		)
+	}
+	c.posLeafConsts = pnConsts
+	c.negLeafConsts = nnConsts
+	return c.posLeafConsts, c.negLeafConsts, nil
 }
 
 // Return guard's representation.

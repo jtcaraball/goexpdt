@@ -1,4 +1,4 @@
-package full
+package dft
 
 import (
 	"goexpdt/base"
@@ -6,33 +6,33 @@ import (
 	"testing"
 )
 
-const constSUFIX = "full.const"
-const guardedConstSUFIX = "full.Gconst"
+const constSUFIX = "dft.const"
+const guardedConstSUFIX = "dft.Gconst"
 
 // =========================== //
 //           HELPERS           //
 // =========================== //
 
-func runFullConst(
+func runDFTConst(
 	t *testing.T,
 	id, expCode int,
 	c base.Const,
 	simplify bool,
 ) {
-	context := base.NewContext(DIM, nil)
+	context := base.NewContext(DIM, genTree())
 	formula := Const(c)
 	filePath := test.CNFName(constSUFIX, id, simplify)
 	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
 
-func runGuardedFullConst(
+func runGuardedDFTConst(
 	t *testing.T,
 	id, expCode int,
 	c base.Const,
 	simplify bool,
 ) {
 	x := base.GuardedConst("x")
-	context := base.NewContext(DIM, nil)
+	context := base.NewContext(DIM, genTree())
 	context.Guards = append(
 		context.Guards,
 		base.Guard{Target: "x", Value: c, Idx: 1},
@@ -50,7 +50,7 @@ func TestConst_Encoding(t *testing.T) {
 	test.AddCleanup(t, constSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			runFullConst(t, i, tc.expCode, tc.val, false)
+			runDFTConst(t, i, tc.expCode, tc.val, false)
 		})
 	}
 }
@@ -59,7 +59,7 @@ func TestConst_Encoding_Guarded(t *testing.T) {
 	test.AddCleanup(t, guardedConstSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			runGuardedFullConst(t, i, tc.expCode, tc.val, false)
+			runGuardedDFTConst(t, i, tc.expCode, tc.val, false)
 		})
 	}
 }
@@ -78,7 +78,7 @@ func TestConst_Simplified(t *testing.T) {
 	test.AddCleanup(t, constSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			runFullConst(t, i, tc.expCode, tc.val, true)
+			runDFTConst(t, i, tc.expCode, tc.val, true)
 		})
 	}
 }
@@ -87,7 +87,7 @@ func TestConst_Simplified_Guarded(t *testing.T) {
 	test.AddCleanup(t, guardedConstSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			runGuardedFullConst(t, i, tc.expCode, tc.val, true)
+			runGuardedDFTConst(t, i, tc.expCode, tc.val, true)
 		})
 	}
 }

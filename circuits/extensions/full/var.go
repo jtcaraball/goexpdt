@@ -17,7 +17,7 @@ type fVar struct {
 //           METHODS           //
 // =========================== //
 
-// Return varVar lel.
+// Return var full.
 func Var(varInst base.Var) *fVar {
 	return &fVar{varInst: varInst}
 }

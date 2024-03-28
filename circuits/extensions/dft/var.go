@@ -41,11 +41,10 @@ func (d *dftVar) buildEncoding(
 	clauses := [][]int{}
 	for _, pnConst := range pnConsts {
 		for _, nnConst := range nnConsts {
-			nwClause, err := d.notAWitnessClause(varInst, pnConst, nnConst, ctx)
-			if err != nil {
-				return nil, err
-			}
-			clauses = append(clauses, nwClause)
+			clauses = append(
+				clauses,
+				d.unsafeNotAWitnessClause(varInst, pnConst, nnConst, ctx),
+			)
 		}
 	}
 	return cnf.CNFFromClauses(clauses), nil
@@ -74,6 +73,27 @@ func (d *dftVar) notAWitnessClause(
 	return clause, nil
 }
 
+// Generate not a witness clause.
+// Does not check for an index out of bound error.
+func (d *dftVar) unsafeNotAWitnessClause(
+	varInst base.Var,
+	lConst1, lConst2 base.Const,
+	ctx *base.Context,
+) []int {
+	clause := []int{}
+	for i := 0; i < ctx.Dimension; i++ {
+		if lConst1[i] != base.BOT &&
+			lConst2[i] != base.BOT &&
+			lConst1[i] != lConst2[i] {
+				clause = append(
+					clause,
+					-ctx.Var(string(varInst), i, base.BOT.Val()),
+				)
+		}
+	}
+	return clause
+}
+
 // Return pointer to simplified equivalent component which might be itself.
 func (d *dftVar) Simplified(
 	ctx *base.Context,
@@ -85,7 +105,6 @@ func (d *dftVar) Simplified(
 func (d *dftVar) GetChildren() []base.Component {
 	return []base.Component{}
 }
-
 // yes is true if struct is trivial and value represents its truthiness.
 func (d *dftVar) IsTrivial() (yes bool, value bool) {
 	return false, false

@@ -49,11 +49,7 @@ func (d *dftConst) buildEncoding(
 	}
 	for _, pnConst := range pnConsts {
 		for _, nnConst := range nnConsts {
-			ok, err := d.compareConsToLeafs(constInst, pnConst, nnConst)
-			if err != nil {
-				return nil, err
-			}
-			if !ok {
+			if !d.unsafeCompareConsToLeafs(constInst, pnConst, nnConst) {
 				return cnf.CNFFromClauses([][]int{{}}), nil
 			}
 		}
@@ -89,11 +85,7 @@ func (d *dftConst) buildSimplified(
 	}
 	for _, pnConst := range pnConsts {
 		for _, nnConst := range nnConsts {
-			ok, err := d.compareConsToLeafs(constInst, pnConst, nnConst)
-			if err != nil {
-				return nil, err
-			}
-			if !ok {
+			if !d.unsafeCompareConsToLeafs(constInst, pnConst, nnConst) {
 				return base.NewTrivial(false), nil
 			}
 		}
@@ -117,6 +109,22 @@ func (d *dftConst) compareConsToLeafs(
 		}
 	}
 	return false, nil
+}
+
+// Return true if constant is not a ancestor of the leafs passed.
+// Does not check for an index out of bound error.
+func (d *dftConst) unsafeCompareConsToLeafs(
+	constInst, lConst1, lConst2 base.Const,
+) bool {
+	for i, ft := range constInst {
+		if ft != base.BOT &&
+			lConst1[i] != base.BOT &&
+			lConst2[i] != base.BOT &&
+			lConst1[i] != lConst2[i] {
+			return true
+		}
+	}
+	return false
 }
 
 // Return slice of pointers to component's children.

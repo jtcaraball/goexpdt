@@ -138,14 +138,24 @@ func (c *CNF) ToFile(path string) error {
 	}
 	defer f.Close()
 	// Write CNF formula
-	f.WriteString(
+	if _, err = f.WriteString(
 		fmt.Sprintf("p cnf %d %d\n", c.tv, len(c.sClauses) + len(c.cClauses)),
-	)
+	); err != nil {
+		return err
+	}
 	for _, clause := range c.sClauses {
-		f.WriteString(fmt.Sprintf("%s\n", clauseToDIMACS(clause)))
+		if _, err = f.WriteString(
+			fmt.Sprintf("%s\n", clauseToDIMACS(clause)),
+		); err != nil {
+			return err
+		}
 	}
 	for _, clause := range c.cClauses {
-		f.WriteString(fmt.Sprintf("%s\n", clauseToDIMACS(clause)))
+		if _, err = f.WriteString(
+			fmt.Sprintf("%s\n", clauseToDIMACS(clause)),
+		); err != nil {
+			return err
+		}
 	}
 	return nil
 }

@@ -100,7 +100,7 @@ func (c *Context) AddVarToScope(varInst Var) {
 	// The amount of vars in a formula should tend to be small so slices.Contain
 	// is more than good enough.
 	for i := 0; i < len(c.Guards); i++ {
-		if !slices.Contains[[]string](c.Guards[i].InScope, string(varInst)) {
+		if !slices.Contains(c.Guards[i].InScope, string(varInst)) {
 			c.Guards[i].InScope = append(c.Guards[i].InScope, string(varInst))
 		}
 	}
@@ -140,7 +140,7 @@ func (c *Context) SetGuard(gIdx, vIdx int, value Const) error {
 func (c *Context) ScopeSuffix(vName string) string {
 	suffix := ""
 	for _, guard := range c.Guards {
-		if slices.Contains[[]string](guard.InScope, vName) {
+		if slices.Contains(guard.InScope, vName) {
 			suffix += "#" + guard.Rep()
 		}
 	}
@@ -154,9 +154,7 @@ func (c *Context) GuardValueByTarget(target string) (Const, error) {
 			return guard.Value, nil
 		}
 	}
-	return nil, errors.New(
-		fmt.Sprintf("No guard with target '%s'", target),
-	)
+	return nil, fmt.Errorf("No guard with target '%s'", target)
 }
 
 // Node iteration struct.

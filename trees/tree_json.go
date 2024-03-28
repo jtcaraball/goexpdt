@@ -69,7 +69,7 @@ func (tj *TreeInJSON) Validate() error {
 			"Tree encoding error: must have exactly two class_names",
 		)
 	}
-	if !slices.Contains[[]string](tj.ClassNames, tj.Positive) {
+	if !slices.Contains(tj.ClassNames, tj.Positive) {
 		return errors.New(
 			"Tree encoding error: positive must be contained in class_names",
 		)
@@ -114,7 +114,7 @@ func (nj *NodeInJSON) Validate(featCount int, validClasses []string) error {
 			)
 		}
 	} else {
-		if !slices.Contains[[]string](validClasses, nj.Class) {
+		if !slices.Contains(validClasses, nj.Class) {
 			return errors.New(
 				"Tree encoding error: invalid node's class",
 			)

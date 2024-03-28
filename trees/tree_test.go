@@ -169,7 +169,7 @@ func TestLoadTree_ValidTree(t *testing.T) {
 		return
 	}
 	treeRepr := reprTree(tree)
-	if !slices.Equal[[]string](expTreeRepr, treeRepr) {
+	if !slices.Equal(expTreeRepr, treeRepr) {
 		t.Errorf(
 			"Trees not equal. Expected %s but got %s",
 			expTreeRepr,

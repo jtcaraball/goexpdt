@@ -1,7 +1,6 @@
 package base
 
 import (
-	"errors"
 	"fmt"
 	"goexpdt/cnf"
 )
@@ -136,13 +135,11 @@ func ValidateConstsDim(
 ) error {
 	for i, c := range consts {
 		if len(c) != constDim {
-			return errors.New(
-				fmt.Sprintf(
-					"constant%d: wrong dim %d (%d feats in context)",
-					i + 1,
-					len(c),
-					constDim,
-				),
+			return fmt.Errorf(
+				"constant%d: wrong dim %d (%d feats in context)",
+				i + 1,
+				len(c),
+				constDim,
 			)
 		}
 	}

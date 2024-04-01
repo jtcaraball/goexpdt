@@ -118,6 +118,16 @@ func (c Const) Scoped(ctx *Context) (Const, error) {
 	return c, nil
 }
 
+// Return true if caller is full.
+func (c Const) IsFull() bool {
+	for _, ft := range c {
+		if ft == BOT {
+			return false
+		}
+	}
+	return true
+}
+
 // Return corresponding const from list of guards.
 func (gc GuardedConst) Scoped(ctx *Context) (Const, error) {
 	return ctx.GuardValueByTarget(string(gc))

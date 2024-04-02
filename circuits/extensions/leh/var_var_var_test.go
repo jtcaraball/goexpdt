@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-const varVarSUFIX = "lel.varvar"
+const varVarSUFIX = "leh.varvar"
 
 // =========================== //
 //           HELPERS           //

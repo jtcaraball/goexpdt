@@ -8,8 +8,8 @@ import (
 	"testing"
 )
 
-const varConstConstSUFIX = "leh.constvarconst"
-const guardedVarConstConstSUFIX = "leh.Gconstvarconst"
+const varConstConstSUFIX = "leh.varconstconst"
+const guardedVarConstConstSUFIX = "leh.Gvarconstconst"
 
 // =========================== //
 //           HELPERS           //

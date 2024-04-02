@@ -39,6 +39,11 @@ func distVarName(name1, name2 string) string {
 	return "d$" + name1 + "$" + name2
 }
 
+// Return eq variable name.
+func eqVarName(name1, name2 string) string {
+	return "eq$" + name1 + "$" + name2
+}
+
 // Return the clauses encoding the hamming distance between a variable and a
 // constant.
 func hammingDistVC(
@@ -120,8 +125,111 @@ func hammingDistVC(
 }
 
 // Return the clauses encoding the hamming distance between two variables.
-func hammingDistVV(varInst1, varInst2 base.Var) ([][]int, error) {
-	return nil, nil
+func hammingDistVV(varInst1, varInst2 base.Var, ctx *base.Context) [][]int {
+	clauses := [][]int{}
+	dvName := distVarName(string(varInst1), string(varInst2))
+	evName := eqVarName(string(varInst1), string(varInst2))
+	clauses = append(
+		clauses,
+		// [
+		// 	-context.V[('d', var_one_name, var_two_name, 0, 0)],
+		// 	context.V[('eq', var_one_name, var_two_name, 0)]
+		// ],
+		[]int{-ctx.IVar(dvName, 0, 0), ctx.IVar(evName, 0, 0)},
+		// [
+		// 	-context.V[('eq', var_one_name, var_two_name, 0)],
+		// 	context.V[('d', var_one_name, var_two_name, 0, 0)],
+		// ],
+		[]int{-ctx.IVar(evName, 0, 0), ctx.IVar(dvName, 0, 0)},
+		// [
+		// 	-context.V[('d', var_one_name, var_two_name, 0, 1)],
+		// 	-context.V[('eq', var_one_name, var_two_name, 0)]
+		// ],
+		[]int{-ctx.IVar(dvName, 0, 1), -ctx.IVar(evName, 0, 0)},
+		// [
+		// 	context.V[('eq', var_one_name, var_two_name, 0)],
+		// 	context.V[('d', var_one_name, var_two_name, 0, 1)],
+		// ],
+		[]int{ctx.IVar(evName, 0, 0), ctx.IVar(dvName, 0, 1)},
+	)
+	for i := 1; i < ctx.Dimension; i++ {
+		clauses = append(
+			clauses,
+			// [
+			// 	-context.V[('d', var_one_name, var_two_name, i, 0)],
+			// 	context.V[('d', var_one_name, var_two_name, i - 1, 0)]
+			// ],
+			[]int{-ctx.IVar(dvName, i, 0), ctx.IVar(dvName, i-1, 0)},
+			// [
+			// 	-context.V[('d', var_one_name, var_two_name, i, 0)],
+			// 	context.V[('eq', var_one_name, var_two_name, i)]
+			// ],
+			[]int{-ctx.IVar(dvName, i, 0), ctx.IVar(evName, i, 0)},
+			// [
+			// 	-context.V[('d', var_one_name, var_two_name, i - 1, 0)],
+			// 	-context.V[('eq', var_one_name, var_two_name, i)],
+			// 	context.V[('d', var_one_name, var_two_name, i, 0)],
+			// ]
+			[]int{
+				-ctx.IVar(dvName, i-1, 0),
+				-ctx.IVar(evName, i, 0),
+				ctx.IVar(dvName, i, 0),
+			},
+		)
+		for j := 1; j <= i+1; j++ {
+			clauses = append(
+				clauses,
+				// [
+				// 	-context.V[('d', var_one_name, var_two_name, i, j)],
+				// 	context.V[('d', var_one_name, var_two_name, i-1, j-1)],
+				// 	context.V[('eq', var_one_name, var_two_name, i)]
+				// ],
+				[]int{
+					-ctx.IVar(dvName, i, j),
+					ctx.IVar(dvName, i-1, j-1),
+					ctx.IVar(evName, i, 0),
+				},
+				// [
+				// 	-context.V[('d', var_one_name, var_two_name, i, j)],
+				// 	context.V[('d', var_one_name, var_two_name, i-1, j)],
+				// 	-context.V[('eq', var_one_name, var_two_name, i)]
+				// ],
+				[]int{
+					-ctx.IVar(dvName, i, j),
+					ctx.IVar(dvName, i-1, j),
+					-ctx.IVar(evName, i, 0),
+				},
+				// [
+				// 	context.V[('d', var_one_name, var_two_name, i, j)],
+				// 	-context.V[
+				// 		('d', var_one_name, var_two_name, i-1, j-1)
+				// 	],
+				// 	context.V[('eq', var_one_name, var_two_name, i)]
+				// ],
+				[]int{
+					ctx.IVar(dvName, i, j),
+					-ctx.IVar(dvName, i-1, j-1),
+					ctx.IVar(evName, i, 0),
+				},
+				// [
+				// 	context.V[('d', var_one_name, var_two_name, i, j)],
+				// 	-context.V[('d', var_one_name, var_two_name, i-1, j)],
+				// 	-context.V[('eq', var_one_name, var_two_name, i)]
+				// ],
+				[]int{
+					ctx.IVar(dvName, i, j),
+					-ctx.IVar(dvName, i-1, j),
+					-ctx.IVar(evName, i, 0),
+				},
+			)
+		}
+	}
+	for i := 0; i < ctx.Dimension; i++ {
+		for j := i + 2; j <= ctx.Dimension; j++ {
+			clauses = append(clauses, []int{-ctx.IVar(dvName, i, j)})
+		}
+	}
+	return clauses
 }
 
 // Return the clauses encoding that variable is full.
@@ -131,6 +239,62 @@ func varFullClauses(varInst base.Var, ctx *base.Context) [][]int {
 		clauses = append(
 			clauses,
 			[]int{-ctx.Var(string(varInst), i, base.BOT.Val())},
+		)
+	}
+	return clauses
+}
+
+// Return the clauses encoding equality in variables features. Assumes both
+// variables are full.
+func fullVarEqualClauses(
+	varInst1, varInst2 base.Var,
+	ctx *base.Context,
+) [][]int {
+	clauses := [][]int{}
+	eqName := eqVarName(string(varInst1), string(varInst2))
+	for i := 0; i < ctx.Dimension; i++ {
+		clauses = append(
+			clauses,
+			// [
+			// 	-context.V[(var_one_name, i, Symbol.ONE)],
+			// 	-context.V[(var_two_name, i, Symbol.ONE)],
+			// 	context.V[('eq', var_one_name, var_two_name, i)]
+			// ],
+			[]int{
+				-ctx.Var(string(varInst1), i, base.ONE.Val()),
+				-ctx.Var(string(varInst2), i, base.ONE.Val()),
+				ctx.IVar(eqName, i, 0),
+			},
+			// [
+			// 	-context.V[(var_one_name, i, Symbol.ONE)],
+			// 	-context.V[(var_two_name, i, Symbol.ZERO)],
+			// 	-context.V[('eq', var_one_name, var_two_name, i)]
+			// ],
+			[]int{
+				-ctx.Var(string(varInst1), i, base.ONE.Val()),
+				-ctx.Var(string(varInst2), i, base.ZERO.Val()),
+				-ctx.IVar(eqName, i, 0),
+			},
+			// [
+			// 	-context.V[(var_one_name, i, Symbol.ZERO)],
+			// 	-context.V[(var_two_name, i, Symbol.ONE)],
+			// 	-context.V[('eq', var_one_name, var_two_name, i)]
+			// ],
+			[]int{
+				-ctx.Var(string(varInst1), i, base.ZERO.Val()),
+				-ctx.Var(string(varInst2), i, base.ONE.Val()),
+				-ctx.IVar(eqName, i, 0),
+			},
+			// [
+			// 	-context.V[(var_one_name, i, Symbol.ZERO)],
+			// 	-context.V[(var_two_name, i, Symbol.ZERO)],
+			// 	context.V[('eq', var_one_name, var_two_name, i)]
+			// ],
+			[]int{
+				-ctx.Var(string(varInst1), i, base.ZERO.Val()),
+				-ctx.Var(string(varInst2), i, base.ZERO.Val()),
+				ctx.IVar(eqName, i, 0),
+			},
 		)
 	}
 	return clauses

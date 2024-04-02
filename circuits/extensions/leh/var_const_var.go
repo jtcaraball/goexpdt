@@ -1,0 +1,121 @@
+package leh
+
+import (
+	"goexpdt/base"
+	"goexpdt/cnf"
+)
+
+// =========================== //
+//           STRUCTS           //
+// =========================== //
+
+type varConstVar struct {
+	varInst1 base.Var
+	varInst2 base.Var
+	constInst base.ConstInstance
+}
+
+// =========================== //
+//           METHODS           //
+// =========================== //
+
+// Return varConstVar leh.
+func VarConstVar(
+	varInst1 base.Var,
+	constInst base.ConstInstance,
+	varInst2 base.Var,
+) *varConstVar {
+	return &varConstVar{
+		varInst1: varInst1,
+		varInst2: varInst2,
+		constInst: constInst,
+	}
+}
+
+// Return CNF encoding of component.
+func (l *varConstVar) Encoding(ctx *base.Context) (*cnf.CNF, error) {
+	scpVar1 := l.varInst1.Scoped(ctx)
+	scpVar2 := l.varInst2.Scoped(ctx)
+	scpConst, err := l.constInst.Scoped(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if err = base.ValidateConstsDim(
+		ctx.Dimension,
+		scpConst,
+	); err != nil {
+		return nil, err
+	}
+	return l.buildEncoding(scpVar1, scpVar2, scpConst, ctx)
+}
+
+// Generate cnf encoding.
+func (l *varConstVar) buildEncoding(
+	varInst1, varInst2 base.Var,
+	constInst base.Const,
+	ctx *base.Context,
+) (*cnf.CNF, error) {
+	// Check for easy out
+	if !constInst.IsFull() {
+		return cnf.CNFFromClauses([][]int{{}}), nil
+	}
+	// Generate cnf
+	nCNF := &cnf.CNF{}
+	// Force fullness in var
+	nCNF.ExtendSemantics(varFullClauses(varInst1, ctx))
+	nCNF.ExtendSemantics(varFullClauses(varInst2, ctx))
+	// Generate var equality clauses
+	nCNF.ExtendConsistency(fullVarEqualClauses(varInst1, varInst2, ctx))
+	// Generate hamming distance clauses
+	nCNF.ExtendConsistency(hammingDistVV(varInst1, varInst2, ctx))
+	distClauses, err := hammingDistVC(varInst1, constInst, ctx)
+	if err != nil {
+		return nil, err
+	}
+	nCNF.ExtendConsistency(distClauses)
+	// Add distance restriction clauses
+	resClauses := [][]int{}
+	dvn12 := distVarName(string(varInst1), constName(constInst))
+	dvn13 := distVarName(string(varInst1), string(varInst2))
+	for i := 1; i <= ctx.Dimension; i++ {
+		for j := 0; j < i; j++ {
+			resClauses = append(
+				resClauses,
+				[]int{
+					-ctx.IVar(dvn12, ctx.Dimension-1, i),
+					-ctx.IVar(dvn13, ctx.Dimension-1, j),
+				},
+			)
+		}
+	}
+	nCNF.ExtendSemantics(resClauses)
+	return nCNF, nil
+}
+
+// TODO: Add correct simplification for guarded const.
+// Return pointer to simplified equivalent component which might be itself.
+func (l *varConstVar) Simplified(
+	ctx *base.Context,
+) (base.Component, error) {
+	scpConst, err := l.constInst.Scoped(ctx)
+	if err != nil {
+		return l, nil
+	}
+	if err = base.ValidateConstsDim(
+		ctx.Dimension,
+		scpConst,
+	); err != nil {
+		return nil, err
+	}
+	return l, nil
+}
+
+// Return slice of pointers to component's children.
+func (l *varConstVar) GetChildren() []base.Component {
+	return []base.Component{}
+}
+
+// yes is true if struct is trivial and value represents its truthiness.
+func (l *varConstVar) IsTrivial() (yes bool, value bool) {
+	return false, false
+}

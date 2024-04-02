@@ -74,15 +74,16 @@ func (l *varVarConst) buildEncoding(
 	nCNF.ExtendConsistency(distClauses)
 	// Add distance restriction clauses
 	resClauses := [][]int{}
-	dvn12 := distVarName(string(varInst1), string(varInst2))
-	dvn13 := distVarName(string(varInst1), constName(constInst))
+	// Consistent the order in which params where passed creating hamming dist.
+	dvnVar1Var2 := distVarName(string(varInst1), string(varInst2))
+	dvnVar1Const := distVarName(string(varInst1), constName(constInst))
 	for i := 1; i <= ctx.Dimension; i++ {
 		for j := 0; j < i; j++ {
 			resClauses = append(
 				resClauses,
 				[]int{
-					-ctx.IVar(dvn12, ctx.Dimension-1, i),
-					-ctx.IVar(dvn13, ctx.Dimension-1, j),
+					-ctx.IVar(dvnVar1Var2, ctx.Dimension-1, i),
+					-ctx.IVar(dvnVar1Const, ctx.Dimension-1, j),
 				},
 			)
 		}

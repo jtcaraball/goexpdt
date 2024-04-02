@@ -19,7 +19,7 @@ type constConstConst struct {
 //           METHODS           //
 // =========================== //
 
-// Return constConst lel.
+// Return constConstConst leh.
 func ConstConstConst(
 	constInst1, constInst2, constInst3 base.ConstInstance,
 ) *constConstConst {
@@ -62,11 +62,11 @@ func (l *constConstConst) buildEncoding(
 	if !constInst1.IsFull() || !constInst2.IsFull() || !constInst3.IsFull() {
 		return cnf.CNFFromClauses([][]int{{}}), nil
 	}
-	hDistC1C2, err := hammingDist(constInst1, constInst2)
+	hDistC1C2, err := hammingDistCC(constInst1, constInst2)
 	if err != nil {
 		return nil, err
 	}
-	hDistC1C3, err := hammingDist(constInst1, constInst3)
+	hDistC1C3, err := hammingDistCC(constInst1, constInst3)
 	if err != nil {
 		return nil, err
 	}
@@ -111,11 +111,11 @@ func (l *constConstConst) buildSimplification(
 	if !constInst1.IsFull() || !constInst2.IsFull() || !constInst3.IsFull() {
 		return base.NewTrivial(false), nil
 	}
-	hDistC1C2, err := hammingDist(constInst1, constInst2)
+	hDistC1C2, err := hammingDistCC(constInst1, constInst2)
 	if err != nil {
 		return nil, err
 	}
-	hDistC1C3, err := hammingDist(constInst1, constInst3)
+	hDistC1C3, err := hammingDistCC(constInst1, constInst3)
 	if err != nil {
 		return nil, err
 	}

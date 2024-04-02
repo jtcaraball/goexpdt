@@ -50,7 +50,7 @@ func runGuardedLEHConstConstConst(
 //            TESTS            //
 // =========================== //
 
-func TestConstConst_Encoding(t *testing.T) {
+func TestConstConstConst_Encoding(t *testing.T) {
 	test.AddCleanup(t, constConstConstSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
@@ -67,7 +67,7 @@ func TestConstConst_Encoding(t *testing.T) {
 	}
 }
 
-func TestConstConst_Encoding_Guarded(t *testing.T) {
+func TestConstConstConst_Encoding_Guarded(t *testing.T) {
 	test.AddCleanup(t, guardedConstConstConstSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
@@ -84,7 +84,7 @@ func TestConstConst_Encoding_Guarded(t *testing.T) {
 	}
 }
 
-func TestConstConst_Encoding_WrongDim(t *testing.T) {
+func TestConstConstConst_Encoding_WrongDim(t *testing.T) {
 	x := base.Const{base.BOT, base.BOT, base.BOT}
 	y := base.Const{base.BOT, base.BOT, base.BOT}
 	z := base.Const{base.BOT, base.BOT, base.BOT}
@@ -96,7 +96,7 @@ func TestConstConst_Encoding_WrongDim(t *testing.T) {
 	}
 }
 
-func TestConstConst_Simplified(t *testing.T) {
+func TestConstConstConst_Simplified(t *testing.T) {
 	test.AddCleanup(t, constConstConstSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
@@ -113,7 +113,7 @@ func TestConstConst_Simplified(t *testing.T) {
 	}
 }
 
-func TestConstConst_Simplified_Guarded(t *testing.T) {
+func TestConstConstConst_Simplified_Guarded(t *testing.T) {
 	test.AddCleanup(t, guardedConstConstConstSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
@@ -130,7 +130,7 @@ func TestConstConst_Simplified_Guarded(t *testing.T) {
 	}
 }
 
-func TestConstConst_Simplified_WrongDim(t *testing.T) {
+func TestConstConstConst_Simplified_WrongDim(t *testing.T) {
 	x := base.Const{base.BOT, base.BOT, base.BOT}
 	y := base.Const{base.BOT, base.BOT, base.BOT}
 	z := base.Const{base.BOT, base.BOT, base.BOT}
@@ -142,7 +142,7 @@ func TestConstConst_Simplified_WrongDim(t *testing.T) {
 	}
 }
 
-func TestConstConst_GetChildren(t *testing.T) {
+func TestConstConstConst_GetChildren(t *testing.T) {
 	x := base.Const{base.BOT, base.BOT, base.BOT}
 	y := base.Const{base.BOT, base.BOT, base.BOT}
 	z := base.Const{base.BOT, base.BOT, base.BOT}
@@ -157,7 +157,7 @@ func TestConstConst_GetChildren(t *testing.T) {
 	}
 }
 
-func TestConstConst_IsTrivial(t *testing.T) {
+func TestConstConstConst_IsTrivial(t *testing.T) {
 	x := base.Const{base.BOT, base.BOT, base.BOT}
 	y := base.Const{base.BOT, base.BOT, base.BOT}
 	z := base.Const{base.BOT, base.BOT, base.BOT}

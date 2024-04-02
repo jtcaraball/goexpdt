@@ -36,7 +36,7 @@ func constName(c base.Const) string {
 
 // Return hamming distance variable name.
 func distVarName(name1, name2 string) string {
- return "d$" + name1 + "$" + name2
+	return "d$" + name1 + "$" + name2
 }
 
 // Return the clauses encoding the hamming distance between a variable and a
@@ -85,7 +85,7 @@ func hammingDistVC(
 				ctx.IVar(dvName, i, 0),
 			},
 		)
-		for j := 1; j < i+2; j++ {
+		for j := 1; j <= i+1; j++ {
 			clauses = append(
 				clauses,
 				[]int{

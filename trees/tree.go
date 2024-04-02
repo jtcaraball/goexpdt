@@ -1,7 +1,6 @@
 package trees
 
 import (
-	"errors"
 	"fmt"
 	"os"
 )
@@ -66,11 +65,9 @@ func (t *Tree) populateTree(treeJSON *TreeInJSON) error {
 
 		nodeJSON := treeJSON.Nodes[nInfo.ID]
 		if nodeJSON == nil {
-			return errors.New(
-				fmt.Sprintf(
-					"Tree parsing error: node with id '%d' does not exist",
-					nInfo.ID,
-				),
+			return fmt.Errorf(
+				"Tree parsing error: node with id '%d' does not exist",
+				nInfo.ID,
 			)
 		}
 

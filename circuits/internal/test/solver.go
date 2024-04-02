@@ -42,17 +42,17 @@ func EncodeAndRun(
 		t.Errorf("CNF writing error. %s", err.Error())
 		return
 	}
-	runFormulaTest(t, id, expCode, filePath)
+	runFormulaTest(t, expCode, filePath)
 }
 
 // Encode formula and add error if results is not equal to the expected one.
 func runFormulaTest(
 	t *testing.T,
-	id, expCode int,
+	expCode int,
 	cnfPath string,
 ) {
 	cmd := exec.Command(solver, cnfPath)
-	retCode, err := runSolver(t, cmd)
+	retCode, err := runSolver(cmd)
 	if err != nil {
 		t.Errorf("Solver execution error. %s", err.Error())
 		return
@@ -67,7 +67,7 @@ func runFormulaTest(
 }
 
 // Run solver command and return exit code.
-func runSolver(t *testing.T, cmd *exec.Cmd) (int, error) {
+func runSolver(cmd *exec.Cmd) (int, error) {
 	// Capturing stderr to debug kissat errors.
 	var stderr bytes.Buffer
 	cmd.Stderr = &stderr

@@ -6,11 +6,11 @@ import (
 )
 
 func slicesEq(c1, c2 [][]int) bool {
-	return slices.EqualFunc[[][]int](
+	return slices.EqualFunc(
 		c1,
 		c2,
 		func (l1, l2 []int) bool {
-			return slices.Equal[[]int](l1, l2)
+			return slices.Equal(l1, l2)
 		},
 	)
 }

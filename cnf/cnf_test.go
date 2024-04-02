@@ -11,11 +11,11 @@ import (
 // =========================== //
 
 func SlicesEq(c1, c2 [][]int) bool {
-	return slices.EqualFunc[[][]int](
+	return slices.EqualFunc(
 		c1,
 		c2,
 		func (l1, l2 []int) bool {
-			return slices.Equal[[]int](l1, l2)
+			return slices.Equal(l1, l2)
 		},
 	)
 }
@@ -224,7 +224,7 @@ func TestCNF_ToBytes(t *testing.T) {
 	cnf.ExtendConsistency(cnfCClauses)
 	expBytes := []byte("p cnf 4 6\n1 2 0\n3 4 0\n-1 2 0\n1 2 3 4 0\n-1 -2 0\n4 0\n")
 	cnfBytes := cnf.ToBytes()
-	if !slices.Equal[[]byte](expBytes, cnfBytes) {
+	if !slices.Equal(expBytes, cnfBytes) {
 		t.Errorf(
 			"CNF as bytes not equal. Expected %s but got %s",
 			expBytes,
@@ -252,7 +252,7 @@ func TestCNF_ToFile(t *testing.T) {
 	if err != nil {
 		t.Errorf("File reading error. %s", err.Error())
 	}
-	if !slices.Equal[[]byte](expBytes, cnfBytes) {
+	if !slices.Equal(expBytes, cnfBytes) {
 		t.Errorf(
 			"CNF as bytes not equal. Expected %s but got %s",
 			expBytes,

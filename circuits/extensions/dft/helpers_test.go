@@ -62,56 +62,6 @@ var tests = []struct {
 		val: base.Const{base.BOT, base.BOT, base.ONE},
 		expCode: 20,
 	},
-	{
-		name: "(0,0,0)",
-		val: base.Const{base.ZERO, base.ZERO, base.ZERO},
-		expCode: 10,
-	},
-	{
-		name: "(1,0,0)",
-		val: base.Const{base.ONE, base.ZERO, base.ZERO},
-		expCode: 10,
-	},
-	{
-		name: "(1,0,1)",
-		val: base.Const{base.ONE, base.ZERO, base.ONE},
-		expCode: 10,
-	},
-	{
-		name: "(_,1,_)",
-		val: base.Const{base.BOT, base.ONE, base.BOT},
-		expCode: 10,
-	},
-	{
-		name: "(_,0,_)",
-		val: base.Const{base.BOT, base.ZERO, base.BOT},
-		expCode: 10,
-	},
-	{
-		name: "(_,0,1)",
-		val: base.Const{base.BOT, base.ZERO, base.ONE},
-		expCode: 10,
-	},
-	{
-		name: "(1,0,_)",
-		val: base.Const{base.ONE, base.ZERO, base.BOT},
-		expCode: 10,
-	},
-	{
-		name: "(0,_,_)",
-		val: base.Const{base.ZERO, base.BOT, base.BOT},
-		expCode: 20,
-	},
-	{
-		name: "(0,_,1)",
-		val: base.Const{base.ZERO, base.BOT, base.ONE},
-		expCode: 20,
-	},
-	{
-		name: "(_,_,1)",
-		val: base.Const{base.BOT, base.BOT, base.ONE},
-		expCode: 20,
-	},
 }
 
 func genTree() *trees.Tree {

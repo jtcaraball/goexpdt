@@ -1,7 +1,6 @@
 package base
 
 import (
-	"errors"
 	"fmt"
 	"goexpdt/cnf"
 )
@@ -119,6 +118,16 @@ func (c Const) Scoped(ctx *Context) (Const, error) {
 	return c, nil
 }
 
+// Return true if caller is full.
+func (c Const) IsFull() bool {
+	for _, ft := range c {
+		if ft == BOT {
+			return false
+		}
+	}
+	return true
+}
+
 // Return corresponding const from list of guards.
 func (gc GuardedConst) Scoped(ctx *Context) (Const, error) {
 	return ctx.GuardValueByTarget(string(gc))
@@ -136,13 +145,11 @@ func ValidateConstsDim(
 ) error {
 	for i, c := range consts {
 		if len(c) != constDim {
-			return errors.New(
-				fmt.Sprintf(
-					"constant%d: wrong dim %d (%d feats in context)",
-					i + 1,
-					len(c),
-					constDim,
-				),
+			return fmt.Errorf(
+				"constant%d: wrong dim %d (%d feats in context)",
+				i + 1,
+				len(c),
+				constDim,
 			)
 		}
 	}

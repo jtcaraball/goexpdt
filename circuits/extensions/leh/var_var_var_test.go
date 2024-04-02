@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-const varVarSUFIX = "leh.varvar"
+const varVarVarSUFIX = "leh.varvarvar"
 
 // =========================== //
 //           HELPERS           //
@@ -52,7 +52,7 @@ func runLEHVarVarVar(
 			),
 		),
 	)
-	filePath := test.CNFName(varVarSUFIX, id, simplify)
+	filePath := test.CNFName(varVarVarSUFIX, id, simplify)
 	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 	test.OnlyFeatVariables(t, context, "x", "y", "z")
 }
@@ -62,7 +62,7 @@ func runLEHVarVarVar(
 // =========================== //
 
 func TestVarVarVar_Encoding(t *testing.T) {
-	test.AddCleanup(t, varVarSUFIX, false)
+	test.AddCleanup(t, varVarVarSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runLEHVarVarVar(t, i, tc.expCode, tc.val1, tc.val2, tc.val3, false)
@@ -71,7 +71,7 @@ func TestVarVarVar_Encoding(t *testing.T) {
 }
 
 func TestVarVarVar_Simplified(t *testing.T) {
-	test.AddCleanup(t, varVarSUFIX, true)
+	test.AddCleanup(t, varVarVarSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runLEHVarVarVar(t, i, tc.expCode, tc.val1, tc.val2, tc.val3, true)

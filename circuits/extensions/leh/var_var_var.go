@@ -21,7 +21,7 @@ type varVarVar struct {
 
 // Return varVarVar leh.
 func VarVarVar(
-	varInst1 base.Var, varInst2 base.Var, varInst3 base.Var,
+	varInst1, varInst2, varInst3 base.Var,
 ) *varVarVar {
 	return &varVarVar{
 		varInst1: varInst1,
@@ -40,7 +40,7 @@ func (l *varVarVar) Encoding(ctx *base.Context) (*cnf.CNF, error) {
 
 // Generate cnf encoding.
 func (l *varVarVar) buildEncoding(
-	varInst1 base.Var, varInst2 base.Var, varInst3 base.Var,
+	varInst1, varInst2, varInst3 base.Var,
 	ctx *base.Context,
 ) (*cnf.CNF, error) {
 	// Generate cnf

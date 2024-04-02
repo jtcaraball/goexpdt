@@ -21,7 +21,7 @@ type varVarConst struct {
 
 // Return varVarConst leh.
 func VarVarConst(
-	varInst1 base.Var, varInst2 base.Var,
+	varInst1, varInst2 base.Var,
 	constInst base.ConstInstance,
 ) *varVarConst {
 	return &varVarConst{

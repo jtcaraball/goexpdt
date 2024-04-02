@@ -194,6 +194,40 @@ func TestConstVar_Simplified_Guarded(t *testing.T) {
 	}
 }
 
+func TestNotConstVar_Simplified(t *testing.T) {
+	test.AddCleanup(t, constVarSUFIX, true)
+	for i, tc := range notTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runSubsumptionConstVar(
+				t,
+				i,
+				tc.expCode,
+				tc.val1,
+				tc.val2,
+				true,
+				true,
+			)
+		})
+	}
+}
+
+func TestNotConstVar_Simplified_Guarded(t *testing.T) {
+	test.AddCleanup(t, guardedConstVarSUFIX, true)
+	for i, tc := range notTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runGuardedSubsumptionConstVar(
+				t,
+				i,
+				tc.expCode,
+				tc.val1,
+				tc.val2,
+				true,
+				true,
+			)
+		})
+	}
+}
+
 func TestConstVar_Simplified_WrongDim(t *testing.T) {
 	x := base.Const{base.BOT, base.BOT, base.BOT}
 	y := base.NewVar("y")

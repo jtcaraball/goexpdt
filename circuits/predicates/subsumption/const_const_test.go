@@ -7,8 +7,10 @@ import (
 	"testing"
 )
 
-const constConstSUFIX = "subsumtpion.constconst"
-const guardedConstConstSUFIX = "subsumtpion.Gconstconst"
+const (
+	constConstSUFIX        = "subsumtpion.constconst"
+	guardedConstConstSUFIX = "subsumtpion.Gconstconst"
+)
 
 // =========================== //
 //           HELPERS           //
@@ -168,6 +170,40 @@ func TestConstConst_Simplified_Guarded(t *testing.T) {
 				tc.val1,
 				tc.val2,
 				false,
+				true,
+			)
+		})
+	}
+}
+
+func TestNotConstConst_Simplified(t *testing.T) {
+	test.AddCleanup(t, constConstSUFIX, true)
+	for i, tc := range notTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runSubsumptionConstConst(
+				t,
+				i,
+				tc.expCode,
+				tc.val1,
+				tc.val2,
+				true,
+				true,
+			)
+		})
+	}
+}
+
+func TestNotConstConst_Simplified_Guarded(t *testing.T) {
+	test.AddCleanup(t, guardedConstConstSUFIX, true)
+	for i, tc := range notTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runGuardedSubsumptionConstConst(
+				t,
+				i,
+				tc.expCode,
+				tc.val1,
+				tc.val2,
+				true,
 				true,
 			)
 		})

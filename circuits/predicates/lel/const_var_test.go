@@ -63,7 +63,7 @@ func runGuardedLELConstVar(
 	)
 	filePath := test.CNFName(guardedConstVarSUFIX, id, simplify)
 	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
-	test.OnlyFeatVariables(t, context, "x#y#1", "y")
+	test.OnlyFeatVariables(t, context, "x#y#1")
 }
 
 // =========================== //

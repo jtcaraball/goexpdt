@@ -2,14 +2,16 @@ package lel
 
 import (
 	"goexpdt/base"
+	"goexpdt/circuits/internal/test"
 	"goexpdt/circuits/predicates/subsumption"
 	"goexpdt/operators"
-	"goexpdt/circuits/internal/test"
 	"testing"
 )
 
-const varConstSUFIX = "lel.varconst"
-const guardedVarConstSUFIX = "lel.Gvarconst"
+const (
+	varConstSUFIX        = "lel.varconst"
+	guardedVarConstSUFIX = "lel.Gvarconst"
+)
 
 // =========================== //
 //           HELPERS           //
@@ -19,10 +21,17 @@ func runLELVarConst(
 	t *testing.T,
 	id, expCode int,
 	c1, c2 base.Const,
-	simplify bool,
+	neg, simplify bool,
 ) {
+	// Define variable and context
 	x := base.NewVar("x")
 	context := base.NewContext(DIM, nil)
+	// Define circuit
+	var circuit base.Component = VarConst(x, c2)
+	if neg {
+		circuit = operators.Not(circuit)
+	}
+	// Define formula
 	formula := operators.WithVar(
 		x,
 		operators.And(
@@ -30,9 +39,10 @@ func runLELVarConst(
 				subsumption.VarConst(x, c1),
 				subsumption.ConstVar(c1, x),
 			),
-			VarConst(x, c2),
+			circuit,
 		),
 	)
+	// Run it
 	filePath := test.CNFName(varConstSUFIX, id, simplify)
 	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 	test.OnlyFeatVariables(t, context, "x")
@@ -42,8 +52,9 @@ func runGuardedLELVarConst(
 	t *testing.T,
 	id, expCode int,
 	c1, c2 base.Const,
-	simplify bool,
+	neg, simplify bool,
 ) {
+	// Define variable and context
 	x := base.NewVar("x")
 	y := base.GuardedConst("y")
 	context := base.NewContext(DIM, nil)
@@ -51,6 +62,12 @@ func runGuardedLELVarConst(
 		context.Guards,
 		base.Guard{Target: "y", Value: c2, Idx: 1},
 	)
+	// Define circuit
+	var circuit base.Component = VarConst(x, y)
+	if neg {
+		circuit = operators.Not(circuit)
+	}
+	// Define formula
 	formula := operators.WithVar(
 		x,
 		operators.And(
@@ -58,9 +75,10 @@ func runGuardedLELVarConst(
 				subsumption.VarConst(x, c1),
 				subsumption.ConstVar(c1, x),
 			),
-			VarConst(x, y),
+			circuit,
 		),
 	)
+	// Run it
 	filePath := test.CNFName(guardedVarConstSUFIX, id, simplify)
 	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 	test.OnlyFeatVariables(t, context, "x#y#1", "y")
@@ -74,7 +92,15 @@ func TestVarConst_Encoding(t *testing.T) {
 	test.AddCleanup(t, varConstSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			runLELVarConst(t, i, tc.expCode, tc.val1, tc.val2, false)
+			runLELVarConst(
+				t,
+				i,
+				tc.expCode,
+				tc.val1,
+				tc.val2,
+				false,
+				false,
+			)
 		})
 	}
 }
@@ -83,7 +109,49 @@ func TestVarConst_Encoding_Guarded(t *testing.T) {
 	test.AddCleanup(t, guardedVarConstSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			runGuardedLELVarConst(t, i, tc.expCode, tc.val1, tc.val2, false)
+			runGuardedLELVarConst(
+				t,
+				i,
+				tc.expCode,
+				tc.val1,
+				tc.val2,
+				false,
+				false,
+			)
+		})
+	}
+}
+
+func TestNotVarConst_Encoding(t *testing.T) {
+	test.AddCleanup(t, varConstSUFIX, false)
+	for i, tc := range notTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runLELVarConst(
+				t,
+				i,
+				tc.expCode,
+				tc.val1,
+				tc.val2,
+				true,
+				false,
+			)
+		})
+	}
+}
+
+func TestNotVarConst_Encoding_Guarded(t *testing.T) {
+	test.AddCleanup(t, guardedVarConstSUFIX, false)
+	for i, tc := range notTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runGuardedLELVarConst(
+				t,
+				i,
+				tc.expCode,
+				tc.val1,
+				tc.val2,
+				true,
+				false,
+			)
 		})
 	}
 }
@@ -103,7 +171,15 @@ func TestVarConst_Simplified(t *testing.T) {
 	test.AddCleanup(t, varConstSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			runLELVarConst(t, i, tc.expCode, tc.val1, tc.val2, true)
+			runLELVarConst(
+				t,
+				i,
+				tc.expCode,
+				tc.val1,
+				tc.val2,
+				false,
+				true,
+			)
 		})
 	}
 }
@@ -112,7 +188,49 @@ func TestVarConst_Simplified_Guarded(t *testing.T) {
 	test.AddCleanup(t, guardedVarConstSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			runGuardedLELVarConst(t, i, tc.expCode, tc.val1, tc.val2, true)
+			runGuardedLELVarConst(
+				t,
+				i,
+				tc.expCode,
+				tc.val1,
+				tc.val2,
+				false,
+				true,
+			)
+		})
+	}
+}
+
+func TestNotVarConst_Simplified(t *testing.T) {
+	test.AddCleanup(t, varConstSUFIX, true)
+	for i, tc := range notTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runLELVarConst(
+				t,
+				i,
+				tc.expCode,
+				tc.val1,
+				tc.val2,
+				true,
+				true,
+			)
+		})
+	}
+}
+
+func TestNotVarConst_Simplified_Guarded(t *testing.T) {
+	test.AddCleanup(t, guardedVarConstSUFIX, true)
+	for i, tc := range notTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runGuardedLELVarConst(
+				t,
+				i,
+				tc.expCode,
+				tc.val1,
+				tc.val2,
+				true,
+				true,
+			)
 		})
 	}
 }

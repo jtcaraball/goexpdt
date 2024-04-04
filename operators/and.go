@@ -3,8 +3,8 @@ package operators
 import (
 	"errors"
 	"fmt"
-	"goexpdt/cnf"
 	"goexpdt/base"
+	"goexpdt/cnf"
 )
 
 // =========================== //
@@ -37,6 +37,9 @@ func (a *and) Encoding(ctx *base.Context) (*cnf.CNF, error) {
 	cnf2, err := a.child2.Encoding(ctx)
 	if err != nil {
 		return nil, andErr(err, 2)
+	}
+	if cnf1.HasEmptySemanticClause() || cnf2.HasEmptySemanticClause() {
+		return cnf.CNFFromClauses([][]int{{}}), nil
 	}
 	cnf1.Conjunction(cnf2)
 	return cnf1, nil
@@ -104,7 +107,5 @@ func (a *and) nonNilChildren() error {
 
 // Add bread crumbs to error.
 func andErr(err error, childIdx uint8) error {
-	return errors.New(
-		fmt.Sprintf("and:child%d -> %s", childIdx, err.Error()),
-	)
+	return fmt.Errorf("and:child%d -> %s", childIdx, err.Error())
 }

@@ -9,9 +9,6 @@ docker build -f dockerfiles/Dockerfile.Tests -t goexpdt-tests --progress plain -
 ```
 
 ### TODO
-- Add negation tests!!!
-- Add `and` optimisation to return blank `CNF` if any of its children are
-  trivially false.
 - Add correct simplification to circuits when passing `GuardedConst` as
   arguments.
 - Look into passing `CNF` struct in `Encoding` methods to avoid creating to much

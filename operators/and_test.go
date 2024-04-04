@@ -45,17 +45,8 @@ func TestAnd_Encoding_DFalse(t *testing.T) {
 		return
 	}
 	sClauses, cClauses := encCNF.Clauses()
-	expSClauses := [][]int{{}, {}}
-	expCClauses := [][]int{
-		{1, 2, 3},
-		{-1, -2},
-		{-1, -3},
-		{-2, -3},
-		{4, 5, 6},
-		{-4, -5},
-		{-4, -6},
-		{-5, -6},
-	}
+	expSClauses := [][]int{{}}
+	expCClauses := [][]int{}
 	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
@@ -73,16 +64,7 @@ func TestAnd_Encoding_Mixed(t *testing.T) {
 	}
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{{}}
-	expCClauses := [][]int{
-		{1, 2, 3},
-		{-1, -2},
-		{-1, -3},
-		{-2, -3},
-		{4, 5, 6},
-		{-4, -5},
-		{-4, -6},
-		{-5, -6},
-	}
+	expCClauses := [][]int{}
 	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 

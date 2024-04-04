@@ -55,7 +55,7 @@ func runGuardedConsVarConst(
 	context := base.NewContext(DIM, nil)
 	context.Guards = append(
 		context.Guards,
-		base.Guard{Target: "y", Value: c1, Idx: 1},
+		base.Guard{Target: "y", Value: c2, Idx: 1},
 	)
 	var circuit base.Component = VarConst(x, y)
 	if neg {
@@ -65,8 +65,8 @@ func runGuardedConsVarConst(
 		x,
 		operators.And(
 			operators.And(
-				subsumption.VarConst(x, c2),
-				subsumption.ConstVar(c2, x),
+				subsumption.VarConst(x, c1),
+				subsumption.ConstVar(c1, x),
 			),
 			circuit,
 		),

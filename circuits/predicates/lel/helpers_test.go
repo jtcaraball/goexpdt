@@ -52,37 +52,37 @@ var tests = []testS{
 
 var notTests = []testS{
 	{
-		name:    "not:(1,_,_):(1,_,0)",
+		name:    "(1,_,_):(1,_,0)",
 		val1:    base.Const{base.ONE, base.BOT, base.BOT},
 		val2:    base.Const{base.ONE, base.BOT, base.ZERO},
 		expCode: 20,
 	},
 	{
-		name:    "not:(_,_,_):(1,1,0)",
+		name:    "(_,_,_):(1,1,0)",
 		val1:    base.Const{base.BOT, base.BOT, base.BOT},
 		val2:    base.Const{base.ONE, base.ONE, base.ZERO},
 		expCode: 20,
 	},
 	{
-		name:    "not:(1,_,_):(_,_,1)",
+		name:    "(1,_,_):(_,_,1)",
 		val1:    base.Const{base.ONE, base.BOT, base.BOT},
 		val2:    base.Const{base.BOT, base.BOT, base.ONE},
 		expCode: 20,
 	},
 	{
-		name:    "not:(1,1,1):(0,1,1)",
+		name:    "(1,1,1):(0,1,1)",
 		val1:    base.Const{base.ONE, base.ONE, base.ZERO},
 		val2:    base.Const{base.ZERO, base.ONE, base.ONE},
 		expCode: 20,
 	},
 	{
-		name:    "not:(1,_,0):(_,_,0)",
+		name:    "(1,_,0):(_,_,0)",
 		val1:    base.Const{base.ONE, base.BOT, base.ZERO},
 		val2:    base.Const{base.BOT, base.BOT, base.ZERO},
 		expCode: 10,
 	},
 	{
-		name:    "not:(1,1,0):(1,_,_)",
+		name:    "(1,1,0):(1,_,_)",
 		val1:    base.Const{base.ONE, base.ONE, base.ZERO},
 		val2:    base.Const{base.ONE, base.BOT, base.BOT},
 		expCode: 10,

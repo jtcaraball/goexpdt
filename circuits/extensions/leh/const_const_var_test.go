@@ -8,8 +8,10 @@ import (
 	"testing"
 )
 
-const constConstVarSUFIX = "leh.constconstvar"
-const guardedConstConstVarSUFIX = "leh.Gconstconstvar"
+const (
+	constConstVarSUFIX        = "leh.constconstvar"
+	guardedConstConstVarSUFIX = "leh.Gconstconstvar"
+)
 
 // =========================== //
 //           HELPERS           //
@@ -19,10 +21,14 @@ func runLEHConstConstVar(
 	t *testing.T,
 	id, expCode int,
 	c1, c2, c3 base.Const,
-	simplify bool,
+	neg, simplify bool,
 ) {
 	x := base.NewVar("x")
 	context := base.NewContext(DIM, nil)
+	var circuit base.Component = ConstConstVar(c1, c2, x)
+	if neg {
+		circuit = operators.Not(circuit)
+	}
 	formula := operators.WithVar(
 		x,
 		operators.And(
@@ -30,7 +36,7 @@ func runLEHConstConstVar(
 				subsumption.VarConst(x, c3),
 				subsumption.ConstVar(c3, x),
 			),
-			ConstConstVar(c1, c2, x),
+			circuit,
 		),
 	)
 	filePath := test.CNFName(constConstVarSUFIX, id, simplify)
@@ -42,7 +48,7 @@ func runGuardedLEHConstConstVar(
 	t *testing.T,
 	id, expCode int,
 	c1, c2, c3 base.Const,
-	simplify bool,
+	neg, simplify bool,
 ) {
 	x := base.GuardedConst("x")
 	y := base.GuardedConst("y")
@@ -53,6 +59,10 @@ func runGuardedLEHConstConstVar(
 		base.Guard{Target: "x", Value: c1, Idx: 1},
 		base.Guard{Target: "y", Value: c2, Idx: 1},
 	)
+	var circuit base.Component = ConstConstVar(x, y, z)
+	if neg {
+		circuit = operators.Not(circuit)
+	}
 	formula := operators.WithVar(
 		z,
 		operators.And(
@@ -60,7 +70,7 @@ func runGuardedLEHConstConstVar(
 				subsumption.VarConst(z, c3),
 				subsumption.ConstVar(c3, z),
 			),
-			ConstConstVar(x, y, z),
+			circuit,
 		),
 	)
 	filePath := test.CNFName(guardedConstConstVarSUFIX, id, simplify)
@@ -84,6 +94,25 @@ func TestConstConstVar_Encoding(t *testing.T) {
 				tc.val2,
 				tc.val3,
 				false,
+				false,
+			)
+		})
+	}
+}
+
+func TestNotConstConstVar_Encoding(t *testing.T) {
+	test.AddCleanup(t, constConstVarSUFIX, false)
+	for i, tc := range notTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runLEHConstConstVar(
+				t,
+				i,
+				tc.expCode,
+				tc.val1,
+				tc.val2,
+				tc.val3,
+				true,
+				false,
 			)
 		})
 	}
@@ -100,6 +129,25 @@ func TestConstConstVar_Encoding_Guarded(t *testing.T) {
 				tc.val1,
 				tc.val2,
 				tc.val3,
+				false,
+				false,
+			)
+		})
+	}
+}
+
+func TestNotConstConstVar_Encoding_Guarded(t *testing.T) {
+	test.AddCleanup(t, guardedConstConstVarSUFIX, false)
+	for i, tc := range notTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runGuardedLEHConstConstVar(
+				t,
+				i,
+				tc.expCode,
+				tc.val1,
+				tc.val2,
+				tc.val3,
+				true,
 				false,
 			)
 		})
@@ -129,6 +177,25 @@ func TestConstConstVar_Simplified(t *testing.T) {
 				tc.val1,
 				tc.val2,
 				tc.val3,
+				false,
+				true,
+			)
+		})
+	}
+}
+
+func TestNotConstConstVar_Simplified(t *testing.T) {
+	test.AddCleanup(t, constConstVarSUFIX, true)
+	for i, tc := range notTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runLEHConstConstVar(
+				t,
+				i,
+				tc.expCode,
+				tc.val1,
+				tc.val2,
+				tc.val3,
+				true,
 				true,
 			)
 		})
@@ -146,6 +213,25 @@ func TestConstConstVar_Simplified_Guarded(t *testing.T) {
 				tc.val1,
 				tc.val2,
 				tc.val3,
+				false,
+				true,
+			)
+		})
+	}
+}
+
+func TestNotConstConstVar_Simplified_Guarded(t *testing.T) {
+	test.AddCleanup(t, guardedConstConstVarSUFIX, true)
+	for i, tc := range notTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runGuardedLEHConstConstVar(
+				t,
+				i,
+				tc.expCode,
+				tc.val1,
+				tc.val2,
+				tc.val3,
+				true,
 				true,
 			)
 		})

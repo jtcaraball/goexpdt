@@ -2,9 +2,9 @@ package leh
 
 import (
 	"goexpdt/base"
+	"goexpdt/circuits/internal/test"
 	"goexpdt/circuits/predicates/subsumption"
 	"goexpdt/operators"
-	"goexpdt/circuits/internal/test"
 	"testing"
 )
 
@@ -18,12 +18,16 @@ func runLEHVarVarVar(
 	t *testing.T,
 	id, expCode int,
 	c1, c2, c3 base.Const,
-	simplify bool,
+	neg, simplify bool,
 ) {
 	x := base.NewVar("x")
 	y := base.NewVar("y")
 	z := base.NewVar("z")
 	context := base.NewContext(DIM, nil)
+	var circuit base.Component = VarVarVar(x, y, z)
+	if neg {
+		circuit = operators.Not(circuit)
+	}
 	formula := operators.WithVar(
 		x,
 		operators.WithVar(
@@ -45,7 +49,7 @@ func runLEHVarVarVar(
 								subsumption.VarConst(z, c3),
 								subsumption.ConstVar(c3, z),
 							),
-							VarVarVar(x, y, z),
+							circuit,
 						),
 					),
 				),
@@ -65,7 +69,34 @@ func TestVarVarVar_Encoding(t *testing.T) {
 	test.AddCleanup(t, varVarVarSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			runLEHVarVarVar(t, i, tc.expCode, tc.val1, tc.val2, tc.val3, false)
+			runLEHVarVarVar(
+				t,
+				i,
+				tc.expCode,
+				tc.val1,
+				tc.val2,
+				tc.val3,
+				false,
+				false,
+			)
+		})
+	}
+}
+
+func TestNotVarVarVar_Encoding(t *testing.T) {
+	test.AddCleanup(t, varVarVarSUFIX, false)
+	for i, tc := range notTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runLEHVarVarVar(
+				t,
+				i,
+				tc.expCode,
+				tc.val1,
+				tc.val2,
+				tc.val3,
+				true,
+				false,
+			)
 		})
 	}
 }
@@ -74,7 +105,34 @@ func TestVarVarVar_Simplified(t *testing.T) {
 	test.AddCleanup(t, varVarVarSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			runLEHVarVarVar(t, i, tc.expCode, tc.val1, tc.val2, tc.val3, true)
+			runLEHVarVarVar(
+				t,
+				i,
+				tc.expCode,
+				tc.val1,
+				tc.val2,
+				tc.val3,
+				false,
+				true,
+			)
+		})
+	}
+}
+
+func TestNotVarVarVar_Simplified(t *testing.T) {
+	test.AddCleanup(t, varVarVarSUFIX, true)
+	for i, tc := range notTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runLEHVarVarVar(
+				t,
+				i,
+				tc.expCode,
+				tc.val1,
+				tc.val2,
+				tc.val3,
+				true,
+				true,
+			)
 		})
 	}
 }

@@ -2,9 +2,9 @@ package full
 
 import (
 	"goexpdt/base"
+	"goexpdt/circuits/internal/test"
 	"goexpdt/circuits/predicates/subsumption"
 	"goexpdt/operators"
-	"goexpdt/circuits/internal/test"
 	"testing"
 )
 
@@ -18,10 +18,14 @@ func runFullVar(
 	t *testing.T,
 	id, expCode int,
 	c base.Const,
-	simplify bool,
+	neg, simplify bool,
 ) {
 	x := base.NewVar("x")
 	context := base.NewContext(DIM, nil)
+	var circuit base.Component = Var(x)
+	if neg {
+		circuit = operators.Not(circuit)
+	}
 	formula := operators.WithVar(
 		x,
 		operators.And(
@@ -29,7 +33,7 @@ func runFullVar(
 				subsumption.ConstVar(c, x),
 				subsumption.VarConst(x, c),
 			),
-			Var(x),
+			circuit,
 		),
 	)
 	filePath := test.CNFName(varSUFIX, id, simplify)
@@ -45,7 +49,16 @@ func TestVar_Encoding(t *testing.T) {
 	test.AddCleanup(t, varSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			runFullVar(t, i, tc.expCode, tc.val, false)
+			runFullVar(t, i, tc.expCode, tc.val, false, false)
+		})
+	}
+}
+
+func TestNotVar_Encoding(t *testing.T) {
+	test.AddCleanup(t, varSUFIX, false)
+	for i, tc := range notTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runFullVar(t, i, tc.expCode, tc.val, true, false)
 		})
 	}
 }
@@ -54,7 +67,16 @@ func TestVar_Simplified(t *testing.T) {
 	test.AddCleanup(t, varSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			runFullVar(t, i, tc.expCode, tc.val, true)
+			runFullVar(t, i, tc.expCode, tc.val, false, true)
+		})
+	}
+}
+
+func TestNotVar_Simplified(t *testing.T) {
+	test.AddCleanup(t, varSUFIX, true)
+	for i, tc := range notTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runFullVar(t, i, tc.expCode, tc.val, true, true)
 		})
 	}
 }

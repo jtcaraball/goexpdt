@@ -42,7 +42,12 @@ func runGuardedAllCompConst(
 	leafValue, neg, simplify bool,
 ) {
 	context := base.NewContext(DIM, tree)
-	var formula base.Component = Const(c, leafValue)
+	x := base.GuardedConst("x")
+	context.Guards = append(
+		context.Guards,
+		base.Guard{Target: "x", Value: c, Idx: 1},
+	)
+	var formula base.Component = Const(x, leafValue)
 	if neg {
 		formula = operators.Not(formula)
 	}

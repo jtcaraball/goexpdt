@@ -14,7 +14,7 @@ func SlicesEq(c1, c2 [][]int) bool {
 	return slices.EqualFunc(
 		c1,
 		c2,
-		func (l1, l2 []int) bool {
+		func(l1, l2 []int) bool {
 			return slices.Equal(l1, l2)
 		},
 	)

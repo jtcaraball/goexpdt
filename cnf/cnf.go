@@ -11,9 +11,9 @@ import (
 // =========================== //
 
 type CNF struct {
-	tv int              // Top variable value used
-	sClauses [][]int    // Semantic clauses
-	cClauses [][]int    // Consistency clauses
+	tv       int     // Top variable value used
+	sClauses [][]int // Semantic clauses
+	cClauses [][]int // Consistency clauses
 }
 
 // =========================== //
@@ -118,7 +118,7 @@ func (c *CNF) ToBytes() []byte {
 	bString := fmt.Sprintf(
 		"p cnf %d %d\n",
 		c.tv,
-		len(c.sClauses) + len(c.cClauses),
+		len(c.sClauses)+len(c.cClauses),
 	)
 	for _, clause := range c.sClauses {
 		bString += fmt.Sprintf("%s\n", clauseToDIMACS(clause))
@@ -139,7 +139,7 @@ func (c *CNF) ToFile(path string) error {
 	defer f.Close()
 	// Write CNF formula
 	if _, err = f.WriteString(
-		fmt.Sprintf("p cnf %d %d\n", c.tv, len(c.sClauses) + len(c.cClauses)),
+		fmt.Sprintf("p cnf %d %d\n", c.tv, len(c.sClauses)+len(c.cClauses)),
 	); err != nil {
 		return err
 	}

@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"goexpdt/base"
 	"goexpdt/circuits/internal/test"
+	"goexpdt/operators"
 	"goexpdt/trees"
 	"testing"
 )
 
 const (
-	constSUFIX = "allComp.const"
+	constSUFIX        = "allComp.const"
 	guardedConstSUFIX = "allComp.Gconst"
 )
 
@@ -22,11 +23,13 @@ func runAllCompConst(
 	id, expCode int,
 	c base.Const,
 	tree *trees.Tree,
-	leafValue bool,
-	simplify bool,
+	leafValue, neg, simplify bool,
 ) {
 	context := base.NewContext(DIM, tree)
-	formula := Const(c, leafValue)
+	var formula base.Component = Const(c, leafValue)
+	if neg {
+		formula = operators.Not(formula)
+	}
 	filePath := test.CNFName(compConstSufix(leafValue), id, simplify)
 	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
@@ -36,11 +39,18 @@ func runGuardedAllCompConst(
 	id, expCode int,
 	c base.Const,
 	tree *trees.Tree,
-	leafValue bool,
-	simplify bool,
+	leafValue, neg, simplify bool,
 ) {
 	context := base.NewContext(DIM, tree)
-	formula := Const(c, leafValue)
+	x := base.GuardedConst("x")
+	context.Guards = append(
+		context.Guards,
+		base.Guard{Target: "x", Value: c, Idx: 1},
+	)
+	var formula base.Component = Const(x, leafValue)
+	if neg {
+		formula = operators.Not(formula)
+	}
 	filePath := test.CNFName(compGuardedConstSufix(leafValue), id, simplify)
 	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
@@ -62,7 +72,17 @@ func TestConst_Encoding_AllPos(t *testing.T) {
 	tree := genTree()
 	for i, tc := range allPosTests {
 		t.Run(tc.name, func(t *testing.T) {
-			runAllCompConst(t, i, tc.expCode, tc.val, tree, true, false)
+			runAllCompConst(t, i, tc.expCode, tc.val, tree, true, false, false)
+		})
+	}
+}
+
+func TestNotConst_Encoding_AllPos(t *testing.T) {
+	test.AddCleanup(t, compConstSufix(true), false)
+	tree := genTree()
+	for i, tc := range allPosNotTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runAllCompConst(t, i, tc.expCode, tc.val, tree, true, true, false)
 		})
 	}
 }
@@ -72,7 +92,35 @@ func TestConst_Encoding_AllPos_Guarded(t *testing.T) {
 	tree := genTree()
 	for i, tc := range allPosTests {
 		t.Run(tc.name, func(t *testing.T) {
-			runGuardedAllCompConst(t, i, tc.expCode, tc.val, tree, true, false)
+			runGuardedAllCompConst(
+				t,
+				i,
+				tc.expCode,
+				tc.val,
+				tree,
+				true,
+				false,
+				false,
+			)
+		})
+	}
+}
+
+func TestNotConst_Encoding_AllPos_Guarded(t *testing.T) {
+	test.AddCleanup(t, compGuardedConstSufix(true), false)
+	tree := genTree()
+	for i, tc := range allPosNotTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runGuardedAllCompConst(
+				t,
+				i,
+				tc.expCode,
+				tc.val,
+				tree,
+				true,
+				true,
+				false,
+			)
 		})
 	}
 }
@@ -82,7 +130,17 @@ func TestConst_Encoding_AllNeg(t *testing.T) {
 	tree := genTree()
 	for i, tc := range allNegTests {
 		t.Run(tc.name, func(t *testing.T) {
-			runAllCompConst(t, i, tc.expCode, tc.val, tree, false, false)
+			runAllCompConst(t, i, tc.expCode, tc.val, tree, false, false, false)
+		})
+	}
+}
+
+func TestNotConst_Encoding_AllNeg(t *testing.T) {
+	test.AddCleanup(t, compConstSufix(false), false)
+	tree := genTree()
+	for i, tc := range allNegNotTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runAllCompConst(t, i, tc.expCode, tc.val, tree, false, true, false)
 		})
 	}
 }
@@ -92,7 +150,35 @@ func TestConst_Encoding_AllNeg_Guraded(t *testing.T) {
 	tree := genTree()
 	for i, tc := range allNegTests {
 		t.Run(tc.name, func(t *testing.T) {
-			runGuardedAllCompConst(t, i, tc.expCode, tc.val, tree, false, false)
+			runGuardedAllCompConst(
+				t,
+				i,
+				tc.expCode,
+				tc.val,
+				tree,
+				false,
+				false,
+				false,
+			)
+		})
+	}
+}
+
+func TestNotConst_Encoding_AllNeg_Guraded(t *testing.T) {
+	test.AddCleanup(t, compGuardedConstSufix(false), false)
+	tree := genTree()
+	for i, tc := range allNegNotTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runGuardedAllCompConst(
+				t,
+				i,
+				tc.expCode,
+				tc.val,
+				tree,
+				false,
+				true,
+				false,
+			)
 		})
 	}
 }
@@ -112,7 +198,17 @@ func TestConst_Simplified_AllPos(t *testing.T) {
 	tree := genTree()
 	for i, tc := range allPosTests {
 		t.Run(tc.name, func(t *testing.T) {
-			runAllCompConst(t, i, tc.expCode, tc.val, tree, true, true)
+			runAllCompConst(t, i, tc.expCode, tc.val, tree, true, false, true)
+		})
+	}
+}
+
+func TestNotConst_Simplified_AllPos(t *testing.T) {
+	test.AddCleanup(t, compConstSufix(true), true)
+	tree := genTree()
+	for i, tc := range allPosNotTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runAllCompConst(t, i, tc.expCode, tc.val, tree, true, true, true)
 		})
 	}
 }
@@ -122,7 +218,35 @@ func TestConst_Simplified_AllPos_Guarded(t *testing.T) {
 	tree := genTree()
 	for i, tc := range allPosTests {
 		t.Run(tc.name, func(t *testing.T) {
-			runGuardedAllCompConst(t, i, tc.expCode, tc.val, tree, true, true)
+			runGuardedAllCompConst(
+				t,
+				i,
+				tc.expCode,
+				tc.val,
+				tree,
+				true,
+				false,
+				true,
+			)
+		})
+	}
+}
+
+func TestNotConst_Simplified_AllPos_Guarded(t *testing.T) {
+	test.AddCleanup(t, compGuardedConstSufix(true), true)
+	tree := genTree()
+	for i, tc := range allPosNotTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runGuardedAllCompConst(
+				t,
+				i,
+				tc.expCode,
+				tc.val,
+				tree,
+				true,
+				true,
+				true,
+			)
 		})
 	}
 }
@@ -132,7 +256,17 @@ func TestConst_Simplified_AllNeg(t *testing.T) {
 	tree := genTree()
 	for i, tc := range allNegTests {
 		t.Run(tc.name, func(t *testing.T) {
-			runAllCompConst(t, i, tc.expCode, tc.val, tree, false, true)
+			runAllCompConst(t, i, tc.expCode, tc.val, tree, false, false, true)
+		})
+	}
+}
+
+func TestNotConst_Simplified_AllNeg(t *testing.T) {
+	test.AddCleanup(t, compConstSufix(false), true)
+	tree := genTree()
+	for i, tc := range allNegNotTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runAllCompConst(t, i, tc.expCode, tc.val, tree, false, true, true)
 		})
 	}
 }
@@ -142,7 +276,35 @@ func TestConst_Simplified_AllNeg_Guraded(t *testing.T) {
 	tree := genTree()
 	for i, tc := range allNegTests {
 		t.Run(tc.name, func(t *testing.T) {
-			runGuardedAllCompConst(t, i, tc.expCode, tc.val, tree, false, true)
+			runGuardedAllCompConst(
+				t,
+				i,
+				tc.expCode,
+				tc.val,
+				tree,
+				false,
+				false,
+				true,
+			)
+		})
+	}
+}
+
+func TestNotConst_Simplified_AllNeg_Guraded(t *testing.T) {
+	test.AddCleanup(t, compGuardedConstSufix(false), true)
+	tree := genTree()
+	for i, tc := range allNegNotTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runGuardedAllCompConst(
+				t,
+				i,
+				tc.expCode,
+				tc.val,
+				tree,
+				false,
+				true,
+				true,
+			)
 		})
 	}
 }

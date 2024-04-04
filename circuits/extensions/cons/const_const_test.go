@@ -3,11 +3,14 @@ package cons
 import (
 	"goexpdt/base"
 	"goexpdt/circuits/internal/test"
+	"goexpdt/operators"
 	"testing"
 )
 
-const constConstSUFIX = "cons.constconst"
-const guardedConstConstSUFIX = "cons.Gconstconst"
+const (
+	constConstSUFIX        = "cons.constconst"
+	guardedConstConstSUFIX = "cons.Gconstconst"
+)
 
 // =========================== //
 //           HELPERS           //
@@ -17,10 +20,13 @@ func runConsConstConst(
 	t *testing.T,
 	id, expCode int,
 	c1, c2 base.Const,
-	simplify bool,
+	neg, simplify bool,
 ) {
 	context := base.NewContext(DIM, nil)
-	formula := ConstConst(c1, c2)
+	var formula base.Component = ConstConst(c1, c2)
+	if neg {
+		formula = operators.Not(formula)
+	}
 	filePath := test.CNFName(constConstSUFIX, id, simplify)
 	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
@@ -29,7 +35,7 @@ func runGuardedConsConstConst(
 	t *testing.T,
 	id, expCode int,
 	c1, c2 base.Const,
-	simplify bool,
+	neg, simplify bool,
 ) {
 	x := base.GuardedConst("x")
 	y := base.GuardedConst("y")
@@ -39,7 +45,10 @@ func runGuardedConsConstConst(
 		base.Guard{Target: "x", Value: c1, Idx: 1},
 		base.Guard{Target: "y", Value: c2, Idx: 2},
 	)
-	formula := ConstConst(x, y)
+	var formula base.Component = ConstConst(x, y)
+	if neg {
+		formula = operators.Not(formula)
+	}
 	filePath := test.CNFName(guardedConstConstSUFIX, id, simplify)
 	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
 }
@@ -52,7 +61,16 @@ func TestConstConst_Encoding(t *testing.T) {
 	test.AddCleanup(t, constConstSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			runConsConstConst(t, i, tc.expCode, tc.val1, tc.val2, false)
+			runConsConstConst(t, i, tc.expCode, tc.val1, tc.val2, false, false)
+		})
+	}
+}
+
+func TestNotConstConst_Encoding(t *testing.T) {
+	test.AddCleanup(t, constConstSUFIX, false)
+	for i, tc := range notTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runConsConstConst(t, i, tc.expCode, tc.val1, tc.val2, true, false)
 		})
 	}
 }
@@ -61,7 +79,32 @@ func TestConstConst_Encoding_Guarded(t *testing.T) {
 	test.AddCleanup(t, guardedConstConstSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			runGuardedConsConstConst(t, i, tc.expCode, tc.val1, tc.val2, false)
+			runGuardedConsConstConst(
+				t,
+				i,
+				tc.expCode,
+				tc.val1,
+				tc.val2,
+				false,
+				false,
+			)
+		})
+	}
+}
+
+func TestNotConstConst_Encoding_Guarded(t *testing.T) {
+	test.AddCleanup(t, guardedConstConstSUFIX, false)
+	for i, tc := range notTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runGuardedConsConstConst(
+				t,
+				i,
+				tc.expCode,
+				tc.val1,
+				tc.val2,
+				true,
+				false,
+			)
 		})
 	}
 }
@@ -81,7 +124,16 @@ func TestConstConst_Simplified(t *testing.T) {
 	test.AddCleanup(t, constConstSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			runConsConstConst(t, i, tc.expCode, tc.val1, tc.val2, true)
+			runConsConstConst(t, i, tc.expCode, tc.val1, tc.val2, false, true)
+		})
+	}
+}
+
+func TestNotConstConst_Simplified(t *testing.T) {
+	test.AddCleanup(t, constConstSUFIX, true)
+	for i, tc := range notTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runConsConstConst(t, i, tc.expCode, tc.val1, tc.val2, true, true)
 		})
 	}
 }
@@ -90,7 +142,32 @@ func TestConstConst_Simplified_Guarded(t *testing.T) {
 	test.AddCleanup(t, guardedConstConstSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			runGuardedConsConstConst(t, i, tc.expCode, tc.val1, tc.val2, true)
+			runGuardedConsConstConst(
+				t,
+				i,
+				tc.expCode,
+				tc.val1,
+				tc.val2,
+				false,
+				true,
+			)
+		})
+	}
+}
+
+func TestNotConstConst_Simplified_Guarded(t *testing.T) {
+	test.AddCleanup(t, guardedConstConstSUFIX, true)
+	for i, tc := range notTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runGuardedConsConstConst(
+				t,
+				i,
+				tc.expCode,
+				tc.val1,
+				tc.val2,
+				true,
+				true,
+			)
 		})
 	}
 }

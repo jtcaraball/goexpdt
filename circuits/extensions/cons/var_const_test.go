@@ -2,14 +2,16 @@ package cons
 
 import (
 	"goexpdt/base"
+	"goexpdt/circuits/internal/test"
 	"goexpdt/circuits/predicates/subsumption"
 	"goexpdt/operators"
-	"goexpdt/circuits/internal/test"
 	"testing"
 )
 
-const varConstSUFIX = "cons.varconst"
-const guardedVarConstSUFIX = "cons.Gvarconst"
+const (
+	varConstSUFIX        = "cons.varconst"
+	guardedVarConstSUFIX = "cons.Gvarconst"
+)
 
 // =========================== //
 //           HELPERS           //
@@ -19,18 +21,22 @@ func runConsVarConst(
 	t *testing.T,
 	id, expCode int,
 	c1, c2 base.Const,
-	simplify bool,
+	neg, simplify bool,
 ) {
 	x := base.NewVar("x")
 	context := base.NewContext(DIM, nil)
+	var circuit base.Component = VarConst(x, c2)
+	if neg {
+		circuit = operators.Not(circuit)
+	}
 	formula := operators.WithVar(
 		x,
 		operators.And(
 			operators.And(
-				subsumption.VarConst(x, c2),
-				subsumption.ConstVar(c2, x),
+				subsumption.VarConst(x, c1),
+				subsumption.ConstVar(c1, x),
 			),
-			VarConst(c1, x),
+			circuit,
 		),
 	)
 	filePath := test.CNFName(varConstSUFIX, id, simplify)
@@ -42,7 +48,7 @@ func runGuardedConsVarConst(
 	t *testing.T,
 	id, expCode int,
 	c1, c2 base.Const,
-	simplify bool,
+	neg, simplify bool,
 ) {
 	x := base.NewVar("x")
 	y := base.GuardedConst("y")
@@ -51,6 +57,10 @@ func runGuardedConsVarConst(
 		context.Guards,
 		base.Guard{Target: "y", Value: c1, Idx: 1},
 	)
+	var circuit base.Component = VarConst(x, y)
+	if neg {
+		circuit = operators.Not(circuit)
+	}
 	formula := operators.WithVar(
 		x,
 		operators.And(
@@ -58,7 +68,7 @@ func runGuardedConsVarConst(
 				subsumption.VarConst(x, c2),
 				subsumption.ConstVar(c2, x),
 			),
-			VarConst(y, x),
+			circuit,
 		),
 	)
 	filePath := test.CNFName(guardedVarConstSUFIX, id, simplify)
@@ -74,7 +84,16 @@ func TestVarConst_Encoding(t *testing.T) {
 	test.AddCleanup(t, varConstSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			runConsVarConst(t, i, tc.expCode, tc.val1, tc.val2, false)
+			runConsVarConst(t, i, tc.expCode, tc.val1, tc.val2, false, false)
+		})
+	}
+}
+
+func TestNotVarConst_Encoding(t *testing.T) {
+	test.AddCleanup(t, varConstSUFIX, false)
+	for i, tc := range notTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runConsVarConst(t, i, tc.expCode, tc.val1, tc.val2, true, false)
 		})
 	}
 }
@@ -83,14 +102,39 @@ func TestVarConst_Encoding_Guarded(t *testing.T) {
 	test.AddCleanup(t, guardedVarConstSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			runGuardedConsVarConst(t, i, tc.expCode, tc.val1, tc.val2, false)
+			runGuardedConsVarConst(
+				t,
+				i,
+				tc.expCode,
+				tc.val1,
+				tc.val2,
+				false,
+				false,
+			)
+		})
+	}
+}
+
+func TestNotVarConst_Encoding_Guarded(t *testing.T) {
+	test.AddCleanup(t, guardedVarConstSUFIX, false)
+	for i, tc := range notTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runGuardedConsVarConst(
+				t,
+				i,
+				tc.expCode,
+				tc.val1,
+				tc.val2,
+				true,
+				false,
+			)
 		})
 	}
 }
 
 func TestVarConst_Encoding_WrongDim(t *testing.T) {
-	x := base.Const{base.BOT, base.BOT, base.BOT}
-	y := base.NewVar("y")
+	x := base.NewVar("x")
+	y := base.Const{base.BOT, base.BOT, base.BOT}
 	formula := VarConst(x, y)
 	context := base.NewContext(4, nil)
 	_, err := formula.Encoding(context)
@@ -103,7 +147,16 @@ func TestVarConst_Simplified(t *testing.T) {
 	test.AddCleanup(t, varConstSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			runConsVarConst(t, i, tc.expCode, tc.val1, tc.val2, true)
+			runConsVarConst(t, i, tc.expCode, tc.val1, tc.val2, false, true)
+		})
+	}
+}
+
+func TestNotVarConst_Simplified(t *testing.T) {
+	test.AddCleanup(t, varConstSUFIX, true)
+	for i, tc := range notTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runConsVarConst(t, i, tc.expCode, tc.val1, tc.val2, true, true)
 		})
 	}
 }
@@ -112,14 +165,39 @@ func TestVarConst_Simplified_Guarded(t *testing.T) {
 	test.AddCleanup(t, guardedVarConstSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			runGuardedConsVarConst(t, i, tc.expCode, tc.val1, tc.val2, true)
+			runGuardedConsVarConst(
+				t,
+				i,
+				tc.expCode,
+				tc.val1,
+				tc.val2,
+				false,
+				true,
+			)
+		})
+	}
+}
+
+func TestNotVarConst_Simplified_Guarded(t *testing.T) {
+	test.AddCleanup(t, guardedVarConstSUFIX, true)
+	for i, tc := range notTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runGuardedConsVarConst(
+				t,
+				i,
+				tc.expCode,
+				tc.val1,
+				tc.val2,
+				true,
+				true,
+			)
 		})
 	}
 }
 
 func TestVarConst_Simplified_WrongDim(t *testing.T) {
-	x := base.Const{base.BOT, base.BOT, base.BOT}
-	y := base.NewVar("y")
+	x := base.NewVar("x")
+	y := base.Const{base.BOT, base.BOT, base.BOT}
 	formula := VarConst(x, y)
 	context := base.NewContext(4, nil)
 	_, err := formula.Simplified(context)
@@ -129,8 +207,8 @@ func TestVarConst_Simplified_WrongDim(t *testing.T) {
 }
 
 func TestVarConst_GetChildren(t *testing.T) {
-	x := base.Const{base.BOT, base.BOT, base.BOT}
-	y := base.NewVar("y")
+	x := base.NewVar("x")
+	y := base.Const{base.BOT, base.BOT, base.BOT}
 	formula := VarConst(x, y)
 	children := formula.GetChildren()
 	if len(children) != 0 {
@@ -143,8 +221,8 @@ func TestVarConst_GetChildren(t *testing.T) {
 }
 
 func TestVarConst_IsTrivial(t *testing.T) {
-	x := base.Const{base.BOT, base.BOT, base.BOT}
-	y := base.NewVar("y")
+	x := base.NewVar("x")
+	y := base.Const{base.BOT, base.BOT, base.BOT}
 	formula := VarConst(x, y)
 	isTrivial, _ := formula.IsTrivial()
 	if isTrivial {

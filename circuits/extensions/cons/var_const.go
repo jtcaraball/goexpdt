@@ -20,8 +20,8 @@ type varConst struct {
 
 // Return varConst cons.
 func VarConst(
-	constInst base.ConstInstance,
 	varInst base.Var,
+	constInst base.ConstInstance,
 ) *varConst {
 	return &varConst{constInst: constInst, varInst: varInst}
 }

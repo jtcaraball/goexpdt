@@ -2,9 +2,9 @@ package cons
 
 import (
 	"goexpdt/base"
+	"goexpdt/circuits/internal/test"
 	"goexpdt/circuits/predicates/subsumption"
 	"goexpdt/operators"
-	"goexpdt/circuits/internal/test"
 	"testing"
 )
 
@@ -18,11 +18,15 @@ func runConsVarVar(
 	t *testing.T,
 	id, expCode int,
 	c1, c2 base.Const,
-	simplify bool,
+	neg, simplify bool,
 ) {
 	x := base.NewVar("x")
 	y := base.NewVar("y")
 	context := base.NewContext(DIM, nil)
+	var circuit base.Component = VarVar(x, y)
+	if neg {
+		circuit = operators.Not(circuit)
+	}
 	formula := operators.WithVar(
 		x,
 		operators.WithVar(
@@ -37,7 +41,7 @@ func runConsVarVar(
 						subsumption.VarConst(y, c2),
 						subsumption.ConstVar(c2, y),
 					),
-					VarVar(x, y),
+					circuit,
 				),
 			),
 		),
@@ -55,7 +59,16 @@ func TestVarVar_Encoding(t *testing.T) {
 	test.AddCleanup(t, varVarSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			runConsVarVar(t, i, tc.expCode, tc.val1, tc.val2, false)
+			runConsVarVar(t, i, tc.expCode, tc.val1, tc.val2, false, false)
+		})
+	}
+}
+
+func TestNotVarVar_Encoding(t *testing.T) {
+	test.AddCleanup(t, varVarSUFIX, false)
+	for i, tc := range notTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runConsVarVar(t, i, tc.expCode, tc.val1, tc.val2, true, false)
 		})
 	}
 }
@@ -64,7 +77,16 @@ func TestVarVar_Simplified(t *testing.T) {
 	test.AddCleanup(t, varVarSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			runConsVarVar(t, i, tc.expCode, tc.val1, tc.val2, true)
+			runConsVarVar(t, i, tc.expCode, tc.val1, tc.val2, false, true)
+		})
+	}
+}
+
+func TestNotVarVar_Simplified(t *testing.T) {
+	test.AddCleanup(t, varVarSUFIX, true)
+	for i, tc := range notTests {
+		t.Run(tc.name, func(t *testing.T) {
+			runConsVarVar(t, i, tc.expCode, tc.val1, tc.val2, true, true)
 		})
 	}
 }

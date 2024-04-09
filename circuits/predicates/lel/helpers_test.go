@@ -48,6 +48,12 @@ var tests = []testS{
 		val2:    base.Const{base.ONE, base.BOT, base.BOT},
 		expCode: 20,
 	},
+	{
+		name:    "(1,1,1):(_,_,_)",
+		val1:    base.Const{base.ONE, base.ONE, base.ONE},
+		val2:    base.Const{base.BOT, base.BOT, base.BOT},
+		expCode: 20,
+	},
 }
 
 var notTests = []testS{
@@ -85,6 +91,12 @@ var notTests = []testS{
 		name:    "(1,1,0):(1,_,_)",
 		val1:    base.Const{base.ONE, base.ONE, base.ZERO},
 		val2:    base.Const{base.ONE, base.BOT, base.BOT},
+		expCode: 10,
+	},
+	{
+		name:    "(1,1,1):(_,_,_)",
+		val1:    base.Const{base.ONE, base.ONE, base.ONE},
+		val2:    base.Const{base.BOT, base.BOT, base.BOT},
 		expCode: 10,
 	},
 }

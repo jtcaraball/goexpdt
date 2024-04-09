@@ -3,11 +3,10 @@ package utils
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"goexpdt/base"
 	"os/exec"
-	"slices"
 	"strconv"
-	"strings"
 )
 
 // Run a compute step. Returns the exitcode and stdout. The exit code will
@@ -58,9 +57,52 @@ func runSolver(cmd *exec.Cmd) (int, []byte, error) {
 func GetValueFromBytes(
 	out []byte,
 	v base.Var,
+	vFilter map[int]bool,
 	ctx *base.Context,
 ) (base.Const, error) {
-	return nil, nil
+	varValues := make(map[int]bool)
+	for _, line := range bytes.Split(out, []byte("\n")) {
+		if len(line) == 0 || line[0] != byte(118) {
+			continue
+		}
+		for _, valAsBytes := range bytes.Split(line[2:], []byte(" ")) {
+			val, err := strconv.Atoi(string(valAsBytes))
+			if err != nil {
+				return nil, err
+			}
+			absVal := iAbs(val)
+			if vFilter[absVal] {
+				varValues[absVal] = val > 0
+			}
+		}
+	}
+	var evlConst base.Const
+	for i := 0; i < ctx.Dimension; i++ {
+		if varValues[ctx.Var(string(v), i, base.BOT.Val())] {
+			evlConst = append(evlConst, base.BOT)
+			continue
+		}
+		if varValues[ctx.Var(string(v), i, base.ONE.Val())] {
+			evlConst = append(evlConst, base.ONE)
+			continue
+		}
+		if varValues[ctx.Var(string(v), i, base.ZERO.Val())] {
+			evlConst = append(evlConst, base.ZERO)
+			continue
+		}
+	}
+	return evlConst, nil
+}
+
+// Generate map filter for target variable values.
+func VariableFilter(v base.Var, ctx *base.Context) map[int]bool {
+	f := make(map[int]bool)
+	for i := 0; i < ctx.Dimension; i++ {
+		f[ctx.Var(string(v), i, base.BOT.Val())] = true
+		f[ctx.Var(string(v), i, base.ZERO.Val())] = true
+		f[ctx.Var(string(v), i, base.ONE.Val())] = true
+	}
+	return f
 }
 
 // Absolute value for integers.

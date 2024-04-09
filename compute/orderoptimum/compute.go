@@ -18,7 +18,7 @@ type (
 )
 
 // Compute optimal instance that satisfies formula according to order.
-func Comptue(
+func Compute(
 	formula VFormula,
 	order VCOrder,
 	variable base.Var,
@@ -30,7 +30,7 @@ func Comptue(
 	var bm base.Const
 
 	exitcode, out, err := utils.Step(
-		formula(variable),
+		operators.WithVar(variable, formula(variable)),
 		ctx,
 		solverPath,
 		filePath,
@@ -42,13 +42,18 @@ func Comptue(
 		return false, nil, err
 	}
 
+	variableFilter := utils.VariableFilter(variable, ctx)
 	for exitcode == 10 { // 10 is the standard sat code used by solvers.
-		bm, err = utils.GetValueFromBytes(out, variable, ctx)
+		bm, err = utils.GetValueFromBytes(out, variable, variableFilter, ctx)
 		if err != nil {
 			return false, nil, err
 		}
-		nextStep := operators.And(formula(variable), order(variable, bm))
-		exitcode, out, err = utils.Step(nextStep, ctx, solverPath, filePath)
+		nsFormula := operators.WithVar(
+			variable,
+			operators.And(formula(variable), order(variable, bm)),
+		)
+		ctx.Reset()
+		exitcode, out, err = utils.Step(nsFormula, ctx, solverPath, filePath)
 		if err != nil {
 			return false, nil, err
 		}

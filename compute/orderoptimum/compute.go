@@ -42,18 +42,21 @@ func Compute(
 		return false, nil, err
 	}
 
-	variableFilter := utils.VariableFilter(variable, ctx)
 	for exitcode == 10 { // 10 is the standard sat code used by solvers.
-		bm, err = utils.GetValueFromBytes(out, variable, variableFilter, ctx)
+		bm, err = utils.GetValueFromBytes(out, variable, ctx)
 		if err != nil {
 			return false, nil, err
 		}
-		nsFormula := operators.WithVar(
-			variable,
-			operators.And(formula(variable), order(variable, bm)),
-		)
 		ctx.Reset()
-		exitcode, out, err = utils.Step(nsFormula, ctx, solverPath, filePath)
+		exitcode, out, err = utils.Step(
+			operators.WithVar(
+				variable,
+				operators.And(formula(variable), order(variable, bm)),
+			),
+			ctx,
+			solverPath,
+			filePath,
+		)
 		if err != nil {
 			return false, nil, err
 		}

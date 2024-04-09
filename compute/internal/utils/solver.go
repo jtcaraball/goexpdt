@@ -3,7 +3,6 @@ package utils
 import (
 	"bytes"
 	"errors"
-	"fmt"
 	"goexpdt/base"
 	"os/exec"
 	"strconv"
@@ -57,10 +56,12 @@ func runSolver(cmd *exec.Cmd) (int, []byte, error) {
 func GetValueFromBytes(
 	out []byte,
 	v base.Var,
-	vFilter map[int]bool,
 	ctx *base.Context,
 ) (base.Const, error) {
+	var evlConst base.Const
 	varValues := make(map[int]bool)
+	vFilter := variableFilter(v, ctx)
+
 	for _, line := range bytes.Split(out, []byte("\n")) {
 		if len(line) == 0 || line[0] != byte(118) {
 			continue
@@ -76,7 +77,7 @@ func GetValueFromBytes(
 			}
 		}
 	}
-	var evlConst base.Const
+
 	for i := 0; i < ctx.Dimension; i++ {
 		if varValues[ctx.Var(string(v), i, base.BOT.Val())] {
 			evlConst = append(evlConst, base.BOT)
@@ -91,11 +92,12 @@ func GetValueFromBytes(
 			continue
 		}
 	}
+
 	return evlConst, nil
 }
 
 // Generate map filter for target variable values.
-func VariableFilter(v base.Var, ctx *base.Context) map[int]bool {
+func variableFilter(v base.Var, ctx *base.Context) map[int]bool {
 	f := make(map[int]bool)
 	for i := 0; i < ctx.Dimension; i++ {
 		f[ctx.Var(string(v), i, base.BOT.Val())] = true

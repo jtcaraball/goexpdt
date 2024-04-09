@@ -33,9 +33,8 @@ type featV struct {
 
 var (
 	ZERO = featV{val: 0}
-	ONE = featV{val: 1}
-	BOT = featV{val: 2}
-	FeatValues = []featV{ZERO, ONE, BOT}
+	ONE  = featV{val: 1}
+	BOT  = featV{val: 2}
 )
 
 // =========================== //
@@ -58,11 +57,14 @@ func (v Var) Encoding(ctx *Context) *cnf.CNF {
 	// Every feature must have at least one value
 	reqAllFeats := [][]int{}
 	for i := 0; i < ctx.Dimension; i++ {
-		clause := []int{}
-		for _, s := range FeatValues {
-			clause = append(clause, ctx.Var(string(v), i, s.Val()))
-		}
-		reqAllFeats = append(reqAllFeats, clause)
+		reqAllFeats = append(
+			reqAllFeats,
+			[]int{
+				ctx.Var(string(v), i, ZERO.Val()),
+				ctx.Var(string(v), i, ONE.Val()),
+				ctx.Var(string(v), i, BOT.Val()),
+			},
+		)
 	}
 	nCNF.ExtendConsistency(reqAllFeats)
 	// Every feature must have one and only one value
@@ -147,7 +149,7 @@ func ValidateConstsDim(
 		if len(c) != constDim {
 			return fmt.Errorf(
 				"constant%d: wrong dim %d (%d feats in context)",
-				i + 1,
+				i+1,
 				len(c),
 				constDim,
 			)

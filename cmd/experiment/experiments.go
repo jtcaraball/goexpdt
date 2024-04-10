@@ -12,7 +12,8 @@ type experiment interface {
 var experiments []experiment = []experiment{
 	newOrderOptimExp(
 		"dft:min-lel",
-		"DFT - Optimum LEL Order",
+		"DFT: Optimum LEL Order\nArguments:\n"+
+			"  - List of tree file names inside 'input' directory.",
 		dftFGen,
 		lelOGen,
 	),

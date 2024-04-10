@@ -5,6 +5,11 @@ import (
 	"goexpdt/trees"
 )
 
+const (
+	INPUTDIR  = "input"
+	OUTPUTDIR = "output"
+)
+
 func genContext(treePath string) (*base.Context, error) {
 	expT, err := trees.LoadTree(treePath)
 	if err != nil {

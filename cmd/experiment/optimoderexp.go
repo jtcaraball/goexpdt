@@ -8,12 +8,13 @@ import (
 	"goexpdt/compute/orderoptimum"
 	"goexpdt/operators"
 	"os"
+	"path"
 	"strconv"
 	"time"
 )
 
 // DFT LEL order minimum.
-type oderOptimExp struct {
+type orderOptimExp struct {
 	name    string
 	desc    string
 	formula orderoptimum.VFormula
@@ -25,22 +26,22 @@ func newOrderOptimExp(
 	name, desc string,
 	formula orderoptimum.VFormula,
 	order orderoptimum.VCOrder,
-) *oderOptimExp {
-	return &oderOptimExp{name: name, desc: desc, formula: formula, order: order}
+) *orderOptimExp {
+	return &orderOptimExp{name: name, desc: desc, formula: formula, order: order}
 }
 
 // Return experiment name.
-func (e *oderOptimExp) Name() string {
+func (e *orderOptimExp) Name() string {
 	return e.name
 }
 
 // Return experiment description.
-func (e *oderOptimExp) Description() string {
+func (e *orderOptimExp) Description() string {
 	return e.desc
 }
 
 // Run experiment.
-func (e *oderOptimExp) Exec(args ...string) error {
+func (e *orderOptimExp) Exec(args ...string) error {
 	outFP, tmpFP := e.fileNames()
 
 	outputFile, err := os.Create(outFP)
@@ -51,8 +52,8 @@ func (e *oderOptimExp) Exec(args ...string) error {
 
 	outputWriter := csv.NewWriter(outputFile)
 
-	for _, treePath := range args {
-		ctx, err := genContext(treePath)
+	for _, treeFileName := range args {
+		ctx, err := genContext(path.Join(INPUTDIR, treeFileName))
 		if err != nil {
 			return err
 		}
@@ -71,7 +72,7 @@ func (e *oderOptimExp) Exec(args ...string) error {
 			return err
 		}
 
-		if err = e.writeOut(outputWriter, treePath, t, out); err != nil {
+		if err = e.writeOut(outputWriter, treeFileName, t, out); err != nil {
 			return err
 		}
 		outputWriter.Flush() // Experiments are long. Save outputs often.
@@ -84,13 +85,13 @@ func (e *oderOptimExp) Exec(args ...string) error {
 }
 
 // Return output and temporal file names.
-func (e *oderOptimExp) fileNames() (string, string) {
+func (e *orderOptimExp) fileNames() (string, string) {
 	expTS := time.Now().String()
-	return "oderoptim_" + expTS, "tmp_" + expTS
+	return path.Join(OUTPUTDIR, "oderoptim_"+expTS), "tmp_" + expTS
 }
 
 // Write compute output to csv writer.
-func (e *oderOptimExp) writeOut(
+func (e *orderOptimExp) writeOut(
 	w *csv.Writer,
 	tp string,
 	t time.Time,

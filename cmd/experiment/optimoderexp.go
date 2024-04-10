@@ -1,9 +1,14 @@
 package main
 
 import (
+	"encoding/csv"
 	"goexpdt/base"
+	"goexpdt/circuits/extensions/dft"
+	"goexpdt/circuits/predicates/lel"
 	"goexpdt/compute/orderoptimum"
-	"goexpdt/trees"
+	"goexpdt/operators"
+	"os"
+	"strconv"
 	"time"
 )
 
@@ -36,35 +41,84 @@ func (e *oderOptimExp) Description() string {
 
 // Run experiment.
 func (e *oderOptimExp) Exec(args ...string) error {
-	v := base.Var("x")
+	outFP, tmpFP := e.fileNames()
+
+	outputFile, err := os.Create(outFP)
+	if err != nil {
+		return err
+	}
+	defer outputFile.Close()
+
+	outputWriter := csv.NewWriter(outputFile)
+
 	for _, treePath := range args {
-		expT, err := trees.LoadTree(treePath)
+		ctx, err := genContext(treePath)
 		if err != nil {
 			return err
 		}
-		ctx := base.NewContext(expT.FeatCount, expT)
 
 		t := time.Now()
+
 		_, out, err := orderoptimum.Compute(
 			e.formula,
 			e.order,
-			v,
+			base.Var("x"),
 			ctx,
 			SOLVER,
-			"dftminlel",
+			tmpFP,
 		)
 		if err != nil {
 			return err
 		}
 
-		if err = recordOutput(treePath, time.Since(t), out); err != nil {
+		if err = e.writeOut(outputWriter, treePath, t, out); err != nil {
 			return err
 		}
+		outputWriter.Flush() // Experiments are long. Save outputs often.
+	}
+
+	if err = os.Remove(tmpFP); err != nil {
+		return err
 	}
 	return nil
 }
 
-// Record experiment.
-func recordOutput(fp string, t time.Duration, val base.Const) error {
-	return nil
+// Return output and temporal file names.
+func (e *oderOptimExp) fileNames() (string, string) {
+	expTS := time.Now().String()
+	return "oderoptim_" + expTS, "tmp_" + expTS
+}
+
+// Write compute output to csv writer.
+func (e *oderOptimExp) writeOut(
+	w *csv.Writer,
+	tp string,
+	t time.Time,
+	out base.Const,
+) error {
+	outString := "-"
+	if out != nil {
+		outString = out.AsString()
+	}
+	timeString := strconv.Itoa(int(time.Second * time.Since(t)))
+	return w.Write([]string{tp, timeString, outString})
+}
+
+// =========================== //
+//         FORMULA GEN         //
+// =========================== //
+
+func dftFGen(v base.Var) base.Component {
+	return dft.Var(v)
+}
+
+// =========================== //
+//          ORDER GEN          //
+// =========================== //
+
+func lelOGen(v base.Var, c base.Const) base.Component {
+	return operators.And(
+		lel.VarConst(v, c),
+		operators.Not(lel.ConstVar(c, v)),
+	)
 }

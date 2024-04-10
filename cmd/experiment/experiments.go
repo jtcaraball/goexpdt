@@ -9,7 +9,14 @@ type experiment interface {
 }
 
 // Slice of impelmented experiments.
-var experiments []experiment = []experiment{}
+var experiments []experiment = []experiment{
+	newOrderOptimExp(
+		"dft:min-lel",
+		"DFT - Optimum LEL Order",
+		dftFGen,
+		lelOGen,
+	),
+}
 
 // Return map of implemented experiments with their name as key.
 func expMap() map[string]experiment {

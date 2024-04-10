@@ -16,6 +16,7 @@ func main() {
 		fmt.Println("Missing experiment name.")
 		os.Exit(1)
 	}
+
 	command = args[1]
 	if len(args) > 2 {
 		commandArgs = args[2:]

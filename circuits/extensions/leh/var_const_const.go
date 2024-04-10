@@ -79,8 +79,8 @@ func (l *varConstConst) buildEncoding(
 	nCNF.ExtendConsistency(distC2Clauses)
 	// Add distance restriction clauses
 	resClauses := [][]int{}
-	dvn1 := distVarName(string(varInst), constName(constInst1))
-	dvn2 := distVarName(string(varInst), constName(constInst2))
+	dvn1 := distVarName(string(varInst), constInst1.AsString())
+	dvn2 := distVarName(string(varInst), constInst2.AsString())
 	for i := 1; i <= ctx.Dimension; i++ {
 		for j := 0; j < i; j++ {
 			resClauses = append(

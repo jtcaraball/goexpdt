@@ -3,6 +3,7 @@ package base
 import (
 	"fmt"
 	"goexpdt/cnf"
+	"strconv"
 )
 
 // =========================== //
@@ -128,6 +129,15 @@ func (c Const) IsFull() bool {
 		}
 	}
 	return true
+}
+
+// Return caller string representation.
+func (c Const) AsString() string {
+	name := ""
+	for _, ft := range c {
+		name += strconv.Itoa(ft.Val())
+	}
+	return name
 }
 
 // Return corresponding const from list of guards.

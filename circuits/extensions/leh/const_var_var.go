@@ -77,8 +77,8 @@ func (l *constVarVar) buildEncoding(
 	// Add distance restriction clauses
 	resClauses := [][]int{}
 	// Consistent the order in which params where passed creating hamming dist.
-	dvnVar1Const := distVarName(string(varInst1), constName(constInst))
-	dvnVar2Const := distVarName(string(varInst2), constName(constInst))
+	dvnVar1Const := distVarName(string(varInst1), constInst.AsString())
+	dvnVar2Const := distVarName(string(varInst2), constInst.AsString())
 	for i := 1; i <= ctx.Dimension; i++ {
 		for j := 0; j < i; j++ {
 			resClauses = append(

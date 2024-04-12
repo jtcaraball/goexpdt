@@ -3,17 +3,14 @@ package main
 import (
 	"encoding/csv"
 	"goexpdt/base"
-	"goexpdt/circuits/extensions/dft"
-	"goexpdt/circuits/predicates/lel"
 	"goexpdt/compute/orderoptimum"
-	"goexpdt/operators"
 	"os"
 	"path"
 	"strconv"
 	"time"
 )
 
-// DFT LEL order minimum.
+// Order minimum experiment.
 type orderOptimExp struct {
 	name    string
 	desc    string
@@ -21,13 +18,18 @@ type orderOptimExp struct {
 	order   orderoptimum.VCOrder
 }
 
-// Return new instance of experiment
+// Return new instance of experiment.
 func newOrderOptimExp(
 	name, desc string,
 	formula orderoptimum.VFormula,
 	order orderoptimum.VCOrder,
 ) *orderOptimExp {
-	return &orderOptimExp{name: name, desc: desc, formula: formula, order: order}
+	return &orderOptimExp{
+		name:    name,
+		desc:    desc,
+		formula: formula,
+		order:   order,
+	}
 }
 
 // Return experiment name.
@@ -48,39 +50,25 @@ func (e *orderOptimExp) Exec(args ...string) error {
 	if err != nil {
 		return err
 	}
-	defer outputFile.Close()
+	defer func() {
+		outputFile.Close()
+		os.Remove(tmpFP)
+	}()
 
 	outputWriter := csv.NewWriter(outputFile)
 
-	for _, treeFileName := range args {
-		ctx, err := genContext(path.Join(INPUTDIR, treeFileName))
+	for _, treeFP := range args {
+		ctx, err := genContext(path.Join(INPUTDIR, treeFP))
 		if err != nil {
 			return err
 		}
 
-		t := time.Now()
-
-		_, out, err := orderoptimum.Compute(
-			e.formula,
-			e.order,
-			base.Var("x"),
-			ctx,
-			SOLVER,
-			tmpFP,
-		)
-		if err != nil {
+		if err = e.evalOnTree(outputWriter, ctx, treeFP, tmpFP); err != nil {
 			return err
 		}
 
-		if err = e.writeOut(outputWriter, treeFileName, t, out); err != nil {
-			return err
-		}
-		outputWriter.Flush() // Experiments are long. Save outputs often.
 	}
 
-	if err = os.Remove(tmpFP); err != nil {
-		return err
-	}
 	return nil
 }
 
@@ -88,6 +76,34 @@ func (e *orderOptimExp) Exec(args ...string) error {
 func (e *orderOptimExp) fileNames() (string, string) {
 	expTS := time.Now().String()
 	return path.Join(OUTPUTDIR, "oderoptim_"+expTS), "tmp_" + expTS
+}
+
+// Compute value on tree.
+func (e *orderOptimExp) evalOnTree(
+	w *csv.Writer,
+	ctx *base.Context,
+	tf, tpf string,
+) error {
+	t := time.Now()
+
+	_, out, err := orderoptimum.Compute(
+		e.formula,
+		e.order,
+		base.Var("x"),
+		ctx,
+		SOLVER,
+		tpf,
+	)
+	if err != nil {
+		return err
+	}
+
+	if err = e.writeOut(w, tf, t, out); err != nil {
+		return err
+	}
+	w.Flush() // Experiments are long. Save outputs often.
+
+	return nil
 }
 
 // Write compute output to csv writer.
@@ -103,23 +119,4 @@ func (e *orderOptimExp) writeOut(
 	}
 	timeString := strconv.Itoa(int(time.Second * time.Since(t)))
 	return w.Write([]string{tp, timeString, outString})
-}
-
-// =========================== //
-//         FORMULA GEN         //
-// =========================== //
-
-func dftFGen(v base.Var) base.Component {
-	return dft.Var(v)
-}
-
-// =========================== //
-//          ORDER GEN          //
-// =========================== //
-
-func lelOGen(v base.Var, c base.Const) base.Component {
-	return operators.And(
-		lel.VarConst(v, c),
-		operators.Not(lel.ConstVar(c, v)),
-	)
 }

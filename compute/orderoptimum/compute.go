@@ -2,7 +2,7 @@ package orderoptimum
 
 import (
 	"goexpdt/base"
-	"goexpdt/compute/internal/utils"
+	"goexpdt/compute/utils"
 	"goexpdt/operators"
 )
 

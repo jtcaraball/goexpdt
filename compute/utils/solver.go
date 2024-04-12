@@ -8,8 +8,8 @@ import (
 	"strconv"
 )
 
-// Run a compute step. Returns the exitcode and stdout. The exit code will
-// always be 10 or 20 if error == nil.
+// Encode formula and run solver. Returns the exitcode and stdout. The exit
+// code will always be 10 or 20 if error == nil.
 func Step(
 	formula base.Component,
 	ctx *base.Context,
@@ -28,8 +28,8 @@ func Step(
 	return runSolver(cmd)
 }
 
-// Run solver. Takes in the solver an os/exec command and returns exit code and
-// stdout as bytes.
+// Run solver. Takes in the solver as an os/exec command and returns exit code
+// and stdout as bytes.
 func runSolver(cmd *exec.Cmd) (int, []byte, error) {
 	// Capturing stderr to debug kissat errors.
 	var stderr, stdout bytes.Buffer

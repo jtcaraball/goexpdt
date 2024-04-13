@@ -32,5 +32,5 @@ WORKDIR /goexpdt/cmd/experiment
 RUN go build .
 
 FROM build-stage AS bin-stage
-# Run the tests in the container
+# Run experiment tool
 ENTRYPOINT ["./experiment"]

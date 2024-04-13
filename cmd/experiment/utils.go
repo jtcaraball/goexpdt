@@ -107,7 +107,7 @@ func btoC(b []byte, c base.Const) error {
 		case 50: // 2
 			c[i] = base.BOT
 		default:
-			return fmt.Errorf("Invalid const value '%s'.", string(ch))
+			return fmt.Errorf("Invalid const feature value '%s'.", string(ch))
 		}
 	}
 	return nil

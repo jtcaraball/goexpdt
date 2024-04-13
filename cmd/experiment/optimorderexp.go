@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/csv"
+	"errors"
 	"goexpdt/base"
 	"goexpdt/compute/orderoptimum"
 	"os"
@@ -44,6 +45,10 @@ func (e *orderOptimExp) Description() string {
 
 // Run experiment.
 func (e *orderOptimExp) Exec(args ...string) error {
+	if len(args) == 0 {
+		return errors.New("Missing tree file names.")
+	}
+
 	outFP, tmpFP := e.fileNames()
 
 	outputFile, err := os.Create(outFP)

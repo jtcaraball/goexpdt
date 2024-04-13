@@ -40,7 +40,7 @@ func (e *vecFormulaExp) Description() string {
 
 // Run experiment.
 func (e *vecFormulaExp) Exec(args ...string) error {
-	if len(args)%2 != 0 {
+	if len(args) == 0 || len(args)%2 != 0 {
 		return errors.New(
 			"Arguments must be pairs of type <treeFile> <constFile>.",
 		)

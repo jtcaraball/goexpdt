@@ -3,7 +3,6 @@ package leh
 import (
 	"fmt"
 	"goexpdt/base"
-	"strconv"
 )
 
 // Return hamming distance between to constant instances. Return error if
@@ -23,15 +22,6 @@ func hammingDistCC(constInst1, constInst2 base.Const) (int, error) {
 		}
 	}
 	return hDist, nil
-}
-
-// Return constant as a string.
-func constName(c base.Const) string {
-	name := ""
-	for _, ft := range c {
-		name += strconv.Itoa(ft.Val())
-	}
-	return name
 }
 
 // Return hamming distance variable name.
@@ -54,7 +44,7 @@ func hammingDistVC(
 	if err := base.ValidateConstsDim(ctx.Dimension, constInst); err != nil {
 		return nil, err
 	}
-	dvName := distVarName(string(varInst), constName(constInst))
+	dvName := distVarName(string(varInst), constInst.AsString())
 	clauses := [][]int{
 		{
 			-ctx.IVar(dvName, 0, 0),

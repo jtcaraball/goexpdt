@@ -1,19 +1,19 @@
-package test
+package solver
 
 import (
 	"bytes"
 	"errors"
 	"fmt"
+	"goexpdt/base"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"testing"
-	"goexpdt/base"
 )
 
 const (
 	cnfPath = "tmpCNF"
-	solver = "/kissat"
+	solver  = "/kissat"
 	delStar = "%s.%s.%t*"
 )
 

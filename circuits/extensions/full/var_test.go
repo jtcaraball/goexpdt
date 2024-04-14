@@ -2,7 +2,8 @@ package full
 
 import (
 	"goexpdt/base"
-	"goexpdt/circuits/internal/test"
+	"goexpdt/internal/test/solver"
+	"goexpdt/internal/test/context"
 	"goexpdt/circuits/predicates/subsumption"
 	"goexpdt/operators"
 	"testing"
@@ -21,7 +22,7 @@ func runFullVar(
 	neg, simplify bool,
 ) {
 	x := base.NewVar("x")
-	context := base.NewContext(DIM, nil)
+	ctx := base.NewContext(DIM, nil)
 	var circuit base.Component = Var(x)
 	if neg {
 		circuit = operators.Not(circuit)
@@ -36,9 +37,9 @@ func runFullVar(
 			circuit,
 		),
 	)
-	filePath := test.CNFName(varSUFIX, id, simplify)
-	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
-	test.OnlyFeatVariables(t, context, "x")
+	filePath := solver.CNFName(varSUFIX, id, simplify)
+	solver.EncodeAndRun(t, formula, ctx, filePath, id, expCode, simplify)
+	context.OnlyFeatVariables(t, ctx, "x")
 }
 
 // =========================== //
@@ -46,7 +47,7 @@ func runFullVar(
 // =========================== //
 
 func TestVar_Encoding(t *testing.T) {
-	test.AddCleanup(t, varSUFIX, false)
+	solver.AddCleanup(t, varSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runFullVar(t, i, tc.expCode, tc.val, false, false)
@@ -55,7 +56,7 @@ func TestVar_Encoding(t *testing.T) {
 }
 
 func TestNotVar_Encoding(t *testing.T) {
-	test.AddCleanup(t, varSUFIX, false)
+	solver.AddCleanup(t, varSUFIX, false)
 	for i, tc := range notTests {
 		t.Run(tc.name, func(t *testing.T) {
 			runFullVar(t, i, tc.expCode, tc.val, true, false)
@@ -64,7 +65,7 @@ func TestNotVar_Encoding(t *testing.T) {
 }
 
 func TestVar_Simplified(t *testing.T) {
-	test.AddCleanup(t, varSUFIX, true)
+	solver.AddCleanup(t, varSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runFullVar(t, i, tc.expCode, tc.val, false, true)
@@ -73,7 +74,7 @@ func TestVar_Simplified(t *testing.T) {
 }
 
 func TestNotVar_Simplified(t *testing.T) {
-	test.AddCleanup(t, varSUFIX, true)
+	solver.AddCleanup(t, varSUFIX, true)
 	for i, tc := range notTests {
 		t.Run(tc.name, func(t *testing.T) {
 			runFullVar(t, i, tc.expCode, tc.val, true, true)

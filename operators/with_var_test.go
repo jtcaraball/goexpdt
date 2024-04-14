@@ -1,8 +1,9 @@
 package operators
 
 import (
-	"slices"
 	"goexpdt/base"
+	"goexpdt/internal/test/clauses"
+	"slices"
 	"testing"
 )
 
@@ -29,7 +30,7 @@ func TestWithVar_Encoding(t *testing.T) {
 		{-4, -6},
 		{-5, -6},
 	}
-	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	clauses.ValidateClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestWithVar_Encoding_AddVarToScope(t *testing.T) {
@@ -39,8 +40,8 @@ func TestWithVar_Encoding_AddVarToScope(t *testing.T) {
 		context.Guards,
 		base.Guard{
 			Target: "T",
-			Value: base.Const{base.BOT},
-			Idx: 1,
+			Value:  base.Const{base.BOT},
+			Idx:    1,
 		},
 	)
 	component := WithVar(x, base.NewTrivial(true))
@@ -51,7 +52,7 @@ func TestWithVar_Encoding_AddVarToScope(t *testing.T) {
 		return
 	}
 	resultingScopes := context.Guards[0].InScope
-	if !slices.Equal[[]string](resultingScopes, expScope){
+	if !slices.Equal[[]string](resultingScopes, expScope) {
 		t.Errorf(
 			"Var not included in guard scope. Expected %s but got %s",
 			expScope,
@@ -67,8 +68,8 @@ func TestWithVar_Encoding_ScopedVariable(t *testing.T) {
 		context.Guards,
 		base.Guard{
 			Target: "T",
-			Value: base.Const{base.BOT},
-			Idx: 1,
+			Value:  base.Const{base.BOT},
+			Idx:    1,
 		},
 	)
 	component := WithVar(x, base.NewTrivial(true))
@@ -104,7 +105,7 @@ func TestWithVar_Simplified(t *testing.T) {
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{{}}
 	expCClauses := [][]int{}
-	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	clauses.ValidateClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestWithVar_GetChildren(t *testing.T) {

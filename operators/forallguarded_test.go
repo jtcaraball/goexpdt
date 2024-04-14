@@ -2,6 +2,7 @@ package operators
 
 import (
 	"goexpdt/base"
+	"goexpdt/internal/test/clauses"
 	"goexpdt/trees"
 	"testing"
 )
@@ -19,10 +20,10 @@ func buildFAGTree() *trees.Tree {
 	leaf2 := &trees.Node{ID: 2}
 	root := &trees.Node{ID: 0, Feat: 0, LChild: leaf1, RChild: leaf2}
 	return &trees.Tree{
-		Root: root,
+		Root:      root,
 		NodeCount: 3,
 		FeatCount: 3,
-		NegLeafs: []*trees.Node{leaf1, leaf2},
+		NegLeafs:  []*trees.Node{leaf1, leaf2},
 	}
 }
 
@@ -46,11 +47,20 @@ func TestForAllGuarded_Encoding(t *testing.T) {
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{}
 	expCClauses := [][]int{
-		{1, 2, 3}, {-1, -2}, {-1, -3}, {-2, -3},
-		{4, 5, 6}, {-4, -5}, {-4, -6}, {-5, -6},
-		{7, 8, 9}, {-7, -8}, {-7, -9}, {-8, -9},
+		{1, 2, 3},
+		{-1, -2},
+		{-1, -3},
+		{-2, -3},
+		{4, 5, 6},
+		{-4, -5},
+		{-4, -6},
+		{-5, -6},
+		{7, 8, 9},
+		{-7, -8},
+		{-7, -9},
+		{-8, -9},
 	}
-	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	clauses.ValidateClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestForAllGuarded_Simplified(t *testing.T) {
@@ -72,7 +82,7 @@ func TestForAllGuarded_Simplified(t *testing.T) {
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{{}}
 	expCClauses := [][]int{}
-	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	clauses.ValidateClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestForAllGuarded_GetChildren(t *testing.T) {

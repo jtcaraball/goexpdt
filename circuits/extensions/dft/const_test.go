@@ -2,13 +2,15 @@ package dft
 
 import (
 	"goexpdt/base"
-	"goexpdt/circuits/internal/test"
+	"goexpdt/internal/test/solver"
 	"goexpdt/operators"
 	"testing"
 )
 
-const constSUFIX = "dft.const"
-const guardedConstSUFIX = "dft.Gconst"
+const (
+	constSUFIX        = "dft.const"
+	guardedConstSUFIX = "dft.Gconst"
+)
 
 // =========================== //
 //           HELPERS           //
@@ -20,13 +22,13 @@ func runDFTConst(
 	c base.Const,
 	neg, simplify bool,
 ) {
-	context := base.NewContext(DIM, genTree())
+	ctx := base.NewContext(DIM, genTree())
 	var formula base.Component = Const(c)
 	if neg {
 		formula = operators.Not(formula)
 	}
-	filePath := test.CNFName(constSUFIX, id, simplify)
-	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
+	filePath := solver.CNFName(constSUFIX, id, simplify)
+	solver.EncodeAndRun(t, formula, ctx, filePath, id, expCode, simplify)
 }
 
 func runGuardedDFTConst(
@@ -36,17 +38,17 @@ func runGuardedDFTConst(
 	neg, simplify bool,
 ) {
 	x := base.GuardedConst("x")
-	context := base.NewContext(DIM, genTree())
-	context.Guards = append(
-		context.Guards,
+	ctx := base.NewContext(DIM, genTree())
+	ctx.Guards = append(
+		ctx.Guards,
 		base.Guard{Target: "x", Value: c, Idx: 1},
 	)
 	var formula base.Component = Const(x)
 	if neg {
 		formula = operators.Not(formula)
 	}
-	filePath := test.CNFName(guardedConstSUFIX, id, simplify)
-	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
+	filePath := solver.CNFName(guardedConstSUFIX, id, simplify)
+	solver.EncodeAndRun(t, formula, ctx, filePath, id, expCode, simplify)
 }
 
 // =========================== //
@@ -54,7 +56,7 @@ func runGuardedDFTConst(
 // =========================== //
 
 func TestConst_Encoding(t *testing.T) {
-	test.AddCleanup(t, constSUFIX, false)
+	solver.AddCleanup(t, constSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runDFTConst(t, i, tc.expCode, tc.val, false, false)
@@ -63,7 +65,7 @@ func TestConst_Encoding(t *testing.T) {
 }
 
 func TestNotConst_Encoding(t *testing.T) {
-	test.AddCleanup(t, constSUFIX, false)
+	solver.AddCleanup(t, constSUFIX, false)
 	for i, tc := range notTests {
 		t.Run(tc.name, func(t *testing.T) {
 			runDFTConst(t, i, tc.expCode, tc.val, true, false)
@@ -72,7 +74,7 @@ func TestNotConst_Encoding(t *testing.T) {
 }
 
 func TestConst_Encoding_Guarded(t *testing.T) {
-	test.AddCleanup(t, guardedConstSUFIX, false)
+	solver.AddCleanup(t, guardedConstSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runGuardedDFTConst(t, i, tc.expCode, tc.val, false, false)
@@ -81,7 +83,7 @@ func TestConst_Encoding_Guarded(t *testing.T) {
 }
 
 func TestNotConst_Encoding_Guarded(t *testing.T) {
-	test.AddCleanup(t, guardedConstSUFIX, false)
+	solver.AddCleanup(t, guardedConstSUFIX, false)
 	for i, tc := range notTests {
 		t.Run(tc.name, func(t *testing.T) {
 			runGuardedDFTConst(t, i, tc.expCode, tc.val, true, false)
@@ -92,15 +94,15 @@ func TestNotConst_Encoding_Guarded(t *testing.T) {
 func TestConstConst_Encoding_WrongDim(t *testing.T) {
 	x := base.Const{base.BOT, base.BOT, base.BOT}
 	formula := Const(x)
-	context := base.NewContext(4, nil)
-	_, err := formula.Encoding(context)
+	ctx := base.NewContext(4, nil)
+	_, err := formula.Encoding(ctx)
 	if err == nil {
 		t.Error("Error not cached. Expected constant wrong dimension error")
 	}
 }
 
 func TestConst_Simplified(t *testing.T) {
-	test.AddCleanup(t, constSUFIX, true)
+	solver.AddCleanup(t, constSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runDFTConst(t, i, tc.expCode, tc.val, false, true)
@@ -109,7 +111,7 @@ func TestConst_Simplified(t *testing.T) {
 }
 
 func TestNotConst_Simplified(t *testing.T) {
-	test.AddCleanup(t, constSUFIX, true)
+	solver.AddCleanup(t, constSUFIX, true)
 	for i, tc := range notTests {
 		t.Run(tc.name, func(t *testing.T) {
 			runDFTConst(t, i, tc.expCode, tc.val, true, true)
@@ -118,7 +120,7 @@ func TestNotConst_Simplified(t *testing.T) {
 }
 
 func TestConst_Simplified_Guarded(t *testing.T) {
-	test.AddCleanup(t, guardedConstSUFIX, true)
+	solver.AddCleanup(t, guardedConstSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runGuardedDFTConst(t, i, tc.expCode, tc.val, false, true)
@@ -127,7 +129,7 @@ func TestConst_Simplified_Guarded(t *testing.T) {
 }
 
 func TestNotConst_Simplified_Guarded(t *testing.T) {
-	test.AddCleanup(t, guardedConstSUFIX, true)
+	solver.AddCleanup(t, guardedConstSUFIX, true)
 	for i, tc := range notTests {
 		t.Run(tc.name, func(t *testing.T) {
 			runGuardedDFTConst(t, i, tc.expCode, tc.val, true, true)
@@ -138,8 +140,8 @@ func TestNotConst_Simplified_Guarded(t *testing.T) {
 func TestConstConst_Simplified_WrongDim(t *testing.T) {
 	x := base.Const{base.BOT, base.BOT, base.BOT}
 	formula := Const(x)
-	context := base.NewContext(4, nil)
-	_, err := formula.Simplified(context)
+	ctx := base.NewContext(4, nil)
+	_, err := formula.Simplified(ctx)
 	if err == nil {
 		t.Error("Error not cached. Expected constant wrong dimension error")
 	}

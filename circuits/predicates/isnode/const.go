@@ -142,7 +142,7 @@ func (n *inConst) buildSimplified(
 		if node.Feat < 0 || node.Feat >= ctx.Dimension {
 			return nil, errors.New(
 				fmt.Sprintf(
-					"Node's feature %d is larger than context's dimension %d",
+					"Node's feature %d is larger than ctx's dimension %d",
 					node.Feat,
 					ctx.Dimension,
 				),

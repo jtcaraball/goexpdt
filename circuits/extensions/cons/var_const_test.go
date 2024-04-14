@@ -2,7 +2,8 @@ package cons
 
 import (
 	"goexpdt/base"
-	"goexpdt/circuits/internal/test"
+	"goexpdt/internal/test/solver"
+	"goexpdt/internal/test/context"
 	"goexpdt/circuits/predicates/subsumption"
 	"goexpdt/operators"
 	"testing"
@@ -24,7 +25,7 @@ func runConsVarConst(
 	neg, simplify bool,
 ) {
 	x := base.NewVar("x")
-	context := base.NewContext(DIM, nil)
+	ctx := base.NewContext(DIM, nil)
 	var circuit base.Component = VarConst(x, c2)
 	if neg {
 		circuit = operators.Not(circuit)
@@ -39,9 +40,9 @@ func runConsVarConst(
 			circuit,
 		),
 	)
-	filePath := test.CNFName(varConstSUFIX, id, simplify)
-	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
-	test.OnlyFeatVariables(t, context, "x")
+	filePath := solver.CNFName(varConstSUFIX, id, simplify)
+	solver.EncodeAndRun(t, formula, ctx, filePath, id, expCode, simplify)
+	context.OnlyFeatVariables(t, ctx, "x")
 }
 
 func runGuardedConsVarConst(
@@ -52,9 +53,9 @@ func runGuardedConsVarConst(
 ) {
 	x := base.NewVar("x")
 	y := base.GuardedConst("y")
-	context := base.NewContext(DIM, nil)
-	context.Guards = append(
-		context.Guards,
+	ctx := base.NewContext(DIM, nil)
+	ctx.Guards = append(
+		ctx.Guards,
 		base.Guard{Target: "y", Value: c2, Idx: 1},
 	)
 	var circuit base.Component = VarConst(x, y)
@@ -71,9 +72,9 @@ func runGuardedConsVarConst(
 			circuit,
 		),
 	)
-	filePath := test.CNFName(guardedVarConstSUFIX, id, simplify)
-	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
-	test.OnlyFeatVariables(t, context, "x#y#1", "y")
+	filePath := solver.CNFName(guardedVarConstSUFIX, id, simplify)
+	solver.EncodeAndRun(t, formula, ctx, filePath, id, expCode, simplify)
+	context.OnlyFeatVariables(t, ctx, "x#y#1", "y")
 }
 
 // =========================== //
@@ -81,7 +82,7 @@ func runGuardedConsVarConst(
 // =========================== //
 
 func TestVarConst_Encoding(t *testing.T) {
-	test.AddCleanup(t, varConstSUFIX, false)
+	solver.AddCleanup(t, varConstSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runConsVarConst(t, i, tc.expCode, tc.val1, tc.val2, false, false)
@@ -90,7 +91,7 @@ func TestVarConst_Encoding(t *testing.T) {
 }
 
 func TestNotVarConst_Encoding(t *testing.T) {
-	test.AddCleanup(t, varConstSUFIX, false)
+	solver.AddCleanup(t, varConstSUFIX, false)
 	for i, tc := range notTests {
 		t.Run(tc.name, func(t *testing.T) {
 			runConsVarConst(t, i, tc.expCode, tc.val1, tc.val2, true, false)
@@ -99,7 +100,7 @@ func TestNotVarConst_Encoding(t *testing.T) {
 }
 
 func TestVarConst_Encoding_Guarded(t *testing.T) {
-	test.AddCleanup(t, guardedVarConstSUFIX, false)
+	solver.AddCleanup(t, guardedVarConstSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runGuardedConsVarConst(
@@ -116,7 +117,7 @@ func TestVarConst_Encoding_Guarded(t *testing.T) {
 }
 
 func TestNotVarConst_Encoding_Guarded(t *testing.T) {
-	test.AddCleanup(t, guardedVarConstSUFIX, false)
+	solver.AddCleanup(t, guardedVarConstSUFIX, false)
 	for i, tc := range notTests {
 		t.Run(tc.name, func(t *testing.T) {
 			runGuardedConsVarConst(
@@ -136,15 +137,15 @@ func TestVarConst_Encoding_WrongDim(t *testing.T) {
 	x := base.NewVar("x")
 	y := base.Const{base.BOT, base.BOT, base.BOT}
 	formula := VarConst(x, y)
-	context := base.NewContext(4, nil)
-	_, err := formula.Encoding(context)
+	ctx := base.NewContext(4, nil)
+	_, err := formula.Encoding(ctx)
 	if err == nil {
 		t.Error("Error not cached. Expected constant wrong dimension error")
 	}
 }
 
 func TestVarConst_Simplified(t *testing.T) {
-	test.AddCleanup(t, varConstSUFIX, true)
+	solver.AddCleanup(t, varConstSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runConsVarConst(t, i, tc.expCode, tc.val1, tc.val2, false, true)
@@ -153,7 +154,7 @@ func TestVarConst_Simplified(t *testing.T) {
 }
 
 func TestNotVarConst_Simplified(t *testing.T) {
-	test.AddCleanup(t, varConstSUFIX, true)
+	solver.AddCleanup(t, varConstSUFIX, true)
 	for i, tc := range notTests {
 		t.Run(tc.name, func(t *testing.T) {
 			runConsVarConst(t, i, tc.expCode, tc.val1, tc.val2, true, true)
@@ -162,7 +163,7 @@ func TestNotVarConst_Simplified(t *testing.T) {
 }
 
 func TestVarConst_Simplified_Guarded(t *testing.T) {
-	test.AddCleanup(t, guardedVarConstSUFIX, true)
+	solver.AddCleanup(t, guardedVarConstSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runGuardedConsVarConst(
@@ -179,7 +180,7 @@ func TestVarConst_Simplified_Guarded(t *testing.T) {
 }
 
 func TestNotVarConst_Simplified_Guarded(t *testing.T) {
-	test.AddCleanup(t, guardedVarConstSUFIX, true)
+	solver.AddCleanup(t, guardedVarConstSUFIX, true)
 	for i, tc := range notTests {
 		t.Run(tc.name, func(t *testing.T) {
 			runGuardedConsVarConst(
@@ -199,8 +200,8 @@ func TestVarConst_Simplified_WrongDim(t *testing.T) {
 	x := base.NewVar("x")
 	y := base.Const{base.BOT, base.BOT, base.BOT}
 	formula := VarConst(x, y)
-	context := base.NewContext(4, nil)
-	_, err := formula.Simplified(context)
+	ctx := base.NewContext(4, nil)
+	_, err := formula.Simplified(ctx)
 	if err == nil {
 		t.Error("Error not cached. Expected constant wrong dimension error")
 	}

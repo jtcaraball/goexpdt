@@ -3,7 +3,8 @@ package allcomp
 import (
 	"fmt"
 	"goexpdt/base"
-	"goexpdt/circuits/internal/test"
+	"goexpdt/internal/test/solver"
+	"goexpdt/internal/test/context"
 	"goexpdt/circuits/predicates/subsumption"
 	"goexpdt/operators"
 	"goexpdt/trees"
@@ -24,7 +25,7 @@ func runAllCompVar(
 	leafValue, neg, simplify bool,
 ) {
 	x := base.NewVar("x")
-	context := base.NewContext(DIM, tree)
+	ctx := base.NewContext(DIM, tree)
 	var circuit base.Component = Var(x, leafValue)
 	if neg {
 		circuit = operators.Not(circuit)
@@ -39,9 +40,9 @@ func runAllCompVar(
 			circuit,
 		),
 	)
-	filePath := test.CNFName(compVarSufix(leafValue), id, simplify)
-	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
-	test.OnlyFeatVariables(t, context, "x")
+	filePath := solver.CNFName(compVarSufix(leafValue), id, simplify)
+	solver.EncodeAndRun(t, formula, ctx, filePath, id, expCode, simplify)
+	context.OnlyFeatVariables(t, ctx, "x")
 }
 
 func compVarSufix(val bool) string {
@@ -53,7 +54,7 @@ func compVarSufix(val bool) string {
 // =========================== //
 
 func TestVar_Encoding_AllPos(t *testing.T) {
-	test.AddCleanup(t, compVarSufix(true), false)
+	solver.AddCleanup(t, compVarSufix(true), false)
 	tree := genTree()
 	for i, tc := range allPosTests {
 		t.Run(tc.name, func(t *testing.T) {
@@ -63,7 +64,7 @@ func TestVar_Encoding_AllPos(t *testing.T) {
 }
 
 func TestNotVar_Encoding_AllPos(t *testing.T) {
-	test.AddCleanup(t, compVarSufix(true), false)
+	solver.AddCleanup(t, compVarSufix(true), false)
 	tree := genTree()
 	for i, tc := range allPosNotTests {
 		t.Run(tc.name, func(t *testing.T) {
@@ -73,7 +74,7 @@ func TestNotVar_Encoding_AllPos(t *testing.T) {
 }
 
 func TestVar_Encoding_AllNeg(t *testing.T) {
-	test.AddCleanup(t, compVarSufix(false), false)
+	solver.AddCleanup(t, compVarSufix(false), false)
 	tree := genTree()
 	for i, tc := range allNegTests {
 		t.Run(tc.name, func(t *testing.T) {
@@ -83,7 +84,7 @@ func TestVar_Encoding_AllNeg(t *testing.T) {
 }
 
 func TestNotVar_Encoding_AllNeg(t *testing.T) {
-	test.AddCleanup(t, compVarSufix(false), false)
+	solver.AddCleanup(t, compVarSufix(false), false)
 	tree := genTree()
 	for i, tc := range allNegNotTests {
 		t.Run(tc.name, func(t *testing.T) {
@@ -93,7 +94,7 @@ func TestNotVar_Encoding_AllNeg(t *testing.T) {
 }
 
 func TestVar_Simplified_AllPos(t *testing.T) {
-	test.AddCleanup(t, compVarSufix(true), true)
+	solver.AddCleanup(t, compVarSufix(true), true)
 	tree := genTree()
 	for i, tc := range allPosTests {
 		t.Run(tc.name, func(t *testing.T) {
@@ -103,7 +104,7 @@ func TestVar_Simplified_AllPos(t *testing.T) {
 }
 
 func TestNotVar_Simplified_AllPos(t *testing.T) {
-	test.AddCleanup(t, compVarSufix(true), true)
+	solver.AddCleanup(t, compVarSufix(true), true)
 	tree := genTree()
 	for i, tc := range allPosNotTests {
 		t.Run(tc.name, func(t *testing.T) {
@@ -113,7 +114,7 @@ func TestNotVar_Simplified_AllPos(t *testing.T) {
 }
 
 func TestVar_Simplified_AllNeg(t *testing.T) {
-	test.AddCleanup(t, compVarSufix(false), true)
+	solver.AddCleanup(t, compVarSufix(false), true)
 	tree := genTree()
 	for i, tc := range allNegTests {
 		t.Run(tc.name, func(t *testing.T) {
@@ -123,7 +124,7 @@ func TestVar_Simplified_AllNeg(t *testing.T) {
 }
 
 func TestNotVar_Simplified_AllNeg(t *testing.T) {
-	test.AddCleanup(t, compVarSufix(false), true)
+	solver.AddCleanup(t, compVarSufix(false), true)
 	tree := genTree()
 	for i, tc := range allNegNotTests {
 		t.Run(tc.name, func(t *testing.T) {

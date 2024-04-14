@@ -2,7 +2,8 @@ package cons
 
 import (
 	"goexpdt/base"
-	"goexpdt/circuits/internal/test"
+	"goexpdt/internal/test/solver"
+	"goexpdt/internal/test/context"
 	"goexpdt/circuits/predicates/subsumption"
 	"goexpdt/operators"
 	"testing"
@@ -22,7 +23,7 @@ func runConsVarVar(
 ) {
 	x := base.NewVar("x")
 	y := base.NewVar("y")
-	context := base.NewContext(DIM, nil)
+	ctx := base.NewContext(DIM, nil)
 	var circuit base.Component = VarVar(x, y)
 	if neg {
 		circuit = operators.Not(circuit)
@@ -46,9 +47,9 @@ func runConsVarVar(
 			),
 		),
 	)
-	filePath := test.CNFName(varVarSUFIX, id, simplify)
-	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
-	test.OnlyFeatVariables(t, context, "x", "y")
+	filePath := solver.CNFName(varVarSUFIX, id, simplify)
+	solver.EncodeAndRun(t, formula, ctx, filePath, id, expCode, simplify)
+	context.OnlyFeatVariables(t, ctx, "x", "y")
 }
 
 // =========================== //
@@ -56,7 +57,7 @@ func runConsVarVar(
 // =========================== //
 
 func TestVarVar_Encoding(t *testing.T) {
-	test.AddCleanup(t, varVarSUFIX, false)
+	solver.AddCleanup(t, varVarSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runConsVarVar(t, i, tc.expCode, tc.val1, tc.val2, false, false)
@@ -65,7 +66,7 @@ func TestVarVar_Encoding(t *testing.T) {
 }
 
 func TestNotVarVar_Encoding(t *testing.T) {
-	test.AddCleanup(t, varVarSUFIX, false)
+	solver.AddCleanup(t, varVarSUFIX, false)
 	for i, tc := range notTests {
 		t.Run(tc.name, func(t *testing.T) {
 			runConsVarVar(t, i, tc.expCode, tc.val1, tc.val2, true, false)
@@ -74,7 +75,7 @@ func TestNotVarVar_Encoding(t *testing.T) {
 }
 
 func TestVarVar_Simplified(t *testing.T) {
-	test.AddCleanup(t, varVarSUFIX, true)
+	solver.AddCleanup(t, varVarSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runConsVarVar(t, i, tc.expCode, tc.val1, tc.val2, false, true)
@@ -83,7 +84,7 @@ func TestVarVar_Simplified(t *testing.T) {
 }
 
 func TestNotVarVar_Simplified(t *testing.T) {
-	test.AddCleanup(t, varVarSUFIX, true)
+	solver.AddCleanup(t, varVarSUFIX, true)
 	for i, tc := range notTests {
 		t.Run(tc.name, func(t *testing.T) {
 			runConsVarVar(t, i, tc.expCode, tc.val1, tc.val2, true, true)

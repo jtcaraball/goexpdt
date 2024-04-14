@@ -27,33 +27,33 @@ func genCountClauses(varName string, ctx *base.Context) [][]int {
 			clauses = append(
 				clauses,
 				[]int{
-					// -context.V[('c', var.name, i, j)],
-					// context.V[('c', var.name, i - 1, j - 1)],
-					// -context.V[(var.name, i, Symbol.BOT)]
+					// -ctx.V[('c', var.name, i, j)],
+					// ctx.V[('c', var.name, i - 1, j - 1)],
+					// -ctx.V[(var.name, i, Symbol.BOT)]
 					-ctx.IVar(cVarName, i, j),
 					ctx.IVar(cVarName, i - 1, j - 1),
 					-ctx.Var(varName, i, base.BOT.Val()),
 				},
 				[]int {
-					// context.V[('c', var.name, i, j)],
-					// -context.V[('c', var.name, i - 1, j - 1)],
-					// -context.V[(var.name, i, Symbol.BOT)]
+					// ctx.V[('c', var.name, i, j)],
+					// -ctx.V[('c', var.name, i - 1, j - 1)],
+					// -ctx.V[(var.name, i, Symbol.BOT)]
 					ctx.IVar(cVarName, i, j),
 					-ctx.IVar(cVarName, i - 1, j - 1),
 					-ctx.Var(varName, i, base.BOT.Val()),
 				},
 				[]int{
-					// -context.V[('c', var.name, i, j)],
-					// context.V[('c', var.name, i - 1, j)],
-					// context.V[(var.name, i, Symbol.BOT)]
+					// -ctx.V[('c', var.name, i, j)],
+					// ctx.V[('c', var.name, i - 1, j)],
+					// ctx.V[(var.name, i, Symbol.BOT)]
 					-ctx.IVar(cVarName, i, j),
 					ctx.IVar(cVarName, i - 1, j),
 					ctx.Var(varName, i, base.BOT.Val()),
 				},
 				[]int {
-					// context.V[('c', var.name, i, j)],
-					// -context.V[('c', var.name, i - 1, j)],
-					// context.V[(var.name, i, Symbol.BOT)]
+					// ctx.V[('c', var.name, i, j)],
+					// -ctx.V[('c', var.name, i - 1, j)],
+					// ctx.V[(var.name, i, Symbol.BOT)]
 					ctx.IVar(cVarName, i, j),
 					-ctx.IVar(cVarName, i - 1, j),
 					ctx.Var(varName, i, base.BOT.Val()),
@@ -69,26 +69,26 @@ func genCountClauses(varName string, ctx *base.Context) [][]int {
 	clauses = append(
 		clauses,
 		[]int{
-			// -context.V[('c', var.name, 0, 1)],
-			// context.V[(var.name, 0, Symbol.BOT)]
+			// -ctx.V[('c', var.name, 0, 1)],
+			// ctx.V[(var.name, 0, Symbol.BOT)]
 			-ctx.IVar(cVarName, 0, 1),
 			ctx.Var(varName, 0, base.BOT.Val()),
 		},
 		[]int{
-			// -context.V[(var.name, 0, Symbol.BOT)],
-			// context.V[('c', var.name, 0, 1)]
+			// -ctx.V[(var.name, 0, Symbol.BOT)],
+			// ctx.V[('c', var.name, 0, 1)]
 			-ctx.Var(varName, 0, base.BOT.Val()),
 			ctx.IVar(cVarName, 0, 1),
 		},
 		[]int{
-			// -context.V[('c', var.name, 0, 0)],
-			// -context.V[(var.name, 0, Symbol.BOT)]
+			// -ctx.V[('c', var.name, 0, 0)],
+			// -ctx.V[(var.name, 0, Symbol.BOT)]
 			-ctx.IVar(cVarName, 0, 0),
 			-ctx.Var(varName, 0, base.BOT.Val()),
 		},
 		[]int{
-			// context.V[(var.name, 0, Symbol.BOT)],
-			// context.V[('c', var.name, 0, 0)]
+			// ctx.V[(var.name, 0, Symbol.BOT)],
+			// ctx.V[('c', var.name, 0, 0)]
 			ctx.Var(varName, 0, base.BOT.Val()),
 			ctx.IVar(cVarName, 0, 0),
 		},

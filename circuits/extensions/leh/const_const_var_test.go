@@ -2,7 +2,8 @@ package leh
 
 import (
 	"goexpdt/base"
-	"goexpdt/circuits/internal/test"
+	"goexpdt/internal/test/solver"
+	"goexpdt/internal/test/context"
 	"goexpdt/circuits/predicates/subsumption"
 	"goexpdt/operators"
 	"testing"
@@ -24,7 +25,7 @@ func runLEHConstConstVar(
 	neg, simplify bool,
 ) {
 	x := base.NewVar("x")
-	context := base.NewContext(DIM, nil)
+	ctx := base.NewContext(DIM, nil)
 	var circuit base.Component = ConstConstVar(c1, c2, x)
 	if neg {
 		circuit = operators.Not(circuit)
@@ -39,9 +40,9 @@ func runLEHConstConstVar(
 			circuit,
 		),
 	)
-	filePath := test.CNFName(constConstVarSUFIX, id, simplify)
-	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
-	test.OnlyFeatVariables(t, context, "x")
+	filePath := solver.CNFName(constConstVarSUFIX, id, simplify)
+	solver.EncodeAndRun(t, formula, ctx, filePath, id, expCode, simplify)
+	context.OnlyFeatVariables(t, ctx, "x")
 }
 
 func runGuardedLEHConstConstVar(
@@ -53,9 +54,9 @@ func runGuardedLEHConstConstVar(
 	x := base.GuardedConst("x")
 	y := base.GuardedConst("y")
 	z := base.Var("z")
-	context := base.NewContext(DIM, nil)
-	context.Guards = append(
-		context.Guards,
+	ctx := base.NewContext(DIM, nil)
+	ctx.Guards = append(
+		ctx.Guards,
 		base.Guard{Target: "x", Value: c1, Idx: 1},
 		base.Guard{Target: "y", Value: c2, Idx: 1},
 	)
@@ -73,9 +74,9 @@ func runGuardedLEHConstConstVar(
 			circuit,
 		),
 	)
-	filePath := test.CNFName(guardedConstConstVarSUFIX, id, simplify)
-	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
-	test.OnlyFeatVariables(t, context, "z#x#1#y#1")
+	filePath := solver.CNFName(guardedConstConstVarSUFIX, id, simplify)
+	solver.EncodeAndRun(t, formula, ctx, filePath, id, expCode, simplify)
+	context.OnlyFeatVariables(t, ctx, "z#x#1#y#1")
 }
 
 // =========================== //
@@ -83,7 +84,7 @@ func runGuardedLEHConstConstVar(
 // =========================== //
 
 func TestConstConstVar_Encoding(t *testing.T) {
-	test.AddCleanup(t, constConstVarSUFIX, false)
+	solver.AddCleanup(t, constConstVarSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runLEHConstConstVar(
@@ -101,7 +102,7 @@ func TestConstConstVar_Encoding(t *testing.T) {
 }
 
 func TestNotConstConstVar_Encoding(t *testing.T) {
-	test.AddCleanup(t, constConstVarSUFIX, false)
+	solver.AddCleanup(t, constConstVarSUFIX, false)
 	for i, tc := range notTests {
 		t.Run(tc.name, func(t *testing.T) {
 			runLEHConstConstVar(
@@ -119,7 +120,7 @@ func TestNotConstConstVar_Encoding(t *testing.T) {
 }
 
 func TestConstConstVar_Encoding_Guarded(t *testing.T) {
-	test.AddCleanup(t, guardedConstConstVarSUFIX, false)
+	solver.AddCleanup(t, guardedConstConstVarSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runGuardedLEHConstConstVar(
@@ -137,7 +138,7 @@ func TestConstConstVar_Encoding_Guarded(t *testing.T) {
 }
 
 func TestNotConstConstVar_Encoding_Guarded(t *testing.T) {
-	test.AddCleanup(t, guardedConstConstVarSUFIX, false)
+	solver.AddCleanup(t, guardedConstConstVarSUFIX, false)
 	for i, tc := range notTests {
 		t.Run(tc.name, func(t *testing.T) {
 			runGuardedLEHConstConstVar(
@@ -159,15 +160,15 @@ func TestConstConstVar_Encoding_WrongDim(t *testing.T) {
 	y := base.Const{base.BOT, base.BOT, base.BOT}
 	z := base.Var("z")
 	formula := ConstConstVar(x, y, z)
-	context := base.NewContext(4, nil)
-	_, err := formula.Encoding(context)
+	ctx := base.NewContext(4, nil)
+	_, err := formula.Encoding(ctx)
 	if err == nil {
 		t.Error("Error not cached. Expected constant wrong dimension error")
 	}
 }
 
 func TestConstConstVar_Simplified(t *testing.T) {
-	test.AddCleanup(t, constConstVarSUFIX, true)
+	solver.AddCleanup(t, constConstVarSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runLEHConstConstVar(
@@ -185,7 +186,7 @@ func TestConstConstVar_Simplified(t *testing.T) {
 }
 
 func TestNotConstConstVar_Simplified(t *testing.T) {
-	test.AddCleanup(t, constConstVarSUFIX, true)
+	solver.AddCleanup(t, constConstVarSUFIX, true)
 	for i, tc := range notTests {
 		t.Run(tc.name, func(t *testing.T) {
 			runLEHConstConstVar(
@@ -203,7 +204,7 @@ func TestNotConstConstVar_Simplified(t *testing.T) {
 }
 
 func TestConstConstVar_Simplified_Guarded(t *testing.T) {
-	test.AddCleanup(t, guardedConstConstVarSUFIX, true)
+	solver.AddCleanup(t, guardedConstConstVarSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runGuardedLEHConstConstVar(
@@ -221,7 +222,7 @@ func TestConstConstVar_Simplified_Guarded(t *testing.T) {
 }
 
 func TestNotConstConstVar_Simplified_Guarded(t *testing.T) {
-	test.AddCleanup(t, guardedConstConstVarSUFIX, true)
+	solver.AddCleanup(t, guardedConstConstVarSUFIX, true)
 	for i, tc := range notTests {
 		t.Run(tc.name, func(t *testing.T) {
 			runGuardedLEHConstConstVar(
@@ -243,8 +244,8 @@ func TestConstConstVar_Simplified_WrongDim(t *testing.T) {
 	y := base.Const{base.BOT, base.BOT, base.BOT}
 	z := base.Var("z")
 	formula := ConstConstVar(x, y, z)
-	context := base.NewContext(4, nil)
-	_, err := formula.Simplified(context)
+	ctx := base.NewContext(4, nil)
+	_, err := formula.Simplified(ctx)
 	if err == nil {
 		t.Error("Error not cached. Expected constant wrong dimension error")
 	}

@@ -2,7 +2,8 @@ package leh
 
 import (
 	"goexpdt/base"
-	"goexpdt/circuits/internal/test"
+	"goexpdt/internal/test/solver"
+	"goexpdt/internal/test/context"
 	"goexpdt/circuits/predicates/subsumption"
 	"goexpdt/operators"
 	"testing"
@@ -23,7 +24,7 @@ func runLEHVarVarVar(
 	x := base.NewVar("x")
 	y := base.NewVar("y")
 	z := base.NewVar("z")
-	context := base.NewContext(DIM, nil)
+	ctx := base.NewContext(DIM, nil)
 	var circuit base.Component = VarVarVar(x, y, z)
 	if neg {
 		circuit = operators.Not(circuit)
@@ -56,9 +57,9 @@ func runLEHVarVarVar(
 			),
 		),
 	)
-	filePath := test.CNFName(varVarVarSUFIX, id, simplify)
-	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
-	test.OnlyFeatVariables(t, context, "x", "y", "z")
+	filePath := solver.CNFName(varVarVarSUFIX, id, simplify)
+	solver.EncodeAndRun(t, formula, ctx, filePath, id, expCode, simplify)
+	context.OnlyFeatVariables(t, ctx, "x", "y", "z")
 }
 
 // =========================== //
@@ -66,7 +67,7 @@ func runLEHVarVarVar(
 // =========================== //
 
 func TestVarVarVar_Encoding(t *testing.T) {
-	test.AddCleanup(t, varVarVarSUFIX, false)
+	solver.AddCleanup(t, varVarVarSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runLEHVarVarVar(
@@ -84,7 +85,7 @@ func TestVarVarVar_Encoding(t *testing.T) {
 }
 
 func TestNotVarVarVar_Encoding(t *testing.T) {
-	test.AddCleanup(t, varVarVarSUFIX, false)
+	solver.AddCleanup(t, varVarVarSUFIX, false)
 	for i, tc := range notTests {
 		t.Run(tc.name, func(t *testing.T) {
 			runLEHVarVarVar(
@@ -102,7 +103,7 @@ func TestNotVarVarVar_Encoding(t *testing.T) {
 }
 
 func TestVarVarVar_Simplified(t *testing.T) {
-	test.AddCleanup(t, varVarVarSUFIX, true)
+	solver.AddCleanup(t, varVarVarSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runLEHVarVarVar(
@@ -120,7 +121,7 @@ func TestVarVarVar_Simplified(t *testing.T) {
 }
 
 func TestNotVarVarVar_Simplified(t *testing.T) {
-	test.AddCleanup(t, varVarVarSUFIX, true)
+	solver.AddCleanup(t, varVarVarSUFIX, true)
 	for i, tc := range notTests {
 		t.Run(tc.name, func(t *testing.T) {
 			runLEHVarVarVar(

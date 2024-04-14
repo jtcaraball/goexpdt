@@ -2,7 +2,8 @@ package isnode
 
 import (
 	"goexpdt/base"
-	"goexpdt/circuits/internal/test"
+	"goexpdt/internal/test/solver"
+	"goexpdt/internal/test/context"
 	"goexpdt/circuits/predicates/subsumption"
 	"goexpdt/operators"
 	"testing"
@@ -20,9 +21,9 @@ func runIsNodeVar(
 	c base.Const,
 	neg, simplify bool,
 ) {
-	// Define variable and context
+	// Define variable and ctx
 	x := base.NewVar("x")
-	context := base.NewContext(DIM, genTree())
+	ctx := base.NewContext(DIM, genTree())
 	// Define circuit
 	var circuit base.Component = Var(x)
 	if neg {
@@ -40,9 +41,9 @@ func runIsNodeVar(
 		),
 	)
 	// Run it
-	filePath := test.CNFName(varSUFIX, id, simplify)
-	test.EncodeAndRun(t, formula, context, filePath, id, expCode, simplify)
-	test.OnlyFeatVariables(t, context, "x")
+	filePath := solver.CNFName(varSUFIX, id, simplify)
+	solver.EncodeAndRun(t, formula, ctx, filePath, id, expCode, simplify)
+	context.OnlyFeatVariables(t, ctx, "x")
 }
 
 // =========================== //
@@ -50,7 +51,7 @@ func runIsNodeVar(
 // =========================== //
 
 func TestVar_Encoding(t *testing.T) {
-	test.AddCleanup(t, varSUFIX, false)
+	solver.AddCleanup(t, varSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runIsNodeVar(t, i, tc.expCode, tc.val, false, false)
@@ -59,7 +60,7 @@ func TestVar_Encoding(t *testing.T) {
 }
 
 func TestVar_Simplified(t *testing.T) {
-	test.AddCleanup(t, varSUFIX, true)
+	solver.AddCleanup(t, varSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			runIsNodeVar(t, i, tc.expCode, tc.val, false, true)
@@ -68,7 +69,7 @@ func TestVar_Simplified(t *testing.T) {
 }
 
 func TestNotVar_Encoding(t *testing.T) {
-	test.AddCleanup(t, varSUFIX, false)
+	solver.AddCleanup(t, varSUFIX, false)
 	for i, tc := range notTests {
 		t.Run(tc.name, func(t *testing.T) {
 			runIsNodeVar(t, i, tc.expCode, tc.val, true, false)
@@ -77,7 +78,7 @@ func TestNotVar_Encoding(t *testing.T) {
 }
 
 func TestNotVar_Simplified(t *testing.T) {
-	test.AddCleanup(t, varSUFIX, true)
+	solver.AddCleanup(t, varSUFIX, true)
 	for i, tc := range notTests {
 		t.Run(tc.name, func(t *testing.T) {
 			runIsNodeVar(t, i, tc.expCode, tc.val, true, true)

@@ -82,13 +82,6 @@ var tests = []struct {
 		expCode: 20,
 	},
 	{
-		name:    "(1,1,0,1):(1,0,0,1)",
-		val1:    base.Const{base.ONE, base.ONE, base.ZERO, base.ONE},
-		val2:    base.Const{base.ONE, base.ZERO, base.ZERO, base.ONE},
-		pref:    []int{0, 1, 3, 2},
-		expCode: 20,
-	},
-	{
 		name:    "(1,_,0,1):(1,0,0,_)",
 		val1:    base.Const{base.ONE, base.BOT, base.ZERO, base.ONE},
 		val2:    base.Const{base.ONE, base.ZERO, base.ZERO, base.BOT},
@@ -100,6 +93,20 @@ var tests = []struct {
 		val1:    base.Const{base.BOT, base.BOT, base.ZERO, base.ONE},
 		val2:    base.Const{base.ONE, base.ZERO, base.BOT, base.BOT},
 		pref:    []int{0, 3, 2, 1},
+		expCode: 20,
+	},
+	{
+		name:    "(0,1,_,1):(1,_,0,1)",
+		val1:    base.Const{base.ZERO, base.ONE, base.BOT, base.ONE},
+		val2:    base.Const{base.ONE, base.BOT, base.ZERO, base.ONE},
+		pref:    []int{3, 1, 0},
+		expCode: 10,
+	},
+	{
+		name:    "(0,_,1,1):(1,0,_,1)",
+		val1:    base.Const{base.ZERO, base.BOT, base.ONE, base.ONE},
+		val2:    base.Const{base.ONE, base.ZERO, base.BOT, base.ONE},
+		pref:    []int{3, 0, 1},
 		expCode: 20,
 	},
 }

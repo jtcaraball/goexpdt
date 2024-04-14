@@ -268,12 +268,12 @@ func genFTPrefClauses(
 
 	for i := len(pref) - 2; i >= 0; i-- {
 		ftIdx = pref[i]
-		// fp_i <-> (v_i != bot ^ c_i == bot) v
-		//          (
-		//             [(v_i == bot ^ c_i == bot) v (v_i != bot ^ c_i != bot)]
-		//             ^
-		//             fp_{i+1}
-        //          )
+		// fp_i <->
+		//     (v_i != bot ^ c_i == bot) v
+		//     (
+		//         [(v_i == bot ^ c_i == bot) v (v_i != bot ^ c_i != bot)]
+		//         ^ fp_{i+1}
+		//     )
 		if c[ftIdx] != base.BOT {
 			// fp_i <-> (-(v_i == bot) ^ fp_{i+1})
 			// (v_i == bot v -fp_{i+1} v fp_i)

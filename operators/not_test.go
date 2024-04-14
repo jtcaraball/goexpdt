@@ -1,8 +1,9 @@
 package operators
 
 import (
-	"testing"
 	"goexpdt/base"
+	"goexpdt/internal/test/clauses"
+	"testing"
 )
 
 func TestNot_Encoding(t *testing.T) {
@@ -18,7 +19,7 @@ func TestNot_Encoding(t *testing.T) {
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{}
 	expCClauses := [][]int{}
-	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	clauses.ValidateClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestNot_Simplified(t *testing.T) {
@@ -39,7 +40,7 @@ func TestNot_Simplified(t *testing.T) {
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{{}}
 	expCClauses := [][]int{}
-	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	clauses.ValidateClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestNot_GetChildren(t *testing.T) {

@@ -1,6 +1,7 @@
 package cnf
 
 import (
+	"goexpdt/internal/test/clauses"
 	"os"
 	"slices"
 	"testing"
@@ -10,38 +11,9 @@ import (
 //           HELPERS           //
 // =========================== //
 
-func SlicesEq(c1, c2 [][]int) bool {
-	return slices.EqualFunc(
-		c1,
-		c2,
-		func(l1, l2 []int) bool {
-			return slices.Equal(l1, l2)
-		},
-	)
-}
-
-func errorInClauses(
-	t *testing.T,
-	sClauses, cClauses, expSClauses, expCClauses [][]int,
-	topv, expTopV int,
-) {
-	t.Helper()
-	if !SlicesEq(sClauses, expSClauses) {
-		t.Errorf(
-			"Semantic clauses not equal. Expected %d but got %d",
-			sClauses,
-			expSClauses,
-		)
-	}
-	if !SlicesEq(cClauses, expCClauses) {
-		t.Errorf(
-			"Consistency clauses not equal. Expected %d but got %d",
-			cClauses,
-			expCClauses,
-		)
-	}
-	if topv != expTopV {
-		t.Errorf("NV not equal. Expected %d but got %d", expTopV, topv)
+func validTopV(t *testing.T, got, expected int) {
+	if got != expected {
+		t.Errorf("NV not equal. Expected %d but got %d", expected, got)
 	}
 }
 
@@ -55,15 +27,14 @@ func TestCNF_Negate_Empty(t *testing.T) {
 	cnf := &CNF{tv: 0, cClauses: expectedCClauses}
 	cnf.Negate()
 	sClauses, cClauses := cnf.Clauses()
-	errorInClauses(
+	clauses.ValidateClauses(
 		t,
 		sClauses,
 		cClauses,
 		expectedSClauses,
 		expectedCClauses,
-		cnf.tv,
-		0,
 	)
+	validTopV(t, cnf.tv, 0)
 }
 
 func TestCNF_Negate_SingleClauseEmpty(t *testing.T) {
@@ -74,15 +45,14 @@ func TestCNF_Negate_SingleClauseEmpty(t *testing.T) {
 	cnf := &CNF{tv: 3, sClauses: sInitClauses, cClauses: cInitClauses}
 	cnf.Negate()
 	sClauses, cClauses := cnf.Clauses()
-	errorInClauses(
+	clauses.ValidateClauses(
 		t,
 		sClauses,
 		cClauses,
 		expectedSClauses,
 		expectedCClauses,
-		cnf.tv,
-		3,
 	)
+	validTopV(t, cnf.tv, 3)
 }
 
 func TestCNF_Negate_SingleLiteral(t *testing.T) {
@@ -93,15 +63,14 @@ func TestCNF_Negate_SingleLiteral(t *testing.T) {
 	cnf := &CNF{tv: 3, sClauses: sInitClauses, cClauses: cInitClauses}
 	cnf.Negate()
 	sClauses, cClauses := cnf.Clauses()
-	errorInClauses(
+	clauses.ValidateClauses(
 		t,
 		sClauses,
 		cClauses,
 		expectedSClauses,
 		expectedCClauses,
-		cnf.tv,
-		3,
 	)
+	validTopV(t, cnf.tv, 3)
 }
 
 func TestCNF_Negate_SingleClause(t *testing.T) {
@@ -117,15 +86,14 @@ func TestCNF_Negate_SingleClause(t *testing.T) {
 	cnf := &CNF{tv: 3, sClauses: sInitClauses, cClauses: cInitClauses}
 	cnf.Negate()
 	sClauses, cClauses := cnf.Clauses()
-	errorInClauses(
+	clauses.ValidateClauses(
 		t,
 		sClauses,
 		cClauses,
 		expectedSClauses,
 		expectedCClauses,
-		cnf.tv,
-		4,
 	)
+	validTopV(t, cnf.tv, 4)
 }
 
 func TestCNF_Negate_MultipleClauses(t *testing.T) {
@@ -147,15 +115,14 @@ func TestCNF_Negate_MultipleClauses(t *testing.T) {
 	cnf := &CNF{tv: 3, sClauses: sInitClauses, cClauses: cInitClauses}
 	cnf.Negate()
 	sClauses, cClauses := cnf.Clauses()
-	errorInClauses(
+	clauses.ValidateClauses(
 		t,
 		sClauses,
 		cClauses,
 		expectedSClauses,
 		expectedCClauses,
-		cnf.tv,
-		6,
 	)
+	validTopV(t, cnf.tv, 6)
 }
 
 func TestCNF_Conjunctions(t *testing.T) {
@@ -168,15 +135,14 @@ func TestCNF_Conjunctions(t *testing.T) {
 	cnf2 := &CNF{tv: 4, sClauses: cnf2SInitClauses}
 	cnf1.Conjunction(cnf2)
 	sClauses, cClauses := cnf1.Clauses()
-	errorInClauses(
+	clauses.ValidateClauses(
 		t,
 		sClauses,
 		cClauses,
 		expectedSClauses,
 		expectedCClauses,
-		cnf1.tv,
-		4,
 	)
+	validTopV(t, cnf1.tv, 4)
 }
 
 func TestCNF_ExtendSemantic(t *testing.T) {
@@ -187,15 +153,14 @@ func TestCNF_ExtendSemantic(t *testing.T) {
 	cnf := &CNF{tv: 2, sClauses: cnfSInitClauses, cClauses: cnfCInitClauses}
 	cnf.ExtendSemantics([][]int{{2, 3}, {-3, 4}})
 	sClauses, cClauses := cnf.Clauses()
-	errorInClauses(
+	clauses.ValidateClauses(
 		t,
 		sClauses,
 		cClauses,
 		expectedSClauses,
 		expectedCClauses,
-		cnf.tv,
-		4,
 	)
+	validTopV(t, cnf.tv, 4)
 }
 
 func TestCNF_ExtendConsistency(t *testing.T) {
@@ -206,15 +171,14 @@ func TestCNF_ExtendConsistency(t *testing.T) {
 	cnf := &CNF{tv: 2, sClauses: cnfSInitClauses, cClauses: cnfCInitClauses}
 	cnf.ExtendConsistency([][]int{{2, 3}, {-3, 4}})
 	sClauses, cClauses := cnf.Clauses()
-	errorInClauses(
+	clauses.ValidateClauses(
 		t,
 		sClauses,
 		cClauses,
 		expectedSClauses,
 		expectedCClauses,
-		cnf.tv,
-		4,
 	)
+	validTopV(t, cnf.tv, 4)
 }
 
 func TestCNF_ToBytes(t *testing.T) {

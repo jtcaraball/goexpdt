@@ -2,6 +2,7 @@ package operators
 
 import (
 	"goexpdt/base"
+	"goexpdt/internal/test/clauses"
 	"testing"
 )
 
@@ -20,7 +21,7 @@ func TestOr_Encoding_DTrue(t *testing.T) {
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{}
 	expCClauses := [][]int{}
-	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	clauses.ValidateClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestOr_Encoding_DFalse(t *testing.T) {
@@ -38,7 +39,7 @@ func TestOr_Encoding_DFalse(t *testing.T) {
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{{}}
 	expCClauses := [][]int{}
-	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	clauses.ValidateClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestOr_Encoding_Mixed(t *testing.T) {
@@ -56,7 +57,7 @@ func TestOr_Encoding_Mixed(t *testing.T) {
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{}
 	expCClauses := [][]int{}
-	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	clauses.ValidateClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestOr_Simplified_DTrue(t *testing.T) {
@@ -79,7 +80,7 @@ func TestOr_Simplified_DTrue(t *testing.T) {
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{}
 	expCClauses := [][]int{}
-	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	clauses.ValidateClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestOr_Simplified_DFalse(t *testing.T) {
@@ -102,7 +103,7 @@ func TestOr_Simplified_DFalse(t *testing.T) {
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{{}}
 	expCClauses := [][]int{}
-	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	clauses.ValidateClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestOr_Simplified_Mixed(t *testing.T) {
@@ -125,7 +126,7 @@ func TestOr_Simplified_Mixed(t *testing.T) {
 	sClauses, cClauses := encCNF.Clauses()
 	expSClauses := [][]int{}
 	expCClauses := [][]int{}
-	errorInClauses(t, sClauses, cClauses, expSClauses, expCClauses)
+	clauses.ValidateClauses(t, sClauses, cClauses, expSClauses, expCClauses)
 }
 
 func TestOr_GetChildren(t *testing.T) {

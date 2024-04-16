@@ -8,7 +8,6 @@ import (
 	"os"
 	"path"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -50,7 +49,7 @@ func (e *orderOptimExp) Exec(args ...string) error {
 		return errors.New("Missing tree file names.")
 	}
 
-	outFP, tmpFP := e.fileNames()
+	outFP, tmpFP := fileNames("order_optim_")
 
 	outputFile, err := os.Create(outFP)
 	if err != nil {
@@ -76,13 +75,6 @@ func (e *orderOptimExp) Exec(args ...string) error {
 	}
 
 	return nil
-}
-
-// Return output and temporal file names.
-func (e *orderOptimExp) fileNames() (string, string) {
-	tAsString := strings.Split(time.Now().String(), " ")
-	expId := strings.Join(tAsString[:2], "_")
-	return path.Join(OUTPUTDIR, "order_optim_"+expId+".out"), "tmp_" + expId
 }
 
 // Compute value on tree.

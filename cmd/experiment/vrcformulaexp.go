@@ -44,7 +44,7 @@ func (e *vrcFormulaExp) Exec(args ...string) error {
 		return errors.New("Missing arguments.")
 	}
 
-	outFP, tmpFP := e.fileNames()
+	outFP, tmpFP := fileNames("vrcformula_")
 
 	outputFile, err := os.Create(outFP)
 	if err != nil {
@@ -82,12 +82,6 @@ func (e *vrcFormulaExp) Exec(args ...string) error {
 	}
 
 	return nil
-}
-
-// Return output and temporal file names.
-func (e *vrcFormulaExp) fileNames() (string, string) {
-	expTS := time.Now().String()
-	return path.Join(OUTPUTDIR, "vrcformula_"+expTS), "tmp_" + expTS
 }
 
 // Run formula over tree and constants.

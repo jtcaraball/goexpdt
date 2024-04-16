@@ -11,6 +11,9 @@ import (
 	"goexpdt/operators"
 	"goexpdt/trees"
 	"math/rand"
+	"path"
+	"strings"
+	"time"
 )
 
 type vcFormula func(v base.Var, c base.Const) base.Component
@@ -136,4 +139,11 @@ func genContext(treePath string) (*base.Context, error) {
 	}
 	ctx := base.NewContext(expT.FeatCount, expT)
 	return ctx, nil
+}
+
+// Return output and temporal file names.
+func fileNames(tag string) (string, string) {
+	tAsString := strings.Split(time.Now().String(), " ")
+	expId := strings.Join(tAsString[:2], "_")
+	return path.Join(OUTPUTDIR, tag+expId+".out"), tag + "tmp_" + expId
 }

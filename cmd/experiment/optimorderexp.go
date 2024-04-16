@@ -8,6 +8,7 @@ import (
 	"os"
 	"path"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -79,8 +80,9 @@ func (e *orderOptimExp) Exec(args ...string) error {
 
 // Return output and temporal file names.
 func (e *orderOptimExp) fileNames() (string, string) {
-	expTS := time.Now().String()
-	return path.Join(OUTPUTDIR, "oderoptim_"+expTS), "tmp_" + expTS
+	tAsString := strings.Split(time.Now().String(), " ")
+	expId := strings.Join(tAsString[:2], "_")
+	return path.Join(OUTPUTDIR, "order_optim_"+expId+".out"), "tmp_" + expId
 }
 
 // Compute value on tree.
@@ -122,6 +124,6 @@ func (e *orderOptimExp) writeOut(
 	if out != nil {
 		outString = out.AsString()
 	}
-	timeString := strconv.Itoa(int(time.Second * time.Since(t)))
+	timeString := strconv.Itoa(int(time.Since(t)))
 	return w.Write([]string{tp, timeString, outString})
 }

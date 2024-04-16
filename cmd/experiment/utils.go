@@ -17,8 +17,8 @@ type vcFormula func(v base.Var, c base.Const) base.Component
 
 const (
 	SOLVER    = "./kissat"
-	INPUTDIR  = "input"
-	OUTPUTDIR = "output"
+	INPUTDIR  = "inputs"
+	OUTPUTDIR = "outputs"
 )
 
 // =========================== //

@@ -19,3 +19,7 @@
 
 # Go workspace file
 go.work
+
+# Ignore experiment output and input content
+cmd/experiment/outputs/*.out
+cmd/experiment/inputs/*.json

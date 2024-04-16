@@ -10,8 +10,8 @@ type experiment interface {
 // Slice of impelmented experiments.
 var experiments []experiment = []experiment{
 	newOrderOptimExp(
-		"optim:dft-lel",
-		"Optimum: DFT - LEL Order\nArguments:\n"+
+		"optim:dft-ll",
+		"Optimum: DFT - Lesser Level Order\nArguments:\n"+
 			"  - List of <tree file name>.",
 		dftFGen,
 		lelOGen,

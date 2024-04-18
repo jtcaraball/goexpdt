@@ -115,7 +115,7 @@ func (e *vecFormulaExp) evalOnTree(
 
 		ctx.Reset()
 
-		outLine = append(outLine, strconv.Itoa(int(time.Since(t)*time.Second)))
+		outLine = append(outLine, strconv.Itoa(int(time.Since(t))))
 	}
 
 	return w.Write(outLine)

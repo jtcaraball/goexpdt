@@ -49,7 +49,7 @@ func (e *orderOptimExp) Exec(args ...string) error {
 		return errors.New("Missing tree file names.")
 	}
 
-	outFP, tmpFP := fileNames("order_optim_")
+	outFP, tmpFP := fileNames("order_optim")
 
 	outputFile, err := os.Create(outFP)
 	if err != nil {

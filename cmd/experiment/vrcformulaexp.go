@@ -44,7 +44,7 @@ func (e *vrcFormulaExp) Exec(args ...string) error {
 		return errors.New("Missing arguments.")
 	}
 
-	outFP, tmpFP := fileNames("vrcformula_")
+	outFP, tmpFP := fileNames("vrcformula")
 
 	outputFile, err := os.Create(outFP)
 	if err != nil {

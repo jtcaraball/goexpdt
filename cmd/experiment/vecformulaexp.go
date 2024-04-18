@@ -46,7 +46,7 @@ func (e *vecFormulaExp) Exec(args ...string) error {
 		)
 	}
 
-	outFP, tmpFP := fileNames("vecformula_")
+	outFP, tmpFP := fileNames("vecformula")
 
 	outputFile, err := os.Create(outFP)
 	if err != nil {

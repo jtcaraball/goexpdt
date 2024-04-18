@@ -46,7 +46,7 @@ func (e *vecFormulaExp) Exec(args ...string) error {
 		)
 	}
 
-	outFP, tmpFP := e.fileNames()
+	outFP, tmpFP := fileNames("vecformula")
 
 	outputFile, err := os.Create(outFP)
 	if err != nil {
@@ -84,12 +84,6 @@ func (e *vecFormulaExp) Exec(args ...string) error {
 	return nil
 }
 
-// Return output and temporal file names.
-func (e *vecFormulaExp) fileNames() (string, string) {
-	expTS := time.Now().String()
-	return path.Join(OUTPUTDIR, "vecformula_"+expTS), "tmp_" + expTS
-}
-
 // Run formula over tree and constants.
 func (e *vecFormulaExp) evalOnTree(
 	w *csv.Writer,
@@ -121,7 +115,7 @@ func (e *vecFormulaExp) evalOnTree(
 
 		ctx.Reset()
 
-		outLine = append(outLine, strconv.Itoa(int(time.Since(t)*time.Second)))
+		outLine = append(outLine, strconv.Itoa(int(time.Since(t))))
 	}
 
 	return w.Write(outLine)

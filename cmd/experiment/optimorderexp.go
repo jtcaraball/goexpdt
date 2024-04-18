@@ -49,7 +49,7 @@ func (e *orderOptimExp) Exec(args ...string) error {
 		return errors.New("Missing tree file names.")
 	}
 
-	outFP, tmpFP := e.fileNames()
+	outFP, tmpFP := fileNames("order_optim")
 
 	outputFile, err := os.Create(outFP)
 	if err != nil {
@@ -75,12 +75,6 @@ func (e *orderOptimExp) Exec(args ...string) error {
 	}
 
 	return nil
-}
-
-// Return output and temporal file names.
-func (e *orderOptimExp) fileNames() (string, string) {
-	expTS := time.Now().String()
-	return path.Join(OUTPUTDIR, "oderoptim_"+expTS), "tmp_" + expTS
 }
 
 // Compute value on tree.
@@ -122,6 +116,6 @@ func (e *orderOptimExp) writeOut(
 	if out != nil {
 		outString = out.AsString()
 	}
-	timeString := strconv.Itoa(int(time.Second * time.Since(t)))
+	timeString := strconv.Itoa(int(time.Since(t)))
 	return w.Write([]string{tp, timeString, outString})
 }

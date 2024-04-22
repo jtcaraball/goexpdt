@@ -160,6 +160,39 @@ func randConst(c base.Const, full bool) {
 	}
 }
 
+// Wrtie random constant to c with truth value equal to tVal.
+func randValConst(c base.Const, tVal bool, tree trees.Tree) error {
+	match := false
+	for !match {
+		randConst(c, true)
+		val, err := evalConst(c, tree)
+		if err != nil {
+			return err
+		}
+		match = val == tVal
+	}
+	return nil
+}
+
+// Return valuation of constant in tree. C must be full.
+func evalConst(c base.Const, tree trees.Tree) (bool, error) {
+	node := tree.Root
+	for !node.IsLeaf() {
+		if node.Feat < 0 || node.Feat >= len(c) {
+			return false, errors.New("Node feature out of index.")
+		}
+		if c[node.Feat] == base.ONE {
+			node = node.LChild
+			continue
+		} else if c[node.Feat] == base.ZERO {
+			node = node.RChild
+			continue
+		}
+		return false, errors.New("Constant is not full")
+	}
+	return node.Value, nil
+}
+
 // Initialize context from tree file path.
 func genContext(treePath string) (*base.Context, error) {
 	expT, err := trees.LoadTree(treePath)

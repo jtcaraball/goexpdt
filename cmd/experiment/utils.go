@@ -6,6 +6,8 @@ import (
 	"goexpdt/base"
 	"goexpdt/circuits/extensions/allcomp"
 	"goexpdt/circuits/extensions/dft"
+	"goexpdt/circuits/extensions/full"
+	"goexpdt/circuits/extensions/leh"
 	"goexpdt/circuits/predicates/lel"
 	"goexpdt/circuits/predicates/subsumption"
 	"goexpdt/compute/orderoptimum"
@@ -47,7 +49,9 @@ func srFGF(cs ...base.Const) (orderoptimum.VFormula, error) {
 	if len(cs) == 0 {
 		return nil, errors.New("Missing constant in order generation factory")
 	}
+
 	c := cs[0]
+
 	return func(v base.Var) base.Component {
 		return operators.WithVar(
 			v,
@@ -61,6 +65,36 @@ func srFGF(cs ...base.Const) (orderoptimum.VFormula, error) {
 					operators.Or(
 						operators.Not(allcomp.Const(c, false)),
 						allcomp.Var(v, false),
+					),
+				),
+			),
+		)
+	}, nil
+}
+
+func crFGF(cs ...base.Const) (orderoptimum.VFormula, error) {
+	if len(cs) == 0 {
+		return nil, errors.New("Missing constant in order generation factory")
+	}
+
+	c := cs[0]
+
+	return func(v base.Var) base.Component {
+		return operators.WithVar(
+			v,
+			operators.And(
+				full.Var(v),
+				operators.And(
+					full.Const(c),
+					operators.Or(
+						operators.And(
+							allcomp.Var(v, true),
+							operators.Not(allcomp.Const(c, true)),
+						),
+						operators.And(
+							allcomp.Const(c, true),
+							operators.Not(allcomp.Var(v, true)),
+						),
 					),
 				),
 			),
@@ -86,6 +120,21 @@ func ssOGF(cs ...base.Const) (orderoptimum.VCOrder, error) {
 		return operators.And(
 			subsumption.VarConst(v, c),
 			operators.Not(subsumption.ConstVar(c, v)),
+		)
+	}, nil
+}
+
+func lhOGF(cs ...base.Const) (orderoptimum.VCOrder, error) {
+	if len(cs) == 0 {
+		return nil, errors.New("Missing constant in order generation factory")
+	}
+
+	cp := cs[0]
+
+	return func(v base.Var, c base.Const) base.Component {
+		return operators.And(
+			leh.ConstVarConst(cp, v, c),
+			operators.Not(leh.ConstConstVar(cp, c, v)),
 		)
 	}, nil
 }

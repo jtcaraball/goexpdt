@@ -19,16 +19,23 @@ var experiments []experiment = []experiment{
 	newOrderOptimStatsExp(
 		"optim:stats:sr-ll",
 		"Optimum:Stats: SR - Lesser Level Order\nArguments:\n"+
-			"  - List of <tree file name>.",
+			"  - n consts per instance\n  - List of <tree file name>.",
 		srFGF,
 		llOGF,
 	),
 	newOrderOptimStatsExp(
 		"optim:stats:sr-ss",
 		"Optimum:Stats: SR - Strict Subsumption\nArguments:\n"+
-			"  - List of <tree file name>.",
+			"  - n consts per instance\n  - List of <tree file name>.",
 		srFGF,
 		ssOGF,
+	),
+	newOrderOptimStatsExp(
+		"optim:stats:cr-lh",
+		"Optimum:Stats: CR - Less Hamming Distance\nArguments:\n"+
+			"  - n consts per instance\n  - List of <tree file name>.",
+		crFGF,
+		lhOGF,
 	),
 }
 

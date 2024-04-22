@@ -12,8 +12,8 @@ import (
 
 // Order minimum 'get value' experiment.
 type orderOptimValueExp struct {
-	name        string
-	desc        string
+	name      string
+	desc      string
 	formulaGF optimFormulaGenFactory
 	orderGF   optimOrderGenFactory
 }
@@ -25,8 +25,8 @@ func newOrderOptimValueExp(
 	orderGF optimOrderGenFactory,
 ) *orderOptimValueExp {
 	return &orderOptimValueExp{
-		name:        name,
-		desc:        desc,
+		name:      name,
+		desc:      desc,
 		formulaGF: formulaGF,
 		orderGF:   orderGF,
 	}
@@ -48,7 +48,7 @@ func (e *orderOptimValueExp) Exec(args ...string) error {
 		return errors.New("Missing tree file names.")
 	}
 
-	outFP, tmpFP := fileNames("order_optim_val")
+	outFP, tmpFP := fileNames(e.Name())
 
 	outputFile, err := os.Create(outFP)
 	if err != nil {

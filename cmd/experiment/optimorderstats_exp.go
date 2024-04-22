@@ -49,7 +49,7 @@ func (e *orderOptimStatsExp) Exec(args ...string) error {
 		return errors.New("Missing arguments.")
 	}
 
-	outFP, tmpFP := fileNames("order_optim_stats")
+	outFP, tmpFP := fileNames(e.Name())
 
 	outputFile, err := os.Create(outFP)
 	if err != nil {
@@ -100,13 +100,12 @@ func (e *orderOptimStatsExp) evalOnTree(
 	ctx *base.Context,
 	tf, tpf string,
 ) error {
-	count := 0
-	var (
-		min      time.Duration = time.Duration(1<<63 - 1)
-		max, avg time.Duration
-	)
-
 	c := base.AllBotConst(ctx.Dimension)
+	output := []string{
+		tf,
+		strconv.Itoa(ctx.Dimension),
+		strconv.Itoa(ctx.Tree.NodeCount),
+	}
 
 	og, err := e.orderGF()
 	if err != nil {
@@ -114,7 +113,10 @@ func (e *orderOptimStatsExp) evalOnTree(
 	}
 
 	for i := 0; i < n; i++ {
-		randConst(c, true)
+		err = randValConst(c, true, *ctx.Tree)
+		if err != nil {
+			return err
+		}
 
 		fg, err := e.formulaGF(c)
 		if err != nil {
@@ -138,22 +140,10 @@ func (e *orderOptimStatsExp) evalOnTree(
 		ctx.Reset()
 
 		ts := time.Since(t)
-		min = dMin(min, ts)
-		max = dMax(max, ts)
-		avg += ts
-		count += 1
+		output = append(output, strconv.Itoa(int(ts)))
 	}
 
-	if err := w.Write(
-		[]string{
-			tf,
-			strconv.Itoa(ctx.Dimension),
-			strconv.Itoa(ctx.Tree.NodeCount),
-			strconv.Itoa(int(min)),
-			strconv.Itoa(int(max)),
-			strconv.Itoa(int(avg) / count),
-		},
-	); err != nil {
+	if err := w.Write(output); err != nil {
 		return err
 	}
 

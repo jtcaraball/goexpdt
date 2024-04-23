@@ -231,10 +231,10 @@ func evalConst(c base.Const, tree trees.Tree) (bool, error) {
 			return false, errors.New("Node feature out of index.")
 		}
 		if c[node.Feat] == base.ONE {
-			node = node.LChild
+			node = node.RChild
 			continue
 		} else if c[node.Feat] == base.ZERO {
-			node = node.RChild
+			node = node.LChild
 			continue
 		}
 		return false, errors.New("Constant is not full")

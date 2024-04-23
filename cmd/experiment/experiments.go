@@ -9,24 +9,33 @@ type experiment interface {
 
 // Slice of impelmented experiments.
 var experiments []experiment = []experiment{
-	newOrderOptimExp(
-		"optim:dft-ll",
-		"Optimum: DFT - Lesser Level Order\nArguments:\n"+
+	newOrderOptimValueExp(
+		"optim:value:dft-ll",
+		"Optimum:Value: DFT - Lesser Level Order\nArguments:\n"+
 			"  - List of <tree file name>.",
-		dftFGen,
-		lelOGen,
+		dftFGF,
+		llOGF,
 	),
-	newVECFormulaExp(
-		"vec:sr",
-		"Formula: Variable - Explicit Constants\nArguments:\n"+
-			"  - List of pairs <tree file name> <constants file name>.",
-		srFGen,
+	newOrderOptimStatsExp(
+		"optim:stats:sr-ll",
+		"Optimum:Stats: SR - Lesser Level Order\nArguments:\n"+
+			"  - n consts per instance\n  - List of <tree file name>.",
+		srFGF,
+		llOGF,
 	),
-	newVRCFormulaExp(
-		"vrc:sr",
-		"Formula: Variable - Random Constants\nArguments:\n"+
-			"  - List of <tree file name>.",
-		srFGen,
+	newOrderOptimStatsExp(
+		"optim:stats:sr-ss",
+		"Optimum:Stats: SR - Strict Subsumption\nArguments:\n"+
+			"  - n consts per instance\n  - List of <tree file name>.",
+		srFGF,
+		ssOGF,
+	),
+	newOrderOptimStatsExp(
+		"optim:stats:cr-lh",
+		"Optimum:Stats: CR - Less Hamming Distance\nArguments:\n"+
+			"  - n consts per instance\n  - List of <tree file name>.",
+		crFGF,
+		lhOGF,
 	),
 }
 

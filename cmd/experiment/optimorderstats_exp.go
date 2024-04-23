@@ -107,18 +107,18 @@ func (e *orderOptimStatsExp) evalOnTree(
 		strconv.Itoa(ctx.Tree.NodeCount),
 	}
 
-	og, err := e.orderGF()
-	if err != nil {
-		return err
-	}
-
 	for i := 0; i < n; i++ {
-		err = randValConst(c, true, *ctx.Tree)
+		err := randValConst(c, true, *ctx.Tree)
 		if err != nil {
 			return err
 		}
 
 		fg, err := e.formulaGF(c)
+		if err != nil {
+			return err
+		}
+
+		og, err := e.orderGF(c)
 		if err != nil {
 			return err
 		}

@@ -65,7 +65,7 @@ func TestCompute_LEL(t *testing.T) {
 		{base.BOT, base.ONE, base.BOT},
 		{base.ONE, base.BOT, base.BOT},
 	}
-	found, out, err := Compute(
+	out, err := Compute(
 		lelFormula,
 		lelOrder,
 		variable,
@@ -77,12 +77,12 @@ func TestCompute_LEL(t *testing.T) {
 		t.Error(err.Error())
 		return
 	}
-	if !found {
+	if !out.Found {
 		t.Error("Invalid output. Value could not be found.")
 		return
 	}
-	if !slices.ContainsFunc(validOuts, equalToConstFunc(out)) {
-		t.Errorf("Invalid output. %d", out)
+	if !slices.ContainsFunc(validOuts, equalToConstFunc(out.Value)) {
+		t.Errorf("Invalid output. %d", out.Value)
 		return
 	}
 }

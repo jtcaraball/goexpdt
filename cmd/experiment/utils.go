@@ -256,7 +256,7 @@ func genContext(treePath string) (*base.Context, error) {
 func fileNames(tag string) (string, string) {
 	tAsString := strings.Split(time.Now().String(), " ")
 	expId := strings.Join(tAsString[:2], "_")
-	return path.Join(OUTPUTDIR, tag+"_"+expId+".out"), tag + "tmp_" + expId
+	return path.Join(OUTPUTDIR, tag+"_"+expId+".csv"), tag + "tmp_" + expId
 }
 
 // Format input paths to be used in experiment. Expands any gblob paths.

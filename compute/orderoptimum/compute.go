@@ -6,6 +6,18 @@ import (
 	"goexpdt/operators"
 )
 
+// Order optimum compute output.
+type Output struct {
+	Found bool
+	Value base.Const
+	Calls int
+}
+
+// Returns new output.
+func newOutput(f bool, c base.Const, sc int) Output {
+	return Output{Found: f, Value: c, Calls: sc}
+}
+
 type (
 	// Constructor for component representing a partial strict order between
 	// instances represented as variable and constant.
@@ -24,7 +36,7 @@ func Compute(
 	variable base.Var,
 	ctx *base.Context,
 	solverPath, filePath string,
-) (bool, base.Const, error) {
+) (Output, error) {
 	// Note: the exit code can only be 10 or 20 if step does not return an
 	// error so bm will always be evaluated.
 	var bm base.Const
@@ -36,16 +48,18 @@ func Compute(
 		filePath,
 	)
 	if exitcode == 20 { // 20 is the standard unsat code used by solvers.
-		return false, nil, nil
+		return newOutput(false, nil, 1), nil
 	}
 	if err != nil {
-		return false, nil, err
+		return newOutput(false, nil, 0), err
 	}
+
+	steps := 1
 
 	for exitcode == 10 { // 10 is the standard sat code used by solvers.
 		bm, err = utils.GetValueFromBytes(out, variable, ctx)
 		if err != nil {
-			return false, nil, err
+			return newOutput(false, nil, 0), err
 		}
 		ctx.Reset()
 		exitcode, out, err = utils.Step(
@@ -58,9 +72,10 @@ func Compute(
 			filePath,
 		)
 		if err != nil {
-			return false, nil, err
+			return newOutput(false, nil, 0), err
 		}
+		steps += 1
 	}
 
-	return true, bm, nil
+	return newOutput(true, bm, steps), nil
 }

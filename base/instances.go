@@ -140,6 +140,17 @@ func (c Const) AsString() string {
 	return name
 }
 
+// Return number of bot features in constant.
+func (c Const) BotCount() int {
+	count := 0
+	for _, ft := range c {
+		if ft == BOT {
+			count += 1
+		}
+	}
+	return count
+}
+
 // Return corresponding const from list of guards.
 func (gc GuardedConst) Scoped(ctx *Context) (Const, error) {
 	return ctx.GuardValueByTarget(string(gc))

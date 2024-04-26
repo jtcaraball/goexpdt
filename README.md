@@ -37,6 +37,7 @@ The experiment outputs will be written to `cmd/experiment/output` dir.
 ## TODO
 
 - Add naming convention mechanism for context variables.
+- Use constants `BotCount` method in circuits.
 - Add correct simplification to circuits when passing `GuardedConst` as
   arguments.
 - Look into passing `CNF` struct in `Encoding` methods to avoid creating to much

@@ -101,12 +101,12 @@ func (e *orderOptimValueExp) evalOnTree(
 		return err
 	}
 
-	_, out, err := orderoptimum.Compute(fg, og, v, ctx, SOLVER, tpf)
+	out, err := orderoptimum.Compute(fg, og, v, ctx, SOLVER, tpf)
 	if err != nil {
 		return err
 	}
 
-	if err = e.writeOut(w, tf, t, ctx, out); err != nil {
+	if err = e.writeOut(w, tf, t, ctx, out.Value); err != nil {
 		return err
 	}
 	w.Flush() // Experiments are long. Save outputs often.

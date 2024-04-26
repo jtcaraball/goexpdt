@@ -22,4 +22,5 @@ go.work
 
 # Ignore experiment output and input content
 cmd/experiment/outputs/*.out
+cmd/experiment/outputs/*.csv
 cmd/experiment/inputs/*.json

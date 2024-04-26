@@ -125,7 +125,7 @@ func (e *orderOptimStatsExp) evalOnTree(
 
 		t := time.Now()
 
-		_, _, err = orderoptimum.Compute(
+		out, err := orderoptimum.Compute(
 			fg,
 			og,
 			base.Var("x"),
@@ -140,7 +140,13 @@ func (e *orderOptimStatsExp) evalOnTree(
 		ctx.Reset()
 
 		ts := time.Since(t)
-		output = append(output, strconv.Itoa(int(ts)))
+		output = append(
+			output,
+			strconv.Itoa(c.BotCount()),
+			strconv.Itoa(out.Value.BotCount()),
+			strconv.Itoa(out.Calls),
+			strconv.Itoa(int(ts)),
+		)
 	}
 
 	if err := w.Write(output); err != nil {

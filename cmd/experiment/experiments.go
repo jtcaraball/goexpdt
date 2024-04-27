@@ -9,33 +9,36 @@ type experiment interface {
 
 // Slice of impelmented experiments.
 var experiments []experiment = []experiment{
-	newOrderOptimValueExp(
-		"optim:value:dft-ll",
-		"Optimum:Value: DFT - Lesser Level Order\nArguments:\n"+
-			"  - List of <tree file name>.",
-		dftFGF,
-		llOGF,
+	newRandOptimExp(
+		"optim:rand:value:dft-ll",
+		"Optimum:Value: DFT - Lesser Level Order (Random Instances):\n"+
+			"Arguments:\n"+
+			"  - n (instances per input\n"+
+			"  - List of <tree_file_inputs>.",
+		randValEvalGen(DFT_LL_C),
 	),
-	newOrderOptimStatsExp(
-		"optim:stats:sr-ll",
-		"Optimum:Stats: SR - Lesser Level Order\nArguments:\n"+
-			"  - n consts per instance\n  - List of <tree file name>.",
-		srFGF,
-		llOGF,
+	newRandOptimExp(
+		"optim:rand:stats:sr-ll",
+		"Optimum:Value: SR - Lesser Level (Random Instances):\n"+
+			"Arguments:\n"+
+			"  - n (instances per input\n"+
+			"  - List of <tree_file_inputs>.",
+		randStatsEvalGen(SR_LL_C),
 	),
-	newOrderOptimStatsExp(
-		"optim:stats:sr-ss",
-		"Optimum:Stats: SR - Strict Subsumption\nArguments:\n"+
-			"  - n consts per instance\n  - List of <tree file name>.",
-		srFGF,
-		ssOGF,
+	newRandOptimExp(
+		"optim:rand:stats:sr-ss",
+		"Optimum:Value: SR - Strict Subsumption (Random Instances):\n"+
+			"Arguments:\n"+
+			"  - n (instances per input\n"+
+			"  - List of <tree_file_inputs>.",
+		randStatsEvalGen(SR_SS_C),
 	),
-	newOrderOptimStatsExp(
-		"optim:stats:cr-lh",
-		"Optimum:Stats: CR - Less Hamming Distance\nArguments:\n"+
-			"  - n consts per instance\n  - List of <tree file name>.",
-		crFGF,
-		lhOGF,
+	newOptimExp(
+		"optim:val:cr-lh",
+		"Optimum:Stats: CR - Less Hamming Distance\n"+
+			"Arguments:\n"+
+			"  - List of <optim_file_input>.",
+		valEvalGen(CR_LH_O),
 	),
 }
 

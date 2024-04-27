@@ -142,7 +142,7 @@ func valEvalGen(queryGF openOptimQueryGenFactory) oeEval {
 // =========================== //
 
 func parseInput(inf string) ([]base.Const, *base.Context, error) {
-	treeFP, instBytes, err := scanFile(inf)
+	treeFP, instStrings, err := scanFile(inf)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -152,10 +152,10 @@ func parseInput(inf string) ([]base.Const, *base.Context, error) {
 		return nil, nil, err
 	}
 
-	instances := make([]base.Const, len(instBytes))
-	for i, cb := range instBytes {
+	instances := make([]base.Const, len(instStrings))
+	for i, cb := range instStrings {
 		instances[i] = base.AllBotConst(ctx.Dimension)
-		err := bToC(cb, instances[i])
+		err := sToC(cb, instances[i])
 		if err != nil {
 			return nil, nil, err
 		}
@@ -164,7 +164,7 @@ func parseInput(inf string) ([]base.Const, *base.Context, error) {
 	return instances, ctx, nil
 }
 
-func scanFile(path string) (string, [][]byte, error) {
+func scanFile(path string) (string, []string, error) {
 	file, err := os.Open(path)
 	if err != nil {
 		return "", nil, err
@@ -178,11 +178,11 @@ func scanFile(path string) (string, [][]byte, error) {
 	}
 	treeFP := scanner.Text()
 
-	instBytes := [][]byte{}
+	instStrings := []string{}
 	for scanner.Scan() {
-		instBytes = append(instBytes, scanner.Bytes())
+		instStrings = append(instStrings, scanner.Text())
 	}
-	if len(instBytes) == 0 {
+	if len(instStrings) == 0 {
 		return "", nil, errors.New("No instances in input file.")
 	}
 
@@ -190,5 +190,5 @@ func scanFile(path string) (string, [][]byte, error) {
 		return "", nil, err
 	}
 
-	return treeFP, instBytes, nil
+	return treeFP, instStrings, nil
 }

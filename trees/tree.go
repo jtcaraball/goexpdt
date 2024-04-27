@@ -59,6 +59,7 @@ func (t *Tree) populateTree(treeJSON *TreeInJSON) error {
 	t.NodeCount = int(len(treeJSON.Nodes))
 
 	toVisit := []VisitElem{{ID: 0}}
+
 	for len(toVisit) > 0 {
 		nInfo := toVisit[len(toVisit)-1]
 		toVisit = toVisit[:len(toVisit)-1]
@@ -72,6 +73,7 @@ func (t *Tree) populateTree(treeJSON *TreeInJSON) error {
 		}
 
 		node := &Node{ID: nInfo.ID, Parent: nInfo.Parent}
+
 		if nInfo.Parent == nil {
 			t.Root = node
 		} else if nInfo.Right {
@@ -91,6 +93,7 @@ func (t *Tree) populateTree(treeJSON *TreeInJSON) error {
 		}
 
 		node.Feat = nodeJSON.FeatIdx
+
 		toVisit = append(
 			toVisit,
 			VisitElem{ID: int(nodeJSON.LeftID), Parent: node, Right: false},

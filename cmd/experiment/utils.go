@@ -69,7 +69,31 @@ func bToC(b []byte, c base.Const) error {
 		case 50: // 2
 			c[i] = base.BOT
 		default:
-			return fmt.Errorf("Invalid const feature value '%s'.", string(ch))
+			return fmt.Errorf("Invalid const feature value in index %d", i)
+		}
+	}
+	return nil
+}
+
+// Set the values of c to constant represented in bytes b.
+func sToC(s string, c base.Const) error {
+	if len(s) != len(c) {
+		return fmt.Errorf(
+			"Invalid bytes length %d expected %d.",
+			len(s),
+			len(c),
+		)
+	}
+	for i, ch := range s {
+		switch ch {
+		case 48: // 0
+			c[i] = base.ZERO
+		case 49: // 1
+			c[i] = base.ONE
+		case 50: // 2
+			c[i] = base.BOT
+		default:
+			return fmt.Errorf("Invalid const feature value in index %d", i)
 		}
 	}
 	return nil
@@ -96,7 +120,7 @@ func randConst(c base.Const, full bool) {
 }
 
 // Wrtie random constant to c with truth value equal to tVal.
-func randValConst(c base.Const, tVal bool, tree trees.Tree) error {
+func randValConst(c base.Const, tVal bool, tree *trees.Tree) error {
 	match := false
 	for !match {
 		randConst(c, true)
@@ -110,7 +134,7 @@ func randValConst(c base.Const, tVal bool, tree trees.Tree) error {
 }
 
 // Return valuation of constant in tree. C must be full.
-func evalConst(c base.Const, tree trees.Tree) (bool, error) {
+func evalConst(c base.Const, tree *trees.Tree) (bool, error) {
 	node := tree.Root
 	for !node.IsLeaf() {
 		if node.Feat < 0 || node.Feat >= len(c) {

@@ -121,7 +121,7 @@ func randConst(c base.Const, full bool) {
 	}
 }
 
-// Wrtie random constant to c with truth value equal to tVal.
+// Write random constant to c with truth value equal to tVal.
 func randValConst(c base.Const, tVal bool, tree *trees.Tree) error {
 	match := false
 	for !match {
@@ -142,15 +142,14 @@ func evalConst(c base.Const, tree *trees.Tree) (bool, error) {
 		if node.Feat < 0 || node.Feat >= len(c) {
 			return false, errors.New("Node feature out of index.")
 		}
-		if c[node.Feat] == base.ONE {
+		switch c[node.Feat] {
+		case base.ONE:
 			node = node.RChild
-			continue
-		}
-		if c[node.Feat] == base.ZERO {
+		case base.ZERO:
 			node = node.LChild
-			continue
+		default:
+			return false, errors.New("Constant is not full")
 		}
-		return false, errors.New("Constant is not full")
 	}
 	return node.Value, nil
 }

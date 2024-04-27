@@ -10,26 +10,26 @@ import (
 // =========================== //
 
 type Node struct {
-	ID int
-	Feat int
-	Value bool
+	ID     int
+	Feat   int
+	Value  bool
 	LChild *Node
 	RChild *Node
 	Parent *Node
 }
 
 type Tree struct {
-	Root *Node
+	Root      *Node
 	NodeCount int
 	FeatCount int
-	PosLeafs []*Node
-	NegLeafs []*Node
+	PosLeafs  []*Node
+	NegLeafs  []*Node
 }
 
 type VisitElem struct {
-	ID int
+	ID     int
 	Parent *Node
-	Right bool
+	Right  bool
 }
 
 // =========================== //
@@ -60,8 +60,8 @@ func (t *Tree) populateTree(treeJSON *TreeInJSON) error {
 
 	toVisit := []VisitElem{{ID: 0}}
 	for len(toVisit) > 0 {
-		nInfo := toVisit[len(toVisit) - 1]
-		toVisit = toVisit[:len(toVisit) - 1]
+		nInfo := toVisit[len(toVisit)-1]
+		toVisit = toVisit[:len(toVisit)-1]
 
 		nodeJSON := treeJSON.Nodes[nInfo.ID]
 		if nodeJSON == nil {

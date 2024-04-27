@@ -1,5 +1,7 @@
 .git
 .gitignore
 .dockerfiles
+cmd/experiment/inputs
+cmd/experiment/outputs
 LICENSE
 README.md

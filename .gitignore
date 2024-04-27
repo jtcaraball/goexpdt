@@ -21,6 +21,7 @@
 go.work
 
 # Ignore experiment output and input content
-cmd/experiment/outputs/*.out
-cmd/experiment/outputs/*.csv
-cmd/experiment/inputs/*.json
+cmd/experiment/outputs/*
+!cmd/experiment/output/.include
+cmd/experiment/inputs/*
+!cmd/experiment/inputs/.include

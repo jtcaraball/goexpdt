@@ -11,22 +11,22 @@ import (
 // =========================== //
 
 type NodeInJSON struct {
-	ID int       `json:"id"`
-	Type string     `json:"type"`
+	ID   int    `json:"id"`
+	Type string `json:"type"`
 	// Leaf fields
-	Class string    `json:"class"`
+	Class string `json:"class"`
 	// Internal fields
-	FeatIdx int  `json:"feature_index"`
-	LeftID	int  `json:"id_left"`
-	RightID int  `json:"id_right"`
+	FeatIdx int `json:"feature_index"`
+	LeftID  int `json:"id_left"`
+	RightID int `json:"id_right"`
 }
 
 type TreeInJSON struct {
-	ClassNames []string	                     `json:"class_names"`
-	Positive string                          `json:"positive"`
-	Features []string                        `json:"feature_names"`
-	NodesJSON map[string]json.RawMessage     `json:"nodes"`
-	Nodes map[int]*NodeInJSON                `json:"-"`
+	ClassNames []string                   `json:"class_names"`
+	Positive   string                     `json:"positive"`
+	Features   []string                   `json:"feature_names"`
+	NodesJSON  map[string]json.RawMessage `json:"nodes"`
+	Nodes      map[int]*NodeInJSON        `json:"-"`
 }
 
 // =========================== //
@@ -46,9 +46,9 @@ func unmarhsalTree(jsonBytes []byte) (*TreeInJSON, error) {
 	}
 	for _, nodeBytes := range treeJSON.NodesJSON {
 		nodeJSON := &NodeInJSON{
-			ID: -1,
+			ID:      -1,
 			FeatIdx: -1,
-			LeftID: -1,
+			LeftID:  -1,
 			RightID: -1,
 		}
 		if err := json.Unmarshal(nodeBytes, nodeJSON); err != nil {

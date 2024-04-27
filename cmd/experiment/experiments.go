@@ -9,33 +9,56 @@ type experiment interface {
 
 // Slice of impelmented experiments.
 var experiments []experiment = []experiment{
-	newOrderOptimValueExp(
-		"optim:value:dft-ll",
-		"Optimum:Value: DFT - Lesser Level Order\nArguments:\n"+
-			"  - List of <tree file name>.",
-		dftFGF,
-		llOGF,
+	newEvalExp(
+		"eval",
+		"Evaluate instances in given input files."+
+			"Arguments:\n"+
+			"  - List of <optim_file_input>.",
 	),
-	newOrderOptimStatsExp(
-		"optim:stats:sr-ll",
-		"Optimum:Stats: SR - Lesser Level Order\nArguments:\n"+
-			"  - n consts per instance\n  - List of <tree file name>.",
-		srFGF,
-		llOGF,
+	newRandOptimExp(
+		"optim:rand:val:dft-ll",
+		"Optimum:Value: DFT - Lesser Level Order (Random Instances):\n"+
+			"Arguments:\n"+
+			"  - n (instances per input\n"+
+			"  - List of <tree_file_inputs>.",
+		randValEvalGen(DFT_LL_C),
 	),
-	newOrderOptimStatsExp(
-		"optim:stats:sr-ss",
-		"Optimum:Stats: SR - Strict Subsumption\nArguments:\n"+
-			"  - n consts per instance\n  - List of <tree file name>.",
-		srFGF,
-		ssOGF,
+	newRandOptimExp(
+		"optim:rand:stats:sr-ll",
+		"Optimum:Value: SR - Lesser Level (Random Instances):\n"+
+			"Arguments:\n"+
+			"  - n (instances per input\n"+
+			"  - List of <tree_file_inputs>.",
+		randStatsEvalGen(SR_LL_C),
 	),
-	newOrderOptimStatsExp(
-		"optim:stats:cr-lh",
-		"Optimum:Stats: CR - Less Hamming Distance\nArguments:\n"+
-			"  - n consts per instance\n  - List of <tree file name>.",
-		crFGF,
-		lhOGF,
+	newRandOptimExp(
+		"optim:rand:stats:sr-ss",
+		"Optimum:Value: SR - Strict Subsumption (Random Instances):\n"+
+			"Arguments:\n"+
+			"  - n (instances per input\n"+
+			"  - List of <tree_file_inputs>.",
+		randStatsEvalGen(SR_SS_C),
+	),
+	newOptimExp(
+		"optim:val:cr-lh",
+		"Optimum:Value: CR - Less Hamming Distance\n"+
+			"Arguments:\n"+
+			"  - List of <optim_file_input>.",
+		valEvalGen(CR_LH_O),
+	),
+	newOptimExp(
+		"optim:val:ca-gh",
+		"Optimum:Value: CA - Greater Hamming Distance\n"+
+			"Arguments:\n"+
+			"  - List of <optim_file_input>.",
+		valEvalGen(CA_GH_O),
+	),
+	newOptimExp(
+		"optim:val:sr-ll",
+		"Optimum:Value: SR - Less Level\n"+
+			"Arguments:\n"+
+			"  - List of <optim_file_input>.",
+		valEvalGen(SR_LL_O),
 	),
 }
 

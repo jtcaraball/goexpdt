@@ -1,30 +1,19 @@
 package main
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
 	"goexpdt/base"
-	"goexpdt/circuits/extensions/allcomp"
-	"goexpdt/circuits/extensions/dft"
-	"goexpdt/circuits/extensions/full"
-	"goexpdt/circuits/extensions/leh"
-	"goexpdt/circuits/predicates/lel"
-	"goexpdt/circuits/predicates/subsumption"
-	"goexpdt/compute/orderoptimum"
 	"goexpdt/compute/utils"
-	"goexpdt/operators"
 	"goexpdt/trees"
 	"math/rand"
+	"os"
 	"path"
 	"path/filepath"
 	"regexp"
 	"strings"
 	"time"
-)
-
-type (
-	optimFormulaGenFactory func(cs ...base.Const) (orderoptimum.VFormula, error)
-	optimOrderGenFactory   func(cs ...base.Const) (orderoptimum.VCOrder, error)
 )
 
 const (
@@ -34,114 +23,6 @@ const (
 )
 
 var globPath = regexp.MustCompile(`\*`)
-
-// =========================== //
-//      VAR FORMULA GEN        //
-// =========================== //
-
-func dftFGF(cs ...base.Const) (orderoptimum.VFormula, error) {
-	return func(v base.Var) base.Component {
-		return dft.Var(v)
-	}, nil
-}
-
-func srFGF(cs ...base.Const) (orderoptimum.VFormula, error) {
-	if len(cs) == 0 {
-		return nil, errors.New("Missing constant in order generation factory")
-	}
-
-	c := cs[0]
-
-	return func(v base.Var) base.Component {
-		return operators.WithVar(
-			v,
-			operators.And(
-				subsumption.VarConst(v, c),
-				operators.And(
-					operators.Or(
-						operators.Not(allcomp.Const(c, true)),
-						allcomp.Var(v, true),
-					),
-					operators.Or(
-						operators.Not(allcomp.Const(c, false)),
-						allcomp.Var(v, false),
-					),
-				),
-			),
-		)
-	}, nil
-}
-
-func crFGF(cs ...base.Const) (orderoptimum.VFormula, error) {
-	if len(cs) == 0 {
-		return nil, errors.New("Missing constant in order generation factory")
-	}
-
-	c := cs[0]
-
-	return func(v base.Var) base.Component {
-		return operators.WithVar(
-			v,
-			operators.And(
-				full.Var(v),
-				operators.And(
-					full.Const(c),
-					operators.Or(
-						operators.And(
-							allcomp.Var(v, true),
-							operators.Not(allcomp.Const(c, true)),
-						),
-						operators.And(
-							allcomp.Const(c, true),
-							operators.Not(allcomp.Var(v, true)),
-						),
-					),
-				),
-			),
-		)
-	}, nil
-}
-
-// =========================== //
-//          ORDER GEN          //
-// =========================== //
-
-func llOGF(cs ...base.Const) (orderoptimum.VCOrder, error) {
-	return func(v base.Var, c base.Const) base.Component {
-		return operators.And(
-			lel.VarConst(v, c),
-			operators.Not(lel.ConstVar(c, v)),
-		)
-	}, nil
-}
-
-func ssOGF(cs ...base.Const) (orderoptimum.VCOrder, error) {
-	return func(v base.Var, c base.Const) base.Component {
-		return operators.And(
-			subsumption.VarConst(v, c),
-			operators.Not(subsumption.ConstVar(c, v)),
-		)
-	}, nil
-}
-
-func lhOGF(cs ...base.Const) (orderoptimum.VCOrder, error) {
-	if len(cs) == 0 {
-		return nil, errors.New("Missing constant in order generation factory")
-	}
-
-	cp := cs[0]
-
-	return func(v base.Var, c base.Const) base.Component {
-		return operators.And(
-			leh.ConstVarConst(cp, v, c),
-			operators.Not(leh.ConstConstVar(cp, c, v)),
-		)
-	}, nil
-}
-
-// =========================== //
-//             UTILS           //
-// =========================== //
 
 // Solve formula and return ok, const value. ok is false if the formula is
 // unsatisfiable.
@@ -173,7 +54,14 @@ func solveFormula(
 }
 
 // Set the values of c to constant represented in bytes b.
-func btoC(b []byte, c base.Const) error {
+func bToC(b []byte, c base.Const) error {
+	if len(b) != len(c) {
+		return fmt.Errorf(
+			"Invalid bytes length %d expected %d.",
+			len(b),
+			len(c),
+		)
+	}
 	for i, ch := range b {
 		switch ch {
 		case 48: // 0
@@ -183,7 +71,31 @@ func btoC(b []byte, c base.Const) error {
 		case 50: // 2
 			c[i] = base.BOT
 		default:
-			return fmt.Errorf("Invalid const feature value '%s'.", string(ch))
+			return fmt.Errorf("Invalid const feature value in index %d", i)
+		}
+	}
+	return nil
+}
+
+// Set the values of c to constant represented in bytes b.
+func sToC(s string, c base.Const) error {
+	if len(s) != len(c) {
+		return fmt.Errorf(
+			"Invalid string length %d expected %d.",
+			len(s),
+			len(c),
+		)
+	}
+	for i, ch := range s {
+		switch ch {
+		case 48: // 0
+			c[i] = base.ZERO
+		case 49: // 1
+			c[i] = base.ONE
+		case 50: // 2
+			c[i] = base.BOT
+		default:
+			return fmt.Errorf("Invalid const feature value in index %d", i)
 		}
 	}
 	return nil
@@ -209,8 +121,8 @@ func randConst(c base.Const, full bool) {
 	}
 }
 
-// Wrtie random constant to c with truth value equal to tVal.
-func randValConst(c base.Const, tVal bool, tree trees.Tree) error {
+// Write random constant to c with truth value equal to tVal.
+func randValConst(c base.Const, tVal bool, tree *trees.Tree) error {
 	match := false
 	for !match {
 		randConst(c, true)
@@ -224,20 +136,20 @@ func randValConst(c base.Const, tVal bool, tree trees.Tree) error {
 }
 
 // Return valuation of constant in tree. C must be full.
-func evalConst(c base.Const, tree trees.Tree) (bool, error) {
+func evalConst(c base.Const, tree *trees.Tree) (bool, error) {
 	node := tree.Root
 	for !node.IsLeaf() {
 		if node.Feat < 0 || node.Feat >= len(c) {
 			return false, errors.New("Node feature out of index.")
 		}
-		if c[node.Feat] == base.ONE {
+		switch c[node.Feat] {
+		case base.ONE:
 			node = node.RChild
-			continue
-		} else if c[node.Feat] == base.ZERO {
+		case base.ZERO:
 			node = node.LChild
-			continue
+		default:
+			return false, errors.New("Constant is not full")
 		}
-		return false, errors.New("Constant is not full")
 	}
 	return node.Value, nil
 }
@@ -280,18 +192,57 @@ func filesToPaths(filenames []string) ([]string, error) {
 	return paths, nil
 }
 
-// Return minimum duration.
-func dMin(t1, t2 time.Duration) time.Duration {
-	if t1 >= t2 {
-		return t2
+// Return instances and context represented in the tree-instance input file
+// passed by path.
+func parseTIInput(inf string) ([]base.Const, *base.Context, error) {
+	treeFP, instStrings, err := scanTIFile(inf)
+	if err != nil {
+		return nil, nil, err
 	}
-	return t1
+
+	ctx, err := genContext(path.Join(INPUTDIR, treeFP))
+	if err != nil {
+		return nil, nil, err
+	}
+
+	instances := make([]base.Const, len(instStrings))
+	for i, cb := range instStrings {
+		instances[i] = base.AllBotConst(ctx.Dimension)
+		err := sToC(cb, instances[i])
+		if err != nil {
+			return nil, nil, err
+		}
+	}
+
+	return instances, ctx, nil
 }
 
-// Return maximum duration.
-func dMax(t1, t2 time.Duration) time.Duration {
-	if t1 <= t2 {
-		return t2
+// Scan a tree/instance input file by path.
+func scanTIFile(path string) (string, []string, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return "", nil, err
 	}
-	return t1
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+
+	if !scanner.Scan() {
+		return "", nil, errors.New("Empty input file.")
+	}
+	treeFP := scanner.Text()
+
+	instStrings := []string{}
+	for scanner.Scan() {
+		instStrings = append(instStrings, scanner.Text())
+	}
+	if len(instStrings) == 0 {
+		return "", nil, errors.New("No instances in input file.")
+	}
+
+	if scanner.Err() != nil {
+		return "", nil, err
+	}
+
+	return treeFP, instStrings, nil
 }

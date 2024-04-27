@@ -9,6 +9,12 @@ type experiment interface {
 
 // Slice of impelmented experiments.
 var experiments []experiment = []experiment{
+	newEvalExp(
+		"eval",
+		"Evaluate instances in given input files."+
+			"Arguments:\n"+
+			"  - List of <optim_file_input>.",
+	),
 	newRandOptimExp(
 		"optim:rand:val:dft-ll",
 		"Optimum:Value: DFT - Lesser Level Order (Random Instances):\n"+
@@ -46,6 +52,13 @@ var experiments []experiment = []experiment{
 			"Arguments:\n"+
 			"  - List of <optim_file_input>.",
 		valEvalGen(CA_GH_O),
+	),
+	newOptimExp(
+		"optim:val:sr-ll",
+		"Optimum:Stats: SR - Less Level\n"+
+			"Arguments:\n"+
+			"  - List of <optim_file_input>.",
+		valEvalGen(SR_LL_O),
 	),
 }
 

@@ -8,6 +8,7 @@ import (
 	"goexpdt/base"
 	"goexpdt/compute/orderoptimum"
 	"os"
+	"path"
 	"strconv"
 	"time"
 )
@@ -64,7 +65,7 @@ func (e *optimExp) Exec(args ...string) error {
 
 	outputWriter := csv.NewWriter(outputFile)
 
-	inputPaths, err := filesToPaths(args[1:])
+	inputPaths, err := filesToPaths(args)
 	if err != nil {
 		return err
 	}
@@ -146,7 +147,7 @@ func parseInput(inf string) ([]base.Const, *base.Context, error) {
 		return nil, nil, err
 	}
 
-	ctx, err := genContext(treeFP)
+	ctx, err := genContext(path.Join(INPUTDIR, treeFP))
 	if err != nil {
 		return nil, nil, err
 	}

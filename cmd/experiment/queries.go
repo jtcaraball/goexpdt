@@ -79,6 +79,17 @@ func CR_LH_O(ctx *base.Context, cs ...base.Const) (
 	return crFGF(cs[0]), lhOGF(cs[0]), nil
 }
 
+func CA_GH_O(ctx *base.Context, cs ...base.Const) (
+	orderoptimum.VFormula,
+	orderoptimum.VCOrder,
+	error,
+) {
+	if len(cs) == 0 {
+		return nil, nil, errors.New("Missing constant in query factory.")
+	}
+	return caFGF(cs[0]), ghOGF(cs[0]), nil
+}
+
 // =========================== //
 //      VAR FORMULA GEN        //
 // =========================== //
@@ -134,6 +145,30 @@ func crFGF(c base.Const) orderoptimum.VFormula {
 	}
 }
 
+func caFGF(c base.Const) orderoptimum.VFormula {
+	return func(v base.Var) base.Component {
+		return operators.WithVar(
+			v,
+			operators.And(
+				full.Var(v),
+				operators.And(
+					full.Const(c),
+					operators.And(
+						operators.Or(
+							operators.Not(allcomp.Var(v, true)),
+							allcomp.Const(c, true),
+						),
+						operators.Or(
+							operators.Not(allcomp.Const(c, true)),
+							allcomp.Var(v, true),
+						),
+					),
+				),
+			),
+		)
+	}
+}
+
 // =========================== //
 //          ORDER GEN          //
 // =========================== //
@@ -161,6 +196,15 @@ func lhOGF(cp base.Const) orderoptimum.VCOrder {
 		return operators.And(
 			leh.ConstVarConst(cp, v, c),
 			operators.Not(leh.ConstConstVar(cp, c, v)),
+		)
+	}
+}
+
+func ghOGF(cp base.Const) orderoptimum.VCOrder {
+	return func(v base.Var, c base.Const) base.Component {
+		return operators.And(
+			leh.ConstConstVar(cp, c, v),
+			operators.Not(leh.ConstVarConst(cp, v, c)),
 		)
 	}
 }

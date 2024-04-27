@@ -40,6 +40,13 @@ var experiments []experiment = []experiment{
 			"  - List of <optim_file_input>.",
 		valEvalGen(CR_LH_O),
 	),
+	newOptimExp(
+		"optim:val:ca-gh",
+		"Optimum:Stats: CA - Greater Hamming Distance\n"+
+			"Arguments:\n"+
+			"  - List of <optim_file_input>.",
+		valEvalGen(CA_GH_O),
+	),
 }
 
 // Return map of implemented experiments with their name as key.

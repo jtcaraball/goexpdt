@@ -36,7 +36,7 @@ func SR_LL_C(ctx *base.Context) (
 	error,
 ) {
 	c := base.AllBotConst(ctx.Dimension)
-	err := randValConst(c, true, *ctx.Tree)
+	err := randValConst(c, true, ctx.Tree)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -49,7 +49,7 @@ func SR_SS_C(ctx *base.Context) (
 	error,
 ) {
 	c := base.AllBotConst(ctx.Dimension)
-	err := randValConst(c, true, *ctx.Tree)
+	err := randValConst(c, true, ctx.Tree)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -88,6 +88,14 @@ func CA_GH_O(ctx *base.Context, cs ...base.Const) (
 		return nil, nil, errors.New("Missing constant in query factory.")
 	}
 	return caFGF(cs[0]), ghOGF(cs[0]), nil
+}
+
+func SR_LL_O(ctx *base.Context, cs ...base.Const) (
+	orderoptimum.VFormula,
+	orderoptimum.VCOrder,
+	error,
+) {
+	return srFGF(cs[0]), llOGF(), nil
 }
 
 // =========================== //

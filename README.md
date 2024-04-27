@@ -23,7 +23,10 @@ docker build -f dockerfiles/Dockerfile.Experiments -t goexpdt-exp .
 After this to run tests run the following command:
 
 ```
-docker run --rm -v $(pwd)/cmd/experiment/outputs:/goexpdt/cmd/experiment/outputs goexpdt-exp <command> <args>
+docker run --rm \
+    -v $(pwd)/cmd/experiment/outputs:/goexpdt/cmd/experiment/outputs \
+    -v $(pwd)/cmd/experiment/inputs:/goexpdt/cmd/experiment/inputs \
+    goexpdt-exp <command> <args>
 ```
 
 The experiment outputs will be written to `cmd/experiment/output` dir.

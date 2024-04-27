@@ -5,10 +5,6 @@ import (
 	"fmt"
 )
 
-// =========================== //
-//          EXPERIMENT         //
-// =========================== //
-
 // Order minimum 'get stats' experiment.
 type evalExp struct {
 	name string

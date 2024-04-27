@@ -40,11 +40,15 @@ func (e *evalExp) Exec(args ...string) error {
 		return err
 	}
 
+	fmt.Println()
+
 	for _, inputFP := range inputPaths {
 		instances, ctx, err := parseTIInput(inputFP)
 		if err != nil {
 			return err
 		}
+
+		fmt.Println(inputFP)
 
 		for _, inst := range instances {
 			val, err := evalConst(inst, ctx.Tree)

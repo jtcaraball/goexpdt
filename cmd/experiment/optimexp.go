@@ -1,14 +1,12 @@
 package main
 
 import (
-	"bufio"
 	"encoding/csv"
 	"errors"
 	"fmt"
 	"goexpdt/base"
 	"goexpdt/compute/orderoptimum"
 	"os"
-	"path"
 	"strconv"
 	"time"
 )
@@ -89,7 +87,7 @@ func (e *optimExp) Exec(args ...string) error {
 
 func valEvalGen(queryGF openOptimQueryGenFactory) oeEval {
 	return func(inf, tpf string, w *csv.Writer) error {
-		instances, ctx, err := parseInput(inf)
+		instances, ctx, err := parseTIInput(inf)
 		if err != nil {
 			return err
 		}
@@ -135,60 +133,4 @@ func valEvalGen(queryGF openOptimQueryGenFactory) oeEval {
 
 		return nil
 	}
-}
-
-// =========================== //
-//            UTILS            //
-// =========================== //
-
-func parseInput(inf string) ([]base.Const, *base.Context, error) {
-	treeFP, instStrings, err := scanFile(inf)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	ctx, err := genContext(path.Join(INPUTDIR, treeFP))
-	if err != nil {
-		return nil, nil, err
-	}
-
-	instances := make([]base.Const, len(instStrings))
-	for i, cb := range instStrings {
-		instances[i] = base.AllBotConst(ctx.Dimension)
-		err := sToC(cb, instances[i])
-		if err != nil {
-			return nil, nil, err
-		}
-	}
-
-	return instances, ctx, nil
-}
-
-func scanFile(path string) (string, []string, error) {
-	file, err := os.Open(path)
-	if err != nil {
-		return "", nil, err
-	}
-	defer file.Close()
-
-	scanner := bufio.NewScanner(file)
-
-	if !scanner.Scan() {
-		return "", nil, errors.New("Empty input file.")
-	}
-	treeFP := scanner.Text()
-
-	instStrings := []string{}
-	for scanner.Scan() {
-		instStrings = append(instStrings, scanner.Text())
-	}
-	if len(instStrings) == 0 {
-		return "", nil, errors.New("No instances in input file.")
-	}
-
-	if scanner.Err() != nil {
-		return "", nil, err
-	}
-
-	return treeFP, instStrings, nil
 }

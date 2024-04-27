@@ -1,12 +1,14 @@
 package main
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
 	"goexpdt/base"
 	"goexpdt/compute/utils"
 	"goexpdt/trees"
 	"math/rand"
+	"os"
 	"path"
 	"path/filepath"
 	"regexp"
@@ -79,7 +81,7 @@ func bToC(b []byte, c base.Const) error {
 func sToC(s string, c base.Const) error {
 	if len(s) != len(c) {
 		return fmt.Errorf(
-			"Invalid bytes length %d expected %d.",
+			"Invalid string length %d expected %d.",
 			len(s),
 			len(c),
 		)
@@ -143,7 +145,8 @@ func evalConst(c base.Const, tree *trees.Tree) (bool, error) {
 		if c[node.Feat] == base.ONE {
 			node = node.RChild
 			continue
-		} else if c[node.Feat] == base.ZERO {
+		}
+		if c[node.Feat] == base.ZERO {
 			node = node.LChild
 			continue
 		}
@@ -190,18 +193,57 @@ func filesToPaths(filenames []string) ([]string, error) {
 	return paths, nil
 }
 
-// Return minimum duration.
-func dMin(t1, t2 time.Duration) time.Duration {
-	if t1 >= t2 {
-		return t2
+// Return instances and context represented in the tree-instance input file
+// passed by path.
+func parseTIInput(inf string) ([]base.Const, *base.Context, error) {
+	treeFP, instStrings, err := scanTIFile(inf)
+	if err != nil {
+		return nil, nil, err
 	}
-	return t1
+
+	ctx, err := genContext(path.Join(INPUTDIR, treeFP))
+	if err != nil {
+		return nil, nil, err
+	}
+
+	instances := make([]base.Const, len(instStrings))
+	for i, cb := range instStrings {
+		instances[i] = base.AllBotConst(ctx.Dimension)
+		err := sToC(cb, instances[i])
+		if err != nil {
+			return nil, nil, err
+		}
+	}
+
+	return instances, ctx, nil
 }
 
-// Return maximum duration.
-func dMax(t1, t2 time.Duration) time.Duration {
-	if t1 <= t2 {
-		return t2
+// Scan a tree/instance input file by path.
+func scanTIFile(path string) (string, []string, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return "", nil, err
 	}
-	return t1
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+
+	if !scanner.Scan() {
+		return "", nil, errors.New("Empty input file.")
+	}
+	treeFP := scanner.Text()
+
+	instStrings := []string{}
+	for scanner.Scan() {
+		instStrings = append(instStrings, scanner.Text())
+	}
+	if len(instStrings) == 0 {
+		return "", nil, errors.New("No instances in input file.")
+	}
+
+	if scanner.Err() != nil {
+		return "", nil, err
+	}
+
+	return treeFP, instStrings, nil
 }

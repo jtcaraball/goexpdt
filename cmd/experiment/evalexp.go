@@ -45,7 +45,7 @@ func (e *evalExp) Exec(args ...string) error {
 	}
 
 	for _, inputFP := range inputPaths {
-		instances, ctx, err := parseInput(inputFP)
+		instances, ctx, err := parseTIInput(inputFP)
 		if err != nil {
 			return err
 		}

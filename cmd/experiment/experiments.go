@@ -10,7 +10,7 @@ type experiment interface {
 // Slice of impelmented experiments.
 var experiments []experiment = []experiment{
 	newRandOptimExp(
-		"optim:rand:value:dft-ll",
+		"optim:rand:val:dft-ll",
 		"Optimum:Value: DFT - Lesser Level Order (Random Instances):\n"+
 			"Arguments:\n"+
 			"  - n (instances per input\n"+

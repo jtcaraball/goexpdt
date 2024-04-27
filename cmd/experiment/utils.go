@@ -4,15 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"goexpdt/base"
-	"goexpdt/circuits/extensions/allcomp"
-	"goexpdt/circuits/extensions/dft"
-	"goexpdt/circuits/extensions/full"
-	"goexpdt/circuits/extensions/leh"
-	"goexpdt/circuits/predicates/lel"
-	"goexpdt/circuits/predicates/subsumption"
-	"goexpdt/compute/orderoptimum"
 	"goexpdt/compute/utils"
-	"goexpdt/operators"
 	"goexpdt/trees"
 	"math/rand"
 	"path"
@@ -22,11 +14,6 @@ import (
 	"time"
 )
 
-type (
-	optimFormulaGenFactory func(cs ...base.Const) (orderoptimum.VFormula, error)
-	optimOrderGenFactory   func(cs ...base.Const) (orderoptimum.VCOrder, error)
-)
-
 const (
 	SOLVER    = "./kissat"
 	INPUTDIR  = "inputs"
@@ -34,114 +21,6 @@ const (
 )
 
 var globPath = regexp.MustCompile(`\*`)
-
-// =========================== //
-//      VAR FORMULA GEN        //
-// =========================== //
-
-func dftFGF(cs ...base.Const) (orderoptimum.VFormula, error) {
-	return func(v base.Var) base.Component {
-		return dft.Var(v)
-	}, nil
-}
-
-func srFGF(cs ...base.Const) (orderoptimum.VFormula, error) {
-	if len(cs) == 0 {
-		return nil, errors.New("Missing constant in order generation factory")
-	}
-
-	c := cs[0]
-
-	return func(v base.Var) base.Component {
-		return operators.WithVar(
-			v,
-			operators.And(
-				subsumption.VarConst(v, c),
-				operators.And(
-					operators.Or(
-						operators.Not(allcomp.Const(c, true)),
-						allcomp.Var(v, true),
-					),
-					operators.Or(
-						operators.Not(allcomp.Const(c, false)),
-						allcomp.Var(v, false),
-					),
-				),
-			),
-		)
-	}, nil
-}
-
-func crFGF(cs ...base.Const) (orderoptimum.VFormula, error) {
-	if len(cs) == 0 {
-		return nil, errors.New("Missing constant in order generation factory")
-	}
-
-	c := cs[0]
-
-	return func(v base.Var) base.Component {
-		return operators.WithVar(
-			v,
-			operators.And(
-				full.Var(v),
-				operators.And(
-					full.Const(c),
-					operators.Or(
-						operators.And(
-							allcomp.Var(v, true),
-							operators.Not(allcomp.Const(c, true)),
-						),
-						operators.And(
-							allcomp.Const(c, true),
-							operators.Not(allcomp.Var(v, true)),
-						),
-					),
-				),
-			),
-		)
-	}, nil
-}
-
-// =========================== //
-//          ORDER GEN          //
-// =========================== //
-
-func llOGF(cs ...base.Const) (orderoptimum.VCOrder, error) {
-	return func(v base.Var, c base.Const) base.Component {
-		return operators.And(
-			lel.VarConst(v, c),
-			operators.Not(lel.ConstVar(c, v)),
-		)
-	}, nil
-}
-
-func ssOGF(cs ...base.Const) (orderoptimum.VCOrder, error) {
-	return func(v base.Var, c base.Const) base.Component {
-		return operators.And(
-			subsumption.VarConst(v, c),
-			operators.Not(subsumption.ConstVar(c, v)),
-		)
-	}, nil
-}
-
-func lhOGF(cs ...base.Const) (orderoptimum.VCOrder, error) {
-	if len(cs) == 0 {
-		return nil, errors.New("Missing constant in order generation factory")
-	}
-
-	cp := cs[0]
-
-	return func(v base.Var, c base.Const) base.Component {
-		return operators.And(
-			leh.ConstVarConst(cp, v, c),
-			operators.Not(leh.ConstConstVar(cp, c, v)),
-		)
-	}, nil
-}
-
-// =========================== //
-//             UTILS           //
-// =========================== //
 
 // Solve formula and return ok, const value. ok is false if the formula is
 // unsatisfiable.
@@ -173,7 +52,14 @@ func solveFormula(
 }
 
 // Set the values of c to constant represented in bytes b.
-func btoC(b []byte, c base.Const) error {
+func bToC(b []byte, c base.Const) error {
+	if len(b) != len(c) {
+		return fmt.Errorf(
+			"Invalid bytes length %d expected %d.",
+			len(b),
+			len(c),
+		)
+	}
 	for i, ch := range b {
 		switch ch {
 		case 48: // 0

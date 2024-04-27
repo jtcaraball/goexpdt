@@ -41,21 +41,21 @@ var experiments []experiment = []experiment{
 	),
 	newOptimExp(
 		"optim:val:cr-lh",
-		"Optimum:Stats: CR - Less Hamming Distance\n"+
+		"Optimum:Value: CR - Less Hamming Distance\n"+
 			"Arguments:\n"+
 			"  - List of <optim_file_input>.",
 		valEvalGen(CR_LH_O),
 	),
 	newOptimExp(
 		"optim:val:ca-gh",
-		"Optimum:Stats: CA - Greater Hamming Distance\n"+
+		"Optimum:Value: CA - Greater Hamming Distance\n"+
 			"Arguments:\n"+
 			"  - List of <optim_file_input>.",
 		valEvalGen(CA_GH_O),
 	),
 	newOptimExp(
 		"optim:val:sr-ll",
-		"Optimum:Stats: SR - Less Level\n"+
+		"Optimum:Value: SR - Less Level\n"+
 			"Arguments:\n"+
 			"  - List of <optim_file_input>.",
 		valEvalGen(SR_LL_O),

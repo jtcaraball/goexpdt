@@ -84,6 +84,13 @@ var experiments []experiment = []experiment{
 			"  - List of <optim_file_input>.",
 		valEvalGen(SR_LL_O),
 	),
+	newOptimExp(
+		"optim:val:sr-ss",
+		"Optimum:Value: SR - Strict Subsumption\n"+
+			"Arguments:\n"+
+			"  - List of <optim_file_input>.",
+		valEvalGen(SR_SS_O),
+	),
 }
 
 // Return map of implemented experiments with their name as key.

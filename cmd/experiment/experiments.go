@@ -16,12 +16,20 @@ var experiments []experiment = []experiment{
 			"  - List of <optim_file_input>.",
 	),
 	newRandOptimExp(
-		"optim:rand:val:dft-ll",
-		"Optimum:Value: DFT - Lesser Level Order (Random Instances):\n"+
+		"optim:rand:val:dfs-ll",
+		"Optimum:Value: DFS - Lesser Level Order (Random Instances):\n"+
 			"Arguments:\n"+
 			"  - n (instances per input\n"+
 			"  - List of <tree_file_inputs>.",
-		randValEvalGen(DFT_LL_C),
+		randValEvalGen(DFS_LL_C),
+	),
+	newRandOptimExp(
+		"optim:rand:stats:dfs-ll",
+		"Optimum:Stats: DFS - Lesser Level Order (Random Instances):\n"+
+			"Arguments:\n"+
+			"  - n (instances per input\n"+
+			"  - List of <tree_file_inputs>.",
+		randStatsEvalGen(DFS_LL_C),
 	),
 	newRandOptimExp(
 		"optim:rand:stats:sr-ll",
@@ -30,6 +38,22 @@ var experiments []experiment = []experiment{
 			"  - n (instances per input\n"+
 			"  - List of <tree_file_inputs>.",
 		randStatsEvalGen(SR_LL_C),
+	),
+	newRandOptimExp(
+		"optim:rand:stats:cr-lh",
+		"Optimum:Value: CR - Lesser Hamming Distance (Random Instances):\n"+
+			"Arguments:\n"+
+			"  - n (instances per input\n"+
+			"  - List of <tree_file_inputs>.",
+		randStatsEvalGen(CR_LH_C),
+	),
+	newRandOptimExp(
+		"optim:rand:stats:ca-gh",
+		"Optimum:Value: CA - Greater Hamming Distance (Random Instances):\n"+
+			"Arguments:\n"+
+			"  - n (instances per input\n"+
+			"  - List of <tree_file_inputs>.",
+		randStatsEvalGen(CA_GH_C),
 	),
 	newRandOptimExp(
 		"optim:rand:stats:sr-ss",

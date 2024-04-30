@@ -56,12 +56,38 @@ func SR_SS_C(ctx *base.Context) (
 	return srFGF(c), ssOGF(), nil
 }
 
-func DFT_LL_C(ctx *base.Context) (
+func DFS_LL_C(ctx *base.Context) (
 	orderoptimum.VFormula,
 	orderoptimum.VCOrder,
 	error,
 ) {
-	return dftFGF(), llOGF(), nil
+	return dfsFGF(), llOGF(), nil
+}
+
+func CR_LH_C(ctx *base.Context) (
+	orderoptimum.VFormula,
+	orderoptimum.VCOrder,
+	error,
+) {
+	c := base.AllBotConst(ctx.Dimension)
+	err := randValConst(c, true, ctx.Tree)
+	if err != nil {
+		return nil, nil, err
+	}
+	return crFGF(c), lhOGF(c), nil
+}
+
+func CA_GH_C(ctx *base.Context) (
+	orderoptimum.VFormula,
+	orderoptimum.VCOrder,
+	error,
+) {
+	c := base.AllBotConst(ctx.Dimension)
+	err := randValConst(c, true, ctx.Tree)
+	if err != nil {
+		return nil, nil, err
+	}
+	return caFGF(c), ghOGF(c), nil
 }
 
 // =========================== //
@@ -102,7 +128,7 @@ func SR_LL_O(ctx *base.Context, cs ...base.Const) (
 //      VAR FORMULA GEN        //
 // =========================== //
 
-func dftFGF() orderoptimum.VFormula {
+func dfsFGF() orderoptimum.VFormula {
 	return func(v base.Var) base.Component {
 		return dft.Var(v)
 	}

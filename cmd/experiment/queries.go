@@ -124,6 +124,14 @@ func SR_LL_O(ctx *base.Context, cs ...base.Const) (
 	return srFGF(cs[0]), llOGF(), nil
 }
 
+func SR_SS_O(ctx *base.Context, cs ...base.Const) (
+	orderoptimum.VFormula,
+	orderoptimum.VCOrder,
+	error,
+) {
+	return srFGF(cs[0]), ssOGF(), nil
+}
+
 // =========================== //
 //      VAR FORMULA GEN        //
 // =========================== //

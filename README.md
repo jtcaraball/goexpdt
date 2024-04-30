@@ -29,13 +29,39 @@ docker run --rm \
     goexpdt-exp <command> <args>
 ```
 
-The experiment outputs will be written to `cmd/experiment/output` dir.
+The experiment outputs will be written to `cmd/experiment/output` directory.
 
 ### Commands
 
 - `list`: List all implemented experiments.
 - `info <experiment>`: Get experiment info and expected arguments.
 - `<experiment> <args>`: Run experiment with arguments.
+
+### Examples
+
+In the `cmd/experiments/inputs` directory there are examples of
+tree and optimization file inputs. Here are some of the experiments that
+can be ran on this inputs:
+
+**Times for 10 random positive instances for optimal Sufficient Reason over
+Less Level order**:
+
+```
+docker run --rm \
+    -v $(pwd)/cmd/experiment/outputs:/goexpdt/cmd/experiment/outputs \
+    -v $(pwd)/cmd/experiment/inputs:/goexpdt/cmd/experiment/inputs \
+    goexpdt-exp optim:rand:stats:sr-ll 10 mnist_d0_n400.json
+```
+
+**Values of optimal Changed Allowed over Greater Hamming distance order for
+specific instances**:
+
+```
+docker run --rm \
+    -v $(pwd)/cmd/experiment/outputs:/goexpdt/cmd/experiment/outputs \
+    -v $(pwd)/cmd/experiment/inputs:/goexpdt/cmd/experiment/inputs \
+    goexpdt-exp optim:val:ca-gh mnist_d0_input.txt
+```
 
 ## TODO
 

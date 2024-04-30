@@ -17,7 +17,7 @@ var experiments []experiment = []experiment{
 	),
 	newRandOptimExp(
 		"optim:rand:val:dfs-ll",
-		"Optimum:Value: DFS - Lesser Level Order (Random Instances):\n"+
+		"Optimum:Value: DFS - Lesser Level Order (Random Instances)\n"+
 			"Arguments:\n"+
 			"  - n (instances per input\n"+
 			"  - List of <tree_file_inputs>.",
@@ -25,7 +25,7 @@ var experiments []experiment = []experiment{
 	),
 	newRandOptimExp(
 		"optim:rand:stats:dfs-ll",
-		"Optimum:Stats: DFS - Lesser Level Order (Random Instances):\n"+
+		"Optimum:Stats: DFS - Lesser Level Order (Random Instances)\n"+
 			"Arguments:\n"+
 			"  - n (instances per input\n"+
 			"  - List of <tree_file_inputs>.",
@@ -33,7 +33,7 @@ var experiments []experiment = []experiment{
 	),
 	newRandOptimExp(
 		"optim:rand:stats:sr-ll",
-		"Optimum:Value: SR - Lesser Level (Random Instances):\n"+
+		"Optimum:Value: SR - Lesser Level (Random Instances)\n"+
 			"Arguments:\n"+
 			"  - n (instances per input\n"+
 			"  - List of <tree_file_inputs>.",
@@ -41,7 +41,7 @@ var experiments []experiment = []experiment{
 	),
 	newRandOptimExp(
 		"optim:rand:stats:cr-lh",
-		"Optimum:Value: CR - Lesser Hamming Distance (Random Instances):\n"+
+		"Optimum:Value: CR - Lesser Hamming Distance (Random Instances)\n"+
 			"Arguments:\n"+
 			"  - n (instances per input\n"+
 			"  - List of <tree_file_inputs>.",
@@ -49,7 +49,7 @@ var experiments []experiment = []experiment{
 	),
 	newRandOptimExp(
 		"optim:rand:stats:ca-gh",
-		"Optimum:Value: CA - Greater Hamming Distance (Random Instances):\n"+
+		"Optimum:Value: CA - Greater Hamming Distance (Random Instances)\n"+
 			"Arguments:\n"+
 			"  - n (instances per input\n"+
 			"  - List of <tree_file_inputs>.",
@@ -57,11 +57,19 @@ var experiments []experiment = []experiment{
 	),
 	newRandOptimExp(
 		"optim:rand:stats:sr-ss",
-		"Optimum:Value: SR - Strict Subsumption (Random Instances):\n"+
+		"Optimum:Value: SR - Strict Subsumption (Random Instances)\n"+
 			"Arguments:\n"+
 			"  - n (instances per input\n"+
 			"  - List of <tree_file_inputs>.",
 		randStatsEvalGen(SR_SS_C),
+	),
+	newOptimExp(
+		"optim:val:dfs-ll",
+		"Optimum:Value: DFS - Lesser Level Order\n"+
+			"Arguments:\n"+
+			"  - n (instances per input\n"+
+			"  - List of <tree_file_inputs>.",
+		valEvalGen(DFS_LL_O),
 	),
 	newOptimExp(
 		"optim:val:cr-lh",

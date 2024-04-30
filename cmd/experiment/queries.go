@@ -94,6 +94,14 @@ func CA_GH_C(ctx *base.Context) (
 //         OPEN QUERIES        //
 // =========================== //
 
+func DFS_LL_O(ctx *base.Context, cs ...base.Const) (
+	orderoptimum.VFormula,
+	orderoptimum.VCOrder,
+	error,
+) {
+	return dfsFGF(), llOGF(), nil
+}
+
 func CR_LH_O(ctx *base.Context, cs ...base.Const) (
 	orderoptimum.VFormula,
 	orderoptimum.VCOrder,

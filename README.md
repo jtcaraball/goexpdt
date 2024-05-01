@@ -1,11 +1,19 @@
 # Go-ExplainDT
 
-A pure GO implementation of the work in "A Symbolic Language for Interpreting Decision Trees".
+A pure GO implementation associated to the paper "A Uniform Language to Exlain
+Decision Trees".
+
+## Docker  
+
+In order to have a uniform and OS-independent environment for code execution,
+without requiring users to install SAT solvers on their computer, we use
+"docker" containers. In order to run this project you must have
+[docker](https://docs.docker.com/engine/install/) installed.
 
 ## Tests
 
-To run test you must have docker installed and run the following command at
-the root of the project:
+To build the test suite and execute it, run the following command:
+
 
 ```
 docker build -f dockerfiles/Dockerfile.Tests -t goexpdt-tests --progress plain --no-cache-filter=run-tests-stage --target run-tests-stage .
@@ -13,15 +21,14 @@ docker build -f dockerfiles/Dockerfile.Tests -t goexpdt-tests --progress plain -
 
 ## Experiments
 
-To build the experiment image you must have [docker
-installed](https://docs.docker.com/engine/install/) and run the following
-command at the root of the project:
+To build the docker image corresponding to the experiments, run the following
+command:
 
 ```
 docker build -f dockerfiles/Dockerfile.Experiments -t goexpdt-exp .
 ```
 
-After this to run tests run the following command:
+After that, experiments can be run with:
 
 ```
 docker run --rm \
@@ -29,17 +36,27 @@ docker run --rm \
     -v $(pwd)/cmd/experiment/inputs:/goexpdt/cmd/experiment/inputs \
     goexpdt-exp <command> <args>
 ```
+The `<command>` and `<args>` options are described below.
 
 The experiment outputs will be written to `cmd/experiment/output` directory as
-csv files with their corresponding headers.
+csv files with self-explanatory headers.
 
 ### Commands
+
+The available commands for experiments are:
 
 - `list`: List all implemented experiments.
 - `info <experiment>`: Get experiment info and expected arguments.
 - `<experiment> <args>`: Run experiment with arguments.
 
+Each experiment has a name (string), and the existing experiments are listed
+below.
+
 ### List of Experiments
+
+We distinguish between two kinds of experiments, those for which the user
+provides instances as part of the input and those that are based on sampling
+random instances (denoted by de addition of `rand`).
 
 - `optim:rand:stats:dfs-ll`: Optimum (Stats, Random Instances) - DFS under Lesser Level Order.
 - `optim:rand:stats:sr-ll`: Optimum (Stats, Random Instances) - SR under Lesser Level Order.
@@ -52,6 +69,7 @@ csv files with their corresponding headers.
 - `optim:val:sr-ss`: Optimum (Value) - SR under Strict Subsumption Order.
 - `optim:val:cr-lh`: Optimum (Value) - CR under Less Hamming Distance Order.
 - `optim:val:ca-gh`: Optimum (Value) - CA under Greater Hamming Distance Order.
+
 
 ### Input Types
 
@@ -99,12 +117,3 @@ docker run --rm \
     -v $(pwd)/cmd/experiment/inputs:/goexpdt/cmd/experiment/inputs \
     goexpdt-exp optim:val:ca-gh mnist_d0_input.txt
 ```
-
-## TODO
-
-- Add naming convention mechanism for context variables.
-- Use constants `BotCount` method in circuits.
-- Add correct simplification to circuits when passing `GuardedConst` as
-  arguments.
-- Look into passing `CNF` struct in `Encoding` methods to avoid creating to much
-  garbage.

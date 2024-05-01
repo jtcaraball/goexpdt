@@ -71,7 +71,9 @@ func (e *optimExp) Exec(args ...string) error {
 		return err
 	}
 
-	e.evaluator.WriteHeader(outputWriter)
+	if err = e.evaluator.WriteHeader(outputWriter); err != nil {
+		return err
+	}
 
 	for _, inputFP := range inputPaths {
 		if err = e.evaluator.Eval(

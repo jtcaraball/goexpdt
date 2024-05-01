@@ -30,7 +30,8 @@ docker run --rm \
     goexpdt-exp <command> <args>
 ```
 
-The experiment outputs will be written to `cmd/experiment/output` directory.
+The experiment outputs will be written to `cmd/experiment/output` directory as
+csv files with their corresponding headers.
 
 ### Commands
 
@@ -40,17 +41,17 @@ The experiment outputs will be written to `cmd/experiment/output` directory.
 
 ### List of Experiments
 
-- `optim:rand:stats:dfs-ll`: Optimum (Stats - Random Instances): DFS - Lesser Level Order.
-- `optim:rand:stats:sr-ll`: Optimum (Value - Random Instances): SR - Lesser Level.
-- `optim:rand:stats:sr-ss`: Optimum (Value - Random Instances): SR - Strict Subsumption.
-- `optim:rand:stats:cr-lh`: Optimum (Value - Random Instances): CR - Lesser Hamming Distance.
-- `optim:rand:stats:ca-gh`: Optimum (Value - Random Instances): CA - Greater Hamming Distance.
-- `optim:rand:val:dfs-ll`: Optimum (Value - Random Instances): DFS - Lesser Level Order.
-- `optim:val:dfs-ll`: Optimum (Value): DFS - Lesser Level Order.
-- `optim:val:sr-ll`: Optimum (Value): SR - Less Level.
-- `optim:val:sr-ss`: Optimum (Value): SR - Strict Subsumption.
-- `optim:val:cr-lh`: Optimum (Value): CR - Less Hamming Distance.
-- `optim:val:ca-gh`: Optimum (Value): CA - Greater Hamming Distance.
+- `optim:rand:stats:dfs-ll`: Optimum (Stats - Random Instances) - DFS under Lesser Level Order.
+- `optim:rand:stats:sr-ll`: Optimum (Value - Random Instances) - SR under Lesser Level Order.
+- `optim:rand:stats:sr-ss`: Optimum (Value - Random Instances) - SR under Strict Subsumption.
+- `optim:rand:stats:cr-lh`: Optimum (Value - Random Instances) - CR under Lesser Hamming Distance.
+- `optim:rand:stats:ca-gh`: Optimum (Value - Random Instances) - CA under Greater Hamming Distance.
+- `optim:rand:val:dfs-ll`: Optimum (Value - Random Instances) - DFS under Lesser Level Order.
+- `optim:val:dfs-ll`: Optimum (Value) - DFS under Lesser Level Order.
+- `optim:val:sr-ll`: Optimum (Value) - SR under Lesser Level Order.
+- `optim:val:sr-ss`: Optimum (Value) - SR under Strict Subsumption.
+- `optim:val:cr-lh`: Optimum (Value) - CR under Less Hamming Distance.
+- `optim:val:ca-gh`: Optimum (Value) - CA under Greater Hamming Distance.
 
 ### Input Types
 

@@ -1,10 +1,14 @@
 # Go-ExplainDT
 
-A pure GO implementation associated to the paper "A Uniform Language to Exlain Decision Trees".
+A pure GO implementation associated to the paper "A Uniform Language to Exlain
+Decision Trees".
 
 ## Docker  
 
-In order to have a uniform and OS-independent environment for code execution, without requiring users to install SAT solvers on their computer, we use "docker" containers. In order to run this project you must have [docker](https://docs.docker.com/engine/install/) installed.
+In order to have a uniform and OS-independent environment for code execution,
+without requiring users to install SAT solvers on their computer, we use
+"docker" containers. In order to run this project you must have
+[docker](https://docs.docker.com/engine/install/) installed.
 
 ## Tests
 
@@ -17,7 +21,8 @@ docker build -f dockerfiles/Dockerfile.Tests -t goexpdt-tests --progress plain -
 
 ## Experiments
 
-To build the docker image corresponding to the experiments, run the following command:
+To build the docker image corresponding to the experiments, run the following
+command:
 
 ```
 docker build -f dockerfiles/Dockerfile.Experiments -t goexpdt-exp .
@@ -44,11 +49,14 @@ The available commands for experiments are:
 - `info <experiment>`: Get experiment info and expected arguments.
 - `<experiment> <args>`: Run experiment with arguments.
 
-Each experiment has a name (string), and the existing experiments are listed below.
+Each experiment has a name (string), and the existing experiments are listed
+below.
 
 ### List of Experiments
 
-We distinguish between two kinds of experiments, those that are based on sampling random instances (denoted by `rand`) and those for which the user provides an instance as part of the input (denoted by `val`). 
+We distinguish between two kinds of experiments, those for which the user
+provides instances as part of the input and those that are based on sampling
+random instances (denoted by de addition of `rand`).
 
 - `optim:rand:stats:dfs-ll`: Optimum (Stats, Random Instances) - DFS under Lesser Level Order.
 - `optim:rand:stats:sr-ll`: Optimum (Stats, Random Instances) - SR under Lesser Level Order.
@@ -109,4 +117,3 @@ docker run --rm \
     -v $(pwd)/cmd/experiment/inputs:/goexpdt/cmd/experiment/inputs \
     goexpdt-exp optim:val:ca-gh mnist_d0_input.txt
 ```
-

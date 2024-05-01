@@ -1,4 +1,4 @@
-package dft
+package dfs
 
 import (
 	"goexpdt/base"
@@ -136,7 +136,7 @@ func genTree() *trees.Tree {
 	//       node_6: 1,_,1
 	//           leaf_7: 1,0,1 (False)
 	//           leaf_8: 1,1,1 (True)
-	// FULL, _,*,_, _,*,* and *,*,_ are DFT
+	// FULL, _,*,_, _,*,* and *,*,_ are DFS
 
 	leaf1 := &trees.Node{ID: 7, Value: false}
 	leaf2 := &trees.Node{ID: 8, Value: false}

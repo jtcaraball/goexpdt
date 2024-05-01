@@ -1,4 +1,4 @@
-package dft
+package dfs
 
 import (
 	"goexpdt/base"
@@ -8,15 +8,15 @@ import (
 )
 
 const (
-	constSUFIX        = "dft.const"
-	guardedConstSUFIX = "dft.Gconst"
+	constSUFIX        = "dfs.const"
+	guardedConstSUFIX = "dfs.Gconst"
 )
 
 // =========================== //
 //           HELPERS           //
 // =========================== //
 
-func runDFTConst(
+func runDFSConst(
 	t *testing.T,
 	id, expCode int,
 	c base.Const,
@@ -31,7 +31,7 @@ func runDFTConst(
 	solver.EncodeAndRun(t, formula, ctx, filePath, id, expCode, simplify)
 }
 
-func runGuardedDFTConst(
+func runGuardedDFSConst(
 	t *testing.T,
 	id, expCode int,
 	c base.Const,
@@ -59,7 +59,7 @@ func TestConst_Encoding(t *testing.T) {
 	solver.AddCleanup(t, constSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			runDFTConst(t, i, tc.expCode, tc.val, false, false)
+			runDFSConst(t, i, tc.expCode, tc.val, false, false)
 		})
 	}
 }
@@ -68,7 +68,7 @@ func TestNotConst_Encoding(t *testing.T) {
 	solver.AddCleanup(t, constSUFIX, false)
 	for i, tc := range notTests {
 		t.Run(tc.name, func(t *testing.T) {
-			runDFTConst(t, i, tc.expCode, tc.val, true, false)
+			runDFSConst(t, i, tc.expCode, tc.val, true, false)
 		})
 	}
 }
@@ -77,7 +77,7 @@ func TestConst_Encoding_Guarded(t *testing.T) {
 	solver.AddCleanup(t, guardedConstSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			runGuardedDFTConst(t, i, tc.expCode, tc.val, false, false)
+			runGuardedDFSConst(t, i, tc.expCode, tc.val, false, false)
 		})
 	}
 }
@@ -86,7 +86,7 @@ func TestNotConst_Encoding_Guarded(t *testing.T) {
 	solver.AddCleanup(t, guardedConstSUFIX, false)
 	for i, tc := range notTests {
 		t.Run(tc.name, func(t *testing.T) {
-			runGuardedDFTConst(t, i, tc.expCode, tc.val, true, false)
+			runGuardedDFSConst(t, i, tc.expCode, tc.val, true, false)
 		})
 	}
 }
@@ -105,7 +105,7 @@ func TestConst_Simplified(t *testing.T) {
 	solver.AddCleanup(t, constSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			runDFTConst(t, i, tc.expCode, tc.val, false, true)
+			runDFSConst(t, i, tc.expCode, tc.val, false, true)
 		})
 	}
 }
@@ -114,7 +114,7 @@ func TestNotConst_Simplified(t *testing.T) {
 	solver.AddCleanup(t, constSUFIX, true)
 	for i, tc := range notTests {
 		t.Run(tc.name, func(t *testing.T) {
-			runDFTConst(t, i, tc.expCode, tc.val, true, true)
+			runDFSConst(t, i, tc.expCode, tc.val, true, true)
 		})
 	}
 }
@@ -123,7 +123,7 @@ func TestConst_Simplified_Guarded(t *testing.T) {
 	solver.AddCleanup(t, guardedConstSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			runGuardedDFTConst(t, i, tc.expCode, tc.val, false, true)
+			runGuardedDFSConst(t, i, tc.expCode, tc.val, false, true)
 		})
 	}
 }
@@ -132,7 +132,7 @@ func TestNotConst_Simplified_Guarded(t *testing.T) {
 	solver.AddCleanup(t, guardedConstSUFIX, true)
 	for i, tc := range notTests {
 		t.Run(tc.name, func(t *testing.T) {
-			runGuardedDFTConst(t, i, tc.expCode, tc.val, true, true)
+			runGuardedDFSConst(t, i, tc.expCode, tc.val, true, true)
 		})
 	}
 }

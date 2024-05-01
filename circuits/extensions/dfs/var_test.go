@@ -1,21 +1,21 @@
-package dft
+package dfs
 
 import (
 	"goexpdt/base"
 	"goexpdt/circuits/predicates/subsumption"
-	"goexpdt/operators"
-	"goexpdt/internal/test/solver"
 	"goexpdt/internal/test/context"
+	"goexpdt/internal/test/solver"
+	"goexpdt/operators"
 	"testing"
 )
 
-const varSUFIX = "dft.var"
+const varSUFIX = "dfs.var"
 
 // =========================== //
 //           HELPERS           //
 // =========================== //
 
-func runDFTVar(
+func runDFSVar(
 	t *testing.T,
 	id, expCode int,
 	c base.Const,
@@ -50,7 +50,7 @@ func TestVar_Encoding(t *testing.T) {
 	solver.AddCleanup(t, varSUFIX, false)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			runDFTVar(t, i, tc.expCode, tc.val, false, false)
+			runDFSVar(t, i, tc.expCode, tc.val, false, false)
 		})
 	}
 }
@@ -59,7 +59,7 @@ func TestNotVar_Encoding(t *testing.T) {
 	solver.AddCleanup(t, varSUFIX, false)
 	for i, tc := range notTests {
 		t.Run(tc.name, func(t *testing.T) {
-			runDFTVar(t, i, tc.expCode, tc.val, true, false)
+			runDFSVar(t, i, tc.expCode, tc.val, true, false)
 		})
 	}
 }
@@ -68,7 +68,7 @@ func TestVar_Simplified(t *testing.T) {
 	solver.AddCleanup(t, varSUFIX, true)
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			runDFTVar(t, i, tc.expCode, tc.val, false, true)
+			runDFSVar(t, i, tc.expCode, tc.val, false, true)
 		})
 	}
 }
@@ -77,7 +77,7 @@ func TestNotVar_Simplified(t *testing.T) {
 	solver.AddCleanup(t, varSUFIX, true)
 	for i, tc := range notTests {
 		t.Run(tc.name, func(t *testing.T) {
-			runDFTVar(t, i, tc.expCode, tc.val, true, true)
+			runDFSVar(t, i, tc.expCode, tc.val, true, true)
 		})
 	}
 }

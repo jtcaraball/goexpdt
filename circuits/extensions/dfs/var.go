@@ -1,16 +1,16 @@
-package dft
+package dfs
 
 import (
 	"errors"
-	"goexpdt/cnf"
 	"goexpdt/base"
+	"goexpdt/cnf"
 )
 
 // =========================== //
 //           STRUCTS           //
 // =========================== //
 
-type dftVar struct {
+type dfsVar struct {
 	varInst base.Var
 }
 
@@ -18,19 +18,19 @@ type dftVar struct {
 //           METHODS           //
 // =========================== //
 
-// Return var dft.
-func Var(varInst base.Var) *dftVar {
-	return &dftVar{varInst: varInst}
+// Return var dfs.
+func Var(varInst base.Var) *dfsVar {
+	return &dfsVar{varInst: varInst}
 }
 
 // Return CNF encoding of component.
-func (d *dftVar) Encoding(ctx *base.Context) (*cnf.CNF, error) {
+func (d *dfsVar) Encoding(ctx *base.Context) (*cnf.CNF, error) {
 	scpVar := d.varInst.Scoped(ctx)
 	return d.buildEncoding(scpVar, ctx)
 }
 
 // Generate cnf encoding.
-func (d *dftVar) buildEncoding(
+func (d *dfsVar) buildEncoding(
 	varInst base.Var,
 	ctx *base.Context,
 ) (*cnf.CNF, error) {
@@ -51,7 +51,7 @@ func (d *dftVar) buildEncoding(
 }
 
 // Generate not a witness clause.
-func (d *dftVar) notAWitnessClause(
+func (d *dfsVar) notAWitnessClause(
 	varInst base.Var,
 	lConst1, lConst2 base.Const,
 	ctx *base.Context,
@@ -64,10 +64,10 @@ func (d *dftVar) notAWitnessClause(
 		if lConst1[i] != base.BOT &&
 			lConst2[i] != base.BOT &&
 			lConst1[i] != lConst2[i] {
-				clause = append(
-					clause,
-					-ctx.Var(string(varInst), i, base.BOT.Val()),
-				)
+			clause = append(
+				clause,
+				-ctx.Var(string(varInst), i, base.BOT.Val()),
+			)
 		}
 	}
 	return clause, nil
@@ -75,7 +75,7 @@ func (d *dftVar) notAWitnessClause(
 
 // Generate not a witness clause.
 // Does not check for an index out of bound error.
-func (d *dftVar) unsafeNotAWitnessClause(
+func (d *dfsVar) unsafeNotAWitnessClause(
 	varInst base.Var,
 	lConst1, lConst2 base.Const,
 	ctx *base.Context,
@@ -85,27 +85,28 @@ func (d *dftVar) unsafeNotAWitnessClause(
 		if lConst1[i] != base.BOT &&
 			lConst2[i] != base.BOT &&
 			lConst1[i] != lConst2[i] {
-				clause = append(
-					clause,
-					-ctx.Var(string(varInst), i, base.BOT.Val()),
-				)
+			clause = append(
+				clause,
+				-ctx.Var(string(varInst), i, base.BOT.Val()),
+			)
 		}
 	}
 	return clause
 }
 
 // Return pointer to simplified equivalent component which might be itself.
-func (d *dftVar) Simplified(
+func (d *dfsVar) Simplified(
 	ctx *base.Context,
 ) (base.Component, error) {
 	return d, nil
 }
 
 // Return slice of pointers to component's children.
-func (d *dftVar) GetChildren() []base.Component {
+func (d *dfsVar) GetChildren() []base.Component {
 	return []base.Component{}
 }
+
 // yes is true if struct is trivial and value represents its truthiness.
-func (d *dftVar) IsTrivial() (yes bool, value bool) {
+func (d *dfsVar) IsTrivial() (yes bool, value bool) {
 	return false, false
 }

@@ -1,16 +1,16 @@
-package dft
+package dfs
 
 import (
 	"errors"
-	"goexpdt/cnf"
 	"goexpdt/base"
+	"goexpdt/cnf"
 )
 
 // =========================== //
 //           STRUCTS           //
 // =========================== //
 
-type dftConst struct {
+type dfsConst struct {
 	constInst base.ConstInstance
 }
 
@@ -18,13 +18,13 @@ type dftConst struct {
 //           METHODS           //
 // =========================== //
 
-// Return const dft.
-func Const(constInst base.ConstInstance) *dftConst {
-	return &dftConst{constInst: constInst}
+// Return const dfs.
+func Const(constInst base.ConstInstance) *dfsConst {
+	return &dfsConst{constInst: constInst}
 }
 
 // Return CNF encoding of component.
-func (d *dftConst) Encoding(ctx *base.Context) (*cnf.CNF, error) {
+func (d *dfsConst) Encoding(ctx *base.Context) (*cnf.CNF, error) {
 	scpConst, err := d.constInst.Scoped(ctx)
 	if err != nil {
 		return nil, err
@@ -39,7 +39,7 @@ func (d *dftConst) Encoding(ctx *base.Context) (*cnf.CNF, error) {
 }
 
 // Generate cnf encoding.
-func (d *dftConst) buildEncoding(
+func (d *dfsConst) buildEncoding(
 	constInst base.Const,
 	ctx *base.Context,
 ) (*cnf.CNF, error) {
@@ -58,7 +58,7 @@ func (d *dftConst) buildEncoding(
 }
 
 // Return pointer to simplified equivalent component which might be itself.
-func (d *dftConst) Simplified(
+func (d *dfsConst) Simplified(
 	ctx *base.Context,
 ) (base.Component, error) {
 	scpConst, err := d.constInst.Scoped(ctx)
@@ -75,7 +75,7 @@ func (d *dftConst) Simplified(
 }
 
 // Generate simplified component.
-func (d *dftConst) buildSimplified(
+func (d *dfsConst) buildSimplified(
 	constInst base.Const,
 	ctx *base.Context,
 ) (base.Component, error) {
@@ -94,7 +94,7 @@ func (d *dftConst) buildSimplified(
 }
 
 // Return true if constant is not a ancestor of the leafs passed.
-func (d *dftConst) compareConsToLeafs(
+func (d *dfsConst) compareConsToLeafs(
 	constInst, lConst1, lConst2 base.Const,
 ) (bool, error) {
 	if len(constInst) != len(lConst1) || len(constInst) != len(lConst2) {
@@ -113,7 +113,7 @@ func (d *dftConst) compareConsToLeafs(
 
 // Return true if constant is not a ancestor of the leafs passed.
 // Does not check for an index out of bound error.
-func (d *dftConst) unsafeCompareConsToLeafs(
+func (d *dfsConst) unsafeCompareConsToLeafs(
 	constInst, lConst1, lConst2 base.Const,
 ) bool {
 	for i, ft := range constInst {
@@ -128,11 +128,11 @@ func (d *dftConst) unsafeCompareConsToLeafs(
 }
 
 // Return slice of pointers to component's children.
-func (d *dftConst) GetChildren() []base.Component {
+func (d *dfsConst) GetChildren() []base.Component {
 	return []base.Component{}
 }
 
 // yes is true if struct is trivial and value represents its truthiness.
-func (d *dftConst) IsTrivial() (yes bool, value bool) {
+func (d *dfsConst) IsTrivial() (yes bool, value bool) {
 	return false, false
 }

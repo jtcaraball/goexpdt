@@ -38,7 +38,7 @@ func handleList(cArgs []string) {
 		fmt.Println("Command 'list' does not take arguments.")
 		os.Exit(1)
 	}
-	fmt.Println("Experiments:")
+	fmt.Println("\nExperiments:")
 	for _, exp := range experiments {
 		fmt.Printf("  - %s\n", exp.Name())
 	}
@@ -61,6 +61,7 @@ func handleInfo(cArgs []string) {
 		}
 		out += exp.Description()
 	}
+	fmt.Println()
 	fmt.Println(out)
 	os.Exit(0)
 }

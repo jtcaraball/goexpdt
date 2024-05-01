@@ -13,8 +13,9 @@ docker build -f dockerfiles/Dockerfile.Tests -t goexpdt-tests --progress plain -
 
 ## Experiments
 
-To build the experiment image you must have docker installed and run the
-following command at the root of the project:
+To build the experiment image you must have [docker
+installed](https://docs.docker.com/engine/install/) and run the following
+command at the root of the project:
 
 ```
 docker build -f dockerfiles/Dockerfile.Experiments -t goexpdt-exp .
@@ -29,13 +30,28 @@ docker run --rm \
     goexpdt-exp <command> <args>
 ```
 
-The experiment outputs will be written to `cmd/experiment/output` directory.
+The experiment outputs will be written to `cmd/experiment/output` directory as
+csv files with their corresponding headers.
 
 ### Commands
 
 - `list`: List all implemented experiments.
 - `info <experiment>`: Get experiment info and expected arguments.
 - `<experiment> <args>`: Run experiment with arguments.
+
+### List of Experiments
+
+- `optim:rand:stats:dfs-ll`: Optimum (Stats, Random Instances) - DFS under Lesser Level Order.
+- `optim:rand:stats:sr-ll`: Optimum (Stats, Random Instances) - SR under Lesser Level Order.
+- `optim:rand:stats:sr-ss`: Optimum (Stats, Random Instances) - SR under Strict Subsumption Order.
+- `optim:rand:stats:cr-lh`: Optimum (Stats, Random Instances) - CR under Lesser Hamming Distance Order.
+- `optim:rand:stats:ca-gh`: Optimum (Stats, Random Instances) - CA under Greater Hamming Distance Order.
+- `optim:rand:val:dfs-ll`: Optimum (Value, Random Instances) - DFS under Lesser Level Order.
+- `optim:val:dfs-ll`: Optimum (Value) - DFS under Lesser Level Order.
+- `optim:val:sr-ll`: Optimum (Value) - SR under Lesser Level Order.
+- `optim:val:sr-ss`: Optimum (Value) - SR under Strict Subsumption Order.
+- `optim:val:cr-lh`: Optimum (Value) - CR under Less Hamming Distance Order.
+- `optim:val:ca-gh`: Optimum (Value) - CA under Greater Hamming Distance Order.
 
 ### Input Types
 
@@ -58,7 +74,7 @@ be in the `cmd/experiment/input` directory.
   directory and `<instance_i>` to an instance represented as a word in the
   alphabet {0, 1, 2} with 2 meaning that a feature is a 'bottom'.
 
-### Examples
+### Command Examples
 
 In the `cmd/experiments/inputs` directory there are examples of
 tree and optimization file inputs. Here are some of the experiments that

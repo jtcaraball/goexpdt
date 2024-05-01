@@ -4,7 +4,7 @@ import (
 	"errors"
 	"goexpdt/base"
 	"goexpdt/circuits/extensions/allcomp"
-	"goexpdt/circuits/extensions/dft"
+	"goexpdt/circuits/extensions/dfs"
 	"goexpdt/circuits/extensions/full"
 	"goexpdt/circuits/extensions/leh"
 	"goexpdt/circuits/predicates/lel"
@@ -146,7 +146,7 @@ func SR_SS_O(ctx *base.Context, cs ...base.Const) (
 
 func dfsFGF() orderoptimum.VFormula {
 	return func(v base.Var) base.Component {
-		return dft.Var(v)
+		return dfs.Var(v)
 	}
 }
 

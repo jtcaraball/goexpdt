@@ -9,12 +9,6 @@ type experiment interface {
 
 // Slice of impelmented experiments.
 var experiments []experiment = []experiment{
-	newEvalExp(
-		"eval",
-		"Evaluate instances in given input files."+
-			"Arguments:\n"+
-			"  - List of <optim_file_input>.",
-	),
 	newRandOptimExp(
 		"optim:rand:val:dfs-ll",
 		"Optimum:Value: DFS - Lesser Level Order (Random Instances)\n"+

@@ -112,6 +112,19 @@ func randStatsEvalGen(queryGF closeOptimQueryGenFactory) roeEval {
 			strconv.Itoa(ctx.Tree.NodeCount),
 		}
 
+		header := []string{"file_name", "tree_dim", "tree_nodes"}
+		for i := 0; i < n; i++ {
+			header = append(
+				header,
+				fmt.Sprintf("bots_%d", i),
+				fmt.Sprintf("calls_%d", i),
+				fmt.Sprintf("time_%d", i),
+			)
+		}
+		if err := w.Write(header); err != nil {
+			return err
+		}
+
 		for i := 0; i < n; i++ {
 			fg, og, err := queryGF(ctx)
 			if err != nil {
@@ -162,6 +175,18 @@ func randValEvalGen(queryGF closeOptimQueryGenFactory) roeEval {
 		w *csv.Writer,
 	) error {
 		v := base.Var("x")
+
+		header := []string{"file_name", "tree_dim", "tree_nodes"}
+		for i := 0; i < n; i++ {
+			header = append(
+				header,
+				fmt.Sprintf("time_%d", i),
+				fmt.Sprintf("value_%d", i),
+			)
+		}
+		if err := w.Write(header); err != nil {
+			return err
+		}
 
 		for i := 0; i < n; i++ {
 			fg, og, err := queryGF(ctx)

@@ -94,6 +94,12 @@ func valEvalGen(queryGF openOptimQueryGenFactory) oeEval {
 
 		v := base.Var("x")
 
+		if err = w.Write(
+			[]string{"file_name", "tree_dim", "tree_nodes", "time", "value"},
+		); err != nil {
+			return err
+		}
+
 		for _, inst := range instances {
 			t := time.Now()
 

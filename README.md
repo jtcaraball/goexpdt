@@ -44,6 +44,7 @@ Experiments may accept of two file formats as inputs:
 - **Tree file**: A json file representing a decision tree.
 - **Optimization file**: A plain text file that must follow the following
   format
+
   ```
   <tree_file_name>
   <instance_1>
@@ -51,6 +52,7 @@ Experiments may accept of two file formats as inputs:
   ...
   <instance_n>
   ```
+
   Here an instance is represented as a word in the alphabet `{0, 1, 2}` with
   `2` representing that a feature has the 'bottom' value.
 

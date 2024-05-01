@@ -80,14 +80,14 @@ In the `cmd/experiments/inputs` directory there are examples of
 tree and optimization file inputs. Here are some of the experiments that
 can be ran on this inputs:
 
-**Times for 10 random positive instances for optimal Sufficient Reason over
-Less Level order**:
+**Stats for 5 random positive instances for optimal Determinant Feature Set
+over Less Level order**:
 
 ```
 docker run --rm \
     -v $(pwd)/cmd/experiment/outputs:/goexpdt/cmd/experiment/outputs \
     -v $(pwd)/cmd/experiment/inputs:/goexpdt/cmd/experiment/inputs \
-    goexpdt-exp optim:rand:stats:sr-ll 10 mnist_d0_n400.json
+    goexpdt-exp optim:rand:stats:dfs-ll 5 mnist_d0_n400.json
 ```
 
 **Values of optimal Changed Allowed over Greater Hamming distance order for

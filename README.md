@@ -39,7 +39,7 @@ The experiment outputs will be written to `cmd/experiment/output` directory.
 
 ### Input Types
 
-Experiments may accept one of two file formats as types, both of which must
+Experiments may accept one of two file formats as inputs, both of which must
 be in the `cmd/experiment/input` directory.
 
 - **Tree file**: A json file representing a decision tree.

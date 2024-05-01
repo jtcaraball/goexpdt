@@ -41,12 +41,12 @@ csv files with their corresponding headers.
 
 ### List of Experiments
 
-- `optim:rand:stats:dfs-ll`: Optimum (Stats - Random Instances) - DFS under Lesser Level Order.
-- `optim:rand:stats:sr-ll`: Optimum (Value - Random Instances) - SR under Lesser Level Order.
-- `optim:rand:stats:sr-ss`: Optimum (Value - Random Instances) - SR under Strict Subsumption.
-- `optim:rand:stats:cr-lh`: Optimum (Value - Random Instances) - CR under Lesser Hamming Distance.
-- `optim:rand:stats:ca-gh`: Optimum (Value - Random Instances) - CA under Greater Hamming Distance.
-- `optim:rand:val:dfs-ll`: Optimum (Value - Random Instances) - DFS under Lesser Level Order.
+- `optim:rand:stats:dfs-ll`: Optimum (Stats, Random Instances) - DFS under Lesser Level Order.
+- `optim:rand:stats:sr-ll`: Optimum (Stats, Random Instances) - SR under Lesser Level Order.
+- `optim:rand:stats:sr-ss`: Optimum (Stats, Random Instances) - SR under Strict Subsumption.
+- `optim:rand:stats:cr-lh`: Optimum (Stats, Random Instances) - CR under Lesser Hamming Distance.
+- `optim:rand:stats:ca-gh`: Optimum (Stats, Random Instances) - CA under Greater Hamming Distance.
+- `optim:rand:val:dfs-ll`: Optimum (Value, Random Instances) - DFS under Lesser Level Order.
 - `optim:val:dfs-ll`: Optimum (Value) - DFS under Lesser Level Order.
 - `optim:val:sr-ll`: Optimum (Value) - SR under Lesser Level Order.
 - `optim:val:sr-ss`: Optimum (Value) - SR under Strict Subsumption.

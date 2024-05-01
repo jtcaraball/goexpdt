@@ -37,6 +37,27 @@ The experiment outputs will be written to `cmd/experiment/output` directory.
 - `info <experiment>`: Get experiment info and expected arguments.
 - `<experiment> <args>`: Run experiment with arguments.
 
+### Input Types
+
+Experiments may accept one of two file formats as inputs, both of which must
+be in the `cmd/experiment/input` directory.
+
+- **Tree file**: A json file representing a decision tree.
+- **Optimization file**: A plain text file that must follow the format outlined
+  bellow
+
+  ```
+  <tree_file_name>
+  <instance_1>
+  <instance_2>
+  ...
+  <instance_n>
+  ```
+
+  Here `<tree_file_name>` corresponds to the name of a Tree file in the input
+  directory and `<instance_i>` to an instance represented as a word in the
+  alphabet {0, 1, 2} with 2 meaning that a feature is a 'bottom'.
+
 ### Examples
 
 In the `cmd/experiments/inputs` directory there are examples of

@@ -13,8 +13,9 @@ docker build -f dockerfiles/Dockerfile.Tests -t goexpdt-tests --progress plain -
 
 ## Experiments
 
-To build the experiment image you must have docker installed and run the
-following command at the root of the project:
+To build the experiment image you must have [docker
+installed](https://docs.docker.com/engine/install/) and run the following
+command at the root of the project:
 
 ```
 docker build -f dockerfiles/Dockerfile.Experiments -t goexpdt-exp .
@@ -37,6 +38,20 @@ The experiment outputs will be written to `cmd/experiment/output` directory.
 - `info <experiment>`: Get experiment info and expected arguments.
 - `<experiment> <args>`: Run experiment with arguments.
 
+### List of Experiments
+
+- `optim:rand:stats:dfs-ll`: Optimum (Stats - Random Instances): DFS - Lesser Level Order.
+- `optim:rand:stats:sr-ll`: Optimum (Value - Random Instances): SR - Lesser Level.
+- `optim:rand:stats:sr-ss`: Optimum (Value - Random Instances): SR - Strict Subsumption.
+- `optim:rand:stats:cr-lh`: Optimum (Value - Random Instances): CR - Lesser Hamming Distance.
+- `optim:rand:stats:ca-gh`: Optimum (Value - Random Instances): CA - Greater Hamming Distance.
+- `optim:rand:val:dfs-ll`: Optimum (Value - Random Instances): DFS - Lesser Level Order.
+- `optim:val:dfs-ll`: Optimum (Value): DFS - Lesser Level Order.
+- `optim:val:sr-ll`: Optimum (Value): SR - Less Level.
+- `optim:val:sr-ss`: Optimum (Value): SR - Strict Subsumption.
+- `optim:val:cr-lh`: Optimum (Value): CR - Less Hamming Distance.
+- `optim:val:ca-gh`: Optimum (Value): CA - Greater Hamming Distance.
+
 ### Input Types
 
 Experiments may accept one of two file formats as inputs, both of which must
@@ -58,7 +73,7 @@ be in the `cmd/experiment/input` directory.
   directory and `<instance_i>` to an instance represented as a word in the
   alphabet {0, 1, 2} with 2 meaning that a feature is a 'bottom'.
 
-### Examples
+### Command Examples
 
 In the `cmd/experiments/inputs` directory there are examples of
 tree and optimization file inputs. Here are some of the experiments that

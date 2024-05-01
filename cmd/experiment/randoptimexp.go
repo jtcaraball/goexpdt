@@ -15,18 +15,21 @@ import (
 //          EXPERIMENT         //
 // =========================== //
 
-// Method to run on each tree input.
-type roeEval func(n int, tf, tpf string, ctx *base.Context, w *csv.Writer) error
+// Random optimisation experiment evaluator interface.
+type roeDriver interface {
+	WriteHeader(n int, w *csv.Writer) error
+	Eval(n int, tf, tpf string, ctx *base.Context, w *csv.Writer) error
+}
 
 // Order minimum 'get stats' experiment.
 type randOptimExp struct {
 	name      string
 	desc      string
-	evaluator roeEval
+	evaluator roeDriver
 }
 
 // Return new instance of experiment.
-func newRandOptimExp(name, desc string, evaluator roeEval) *randOptimExp {
+func newRandOptimExp(name, desc string, evaluator roeDriver) *randOptimExp {
 	return &randOptimExp{
 		name:      name,
 		desc:      desc,
@@ -73,13 +76,17 @@ func (e *randOptimExp) Exec(args ...string) error {
 		return err
 	}
 
+	if err = e.evaluator.WriteHeader(mult, outputWriter); err != nil {
+		return err
+	}
+
 	for _, treeFP := range treePaths {
 		ctx, err := genContext(treeFP)
 		if err != nil {
 			return err
 		}
 
-		if err = e.evaluator(
+		if err = e.evaluator.Eval(
 			mult,
 			treeFP,
 			tmpFP,
@@ -98,106 +105,146 @@ func (e *randOptimExp) Exec(args ...string) error {
 //          EVALUATORS         //
 // =========================== //
 
+type randStatsDriver struct {
+	queryGF closeOptimQueryGenFactory
+}
+
+// Return rand stats evaluator.
+func newRandStatsDriver(queryGF closeOptimQueryGenFactory) randStatsDriver {
+	return randStatsDriver{queryGF: queryGF}
+}
+
+// Write output header.
+func (e randStatsDriver) WriteHeader(
+	n int,
+	w *csv.Writer,
+) error {
+	header := []string{"file_name", "tree_dim", "tree_nodes"}
+	for i := 0; i < n; i++ {
+		header = append(
+			header,
+			fmt.Sprintf("bots_%d", i),
+			fmt.Sprintf("calls_%d", i),
+			fmt.Sprintf("time_%d", i),
+		)
+	}
+	return w.Write(header)
+}
+
 // Compute value on tree.
-func randStatsEvalGen(queryGF closeOptimQueryGenFactory) roeEval {
-	return func(
-		n int,
-		tf, tpf string,
-		ctx *base.Context,
-		w *csv.Writer,
-	) error {
-		output := []string{
-			tf,
-			strconv.Itoa(ctx.Dimension),
-			strconv.Itoa(ctx.Tree.NodeCount),
+func (e randStatsDriver) Eval(
+	n int,
+	tf, tpf string,
+	ctx *base.Context,
+	w *csv.Writer,
+) error {
+	output := []string{
+		tf,
+		strconv.Itoa(ctx.Dimension),
+		strconv.Itoa(ctx.Tree.NodeCount),
+	}
+
+	for i := 0; i < n; i++ {
+		fg, og, err := e.queryGF(ctx)
+		if err != nil {
+			return err
 		}
 
-		for i := 0; i < n; i++ {
-			fg, og, err := queryGF(ctx)
-			if err != nil {
-				return err
-			}
+		t := time.Now()
 
-			t := time.Now()
-
-			out, err := orderoptimum.Compute(
-				fg,
-				og,
-				base.Var("x"),
-				ctx,
-				SOLVER,
-				tpf,
-			)
-			if err != nil {
-				return fmt.Errorf("Compute error: %s", err.Error())
-			}
-
-			ctx.Reset()
-
-			ts := time.Since(t)
-			output = append(
-				output,
-				strconv.Itoa(out.Value.BotCount()),
-				strconv.Itoa(out.Calls),
-				strconv.Itoa(int(ts)),
-			)
+		out, err := orderoptimum.Compute(
+			fg,
+			og,
+			base.Var("x"),
+			ctx,
+			SOLVER,
+			tpf,
+		)
+		if err != nil {
+			return fmt.Errorf("Compute error: %s", err.Error())
 		}
 
-		if err := w.Write(output); err != nil {
+		ctx.Reset()
+
+		ts := time.Since(t)
+		output = append(
+			output,
+			strconv.Itoa(out.Value.BotCount()),
+			strconv.Itoa(out.Calls),
+			strconv.Itoa(int(ts)),
+		)
+	}
+
+	if err := w.Write(output); err != nil {
+		return err
+	}
+
+	w.Flush() // Experiments are long. Save outputs often.
+
+	return nil
+}
+
+type randValDriver struct {
+	queryGF closeOptimQueryGenFactory
+}
+
+// Return rand value evaluator.
+func newRandValDriver(queryGF closeOptimQueryGenFactory) randValDriver {
+	return randValDriver{queryGF: queryGF}
+}
+
+// Write output header.
+func (e randValDriver) WriteHeader(
+	n int,
+	w *csv.Writer,
+) error {
+	header := []string{"file_name", "tree_dim", "tree_nodes", "time", "value"}
+	return w.Write(header)
+}
+
+// Compute value on tree.
+func (e randValDriver) Eval(
+	n int,
+	tf, tpf string,
+	ctx *base.Context,
+	w *csv.Writer,
+) error {
+	v := base.Var("x")
+
+	for i := 0; i < n; i++ {
+		fg, og, err := e.queryGF(ctx)
+		if err != nil {
+			return err
+		}
+
+		t := time.Now()
+
+		out, err := orderoptimum.Compute(fg, og, v, ctx, SOLVER, tpf)
+		if err != nil {
+			return err
+		}
+
+		outString := "-"
+		if out.Found {
+			outString = out.Value.AsString()
+		}
+		timeString := strconv.Itoa(int(time.Since(t)))
+
+		if err = w.Write(
+			[]string{
+				tf,
+				strconv.Itoa(ctx.Dimension),
+				strconv.Itoa(ctx.Tree.NodeCount),
+				timeString,
+				outString,
+			},
+		); err != nil {
 			return err
 		}
 
 		w.Flush() // Experiments are long. Save outputs often.
-
-		return nil
+		ctx.Reset()
 	}
-}
 
-// Compute value on tree.
-func randValEvalGen(queryGF closeOptimQueryGenFactory) roeEval {
-	return func(
-		n int,
-		tf, tpf string,
-		ctx *base.Context,
-		w *csv.Writer,
-	) error {
-		v := base.Var("x")
-
-		for i := 0; i < n; i++ {
-			fg, og, err := queryGF(ctx)
-			if err != nil {
-				return err
-			}
-
-			t := time.Now()
-
-			out, err := orderoptimum.Compute(fg, og, v, ctx, SOLVER, tpf)
-			if err != nil {
-				return err
-			}
-
-			outString := "-"
-			if out.Found {
-				outString = out.Value.AsString()
-			}
-			timeString := strconv.Itoa(int(time.Since(t)))
-
-			if err = w.Write(
-				[]string{
-					tf,
-					strconv.Itoa(ctx.Dimension),
-					strconv.Itoa(ctx.Tree.NodeCount),
-					timeString,
-					outString,
-				},
-			); err != nil {
-				return err
-			}
-
-			w.Flush() // Experiments are long. Save outputs often.
-			ctx.Reset()
-		}
-
-		return nil
-	}
+	return nil
 }

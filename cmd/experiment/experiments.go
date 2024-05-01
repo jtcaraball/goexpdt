@@ -15,7 +15,7 @@ var experiments []experiment = []experiment{
 			"Arguments:\n"+
 			"  - n (instances per input\n"+
 			"  - List of <tree_file_inputs>.",
-		randValEvalGen(DFS_LL_C),
+		newRandValDriver(DFS_LL_C),
 	),
 	newRandOptimExp(
 		"optim:rand:stats:dfs-ll",
@@ -23,7 +23,7 @@ var experiments []experiment = []experiment{
 			"Arguments:\n"+
 			"  - n (instances per input\n"+
 			"  - List of <tree_file_inputs>.",
-		randStatsEvalGen(DFS_LL_C),
+		newRandStatsDriver(DFS_LL_C),
 	),
 	newRandOptimExp(
 		"optim:rand:stats:sr-ll",
@@ -31,7 +31,7 @@ var experiments []experiment = []experiment{
 			"Arguments:\n"+
 			"  - n (instances per input\n"+
 			"  - List of <tree_file_inputs>.",
-		randStatsEvalGen(SR_LL_C),
+		newRandStatsDriver(SR_LL_C),
 	),
 	newRandOptimExp(
 		"optim:rand:stats:cr-lh",
@@ -39,7 +39,7 @@ var experiments []experiment = []experiment{
 			"Arguments:\n"+
 			"  - n (instances per input\n"+
 			"  - List of <tree_file_inputs>.",
-		randStatsEvalGen(CR_LH_C),
+		newRandStatsDriver(CR_LH_C),
 	),
 	newRandOptimExp(
 		"optim:rand:stats:ca-gh",
@@ -47,7 +47,7 @@ var experiments []experiment = []experiment{
 			"Arguments:\n"+
 			"  - n (instances per input\n"+
 			"  - List of <tree_file_inputs>.",
-		randStatsEvalGen(CA_GH_C),
+		newRandStatsDriver(CA_GH_C),
 	),
 	newRandOptimExp(
 		"optim:rand:stats:sr-ss",
@@ -55,7 +55,7 @@ var experiments []experiment = []experiment{
 			"Arguments:\n"+
 			"  - n (instances per input\n"+
 			"  - List of <tree_file_inputs>.",
-		randStatsEvalGen(SR_SS_C),
+		newRandStatsDriver(SR_SS_C),
 	),
 	newOptimExp(
 		"optim:val:dfs-ll",
@@ -63,35 +63,35 @@ var experiments []experiment = []experiment{
 			"Arguments:\n"+
 			"  - n (instances per input\n"+
 			"  - List of <tree_file_inputs>.",
-		valEvalGen(DFS_LL_O),
+		newValDriver(DFS_LL_O),
 	),
 	newOptimExp(
 		"optim:val:cr-lh",
 		"Optimum:Value: CR - Less Hamming Distance\n"+
 			"Arguments:\n"+
 			"  - List of <optim_file_input>.",
-		valEvalGen(CR_LH_O),
+		newValDriver(CR_LH_O),
 	),
 	newOptimExp(
 		"optim:val:ca-gh",
 		"Optimum:Value: CA - Greater Hamming Distance\n"+
 			"Arguments:\n"+
 			"  - List of <optim_file_input>.",
-		valEvalGen(CA_GH_O),
+		newValDriver(CA_GH_O),
 	),
 	newOptimExp(
 		"optim:val:sr-ll",
 		"Optimum:Value: SR - Less Level\n"+
 			"Arguments:\n"+
 			"  - List of <optim_file_input>.",
-		valEvalGen(SR_LL_O),
+		newValDriver(SR_LL_O),
 	),
 	newOptimExp(
 		"optim:val:sr-ss",
 		"Optimum:Value: SR - Strict Subsumption\n"+
 			"Arguments:\n"+
 			"  - List of <optim_file_input>.",
-		valEvalGen(SR_SS_O),
+		newValDriver(SR_SS_O),
 	),
 }
 

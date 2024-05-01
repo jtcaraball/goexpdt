@@ -39,11 +39,12 @@ The experiment outputs will be written to `cmd/experiment/output` directory.
 
 ### Input Types
 
-Experiments may accept of two file formats as inputs:
+Experiments may accept one of two file formats as types, both of which must
+be in the `cmd/experiment/output` directory.
 
 - **Tree file**: A json file representing a decision tree.
-- **Optimization file**: A plain text file that must follow the following
-  format
+- **Optimization file**: A plain text file that must follow the format outlined
+  bellow
 
   ```
   <tree_file_name>
@@ -53,8 +54,9 @@ Experiments may accept of two file formats as inputs:
   <instance_n>
   ```
 
-  Here an instance is represented as a word in the alphabet `{0, 1, 2}` with
-  `2` representing that a feature has the 'bottom' value.
+  Here `<tree_file_name>` corresponds to the name of a Tree file in the input
+  directory and `<instance_i>` to an instance represented as a word in the
+  alphabet {0, 1, 2} with 2 meaning that a feature is a 'bottom'.
 
 ### Examples
 

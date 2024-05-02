@@ -1,6 +1,6 @@
 # Go-ExplainDT
 
-A pure GO implementation associated to the paper "A Uniform Language to Exlain
+A pure GO implementation associated to the paper "A Uniform Language to Explain
 Decision Trees".
 
 ## Docker  

@@ -9,11 +9,9 @@ import (
 	"github.com/jtcaraball/goexpdt/query/vname"
 )
 
-// baseScoper is a basic scope variable and constant manager.
-type baseScoper []Guard
+type baseScoper []scope
 
-// A Guard is the representation of a guarded quantifier in the scope.
-type Guard struct {
+type scope struct {
 	Target  string  // Constant target of the corresponding guarded quantifier.
 	InScope []Var   // Variables declared inside the scope.
 	Value   []FeatV // The value to be assigned target.
@@ -42,15 +40,15 @@ func (s *baseScoper) ScopeConst(c Const) (Const, bool) {
 	return Const{}, false
 }
 
-func (s *baseScoper) AddGuard(tgt string) {
-	*s = append(*s, Guard{Target: tgt})
+func (s *baseScoper) AddScope(tgt string) {
+	*s = append(*s, scope{Target: tgt})
 }
 
-func (s *baseScoper) PopGuard() {
+func (s *baseScoper) PopScope() {
 	*s = (*s)[:len(*s)-1]
 }
 
-func (s *baseScoper) SetGuard(vIdx int, val []FeatV) error {
+func (s *baseScoper) SetScope(vIdx int, val []FeatV) error {
 	slen := len(*s)
 	if slen == 0 || (*s)[slen].Target != "" {
 		return errors.New("Invalid guard setting")

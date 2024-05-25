@@ -1,20 +1,24 @@
-// vname defines set of useful constants and functions for naming variables
+// vname defines a set of useful constants and functions for naming variables
 // safely and avoid collisions when assigning values to cnf variables.
 //
 // When declaring custom variable names one should avoid using the value of
-// the constants declared in this package.
+// the constants declared in this package indirectly.
 package vname
 
 import "strings"
 
 const (
-	CounterPrefix   string = "ctr" // Counter variable prefix.
-	ReachablePrefix string = "rch" // Reachable node variable prefix.
+	// Counter variable prefix.
+	CounterPrefix string = "ctr"
+	// Reachable node variable prefix.
+	ReachablePrefix string = "rch"
 )
 
 const (
-	SConnector   rune = 35 // Connector for scope variable name generation.
-	CVConntector rune = 36 // Connecctor for cnf variable name generation.
+	// Connector for scope variable name generation.
+	SConnector rune = 35
+	// Connecctor for cnf variable name generation.
+	CVConntector rune = 36
 )
 
 // SName returns scope formated name generated from p.

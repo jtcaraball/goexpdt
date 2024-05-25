@@ -3,22 +3,21 @@ package query
 // Scoper manages scope for guarded quantifiers.
 type Scoper interface {
 	// ScopeVar returns an instance variable equal to the original variable
-	// plus a suffix representing the guards in the scope at the moment its
-	// called.
+	// plus a suffix representing the stack of scopes at the moment its called.
 	ScopeVar(v Var) Var
 	// ScopeConst returns an instance constant with its value field set match
-	// the value of the last guard in the scope at the moment its called.
-	// If the constant is scoped then ok==true else ok==false and the a zero
-	// value Const is returned.
+	// the value of the scope targeting c at the moment its called if it
+	// exists. If the constant is scoped then ok==true else ok==false and the a
+	// zero value Const is returned.
 	ScopeConst(c Const) (scopedConst Const, ok bool)
-	// AddGuard adds a guard to the scope with target==tgt.
-	AddGuard(tgt string)
-	// PopGuard removes the last guard in the scope.
-	PopGuard()
-	// SetGuard adds the value and corresponding index the last guard in the
-	// scope. Returns an error if there are no guards or the last guard is
+	// AddScope adds a scope with target==tgt to the stack.
+	AddScope(tgt string)
+	// PopScope removes the last scope in the stack.
+	PopScope()
+	// SetScope adds the value and corresponding index the last scope in the
+	// stack. Returns an error if there are no scopes or the last scope is
 	// already set.
-	SetGuard(vIdx int, val []FeatV) error
+	SetScope(vIdx int, val []FeatV) error
 	// Reset removes all guards in the scope
 	Reset()
 }
@@ -54,13 +53,13 @@ type Model interface {
 	// Dim returns the dimension of the model.
 	Dim()
 	// NodesConsts returns all the model's nodes as constants. The method can
-	// fail the underlying model is inconsistent.
+	// fail if the underlying model is inconsistent.
 	NodesConsts() ([]Const, error)
 	// PosLeafsConsts returns all the model's positive leafs as constants. The
-	// method can fail the underlying model is inconsistent.
+	// method can fail if the underlying model is inconsistent.
 	PosLeafsConsts() ([]Const, error)
 	// NegLeafsConsts returns all the model's negative leafs as constants. The
-	// method can fail the underlying model is inconsistent.
+	// method can fail if the underlying model is inconsistent.
 	NegLeafsConsts() ([]Const, error)
 }
 

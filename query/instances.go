@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-// Variable corresponds to the identifier of a partial instance in a query.
+// Var corresponds to the identifier of a partial instance in a query.
 type Var string
 
 // FeatV corresponds to the value of a partial instance.
@@ -20,8 +20,11 @@ type Const struct {
 
 // Supported feature values.
 const (
+	// A BOT value represents the bottom feature value of a partial instance.
 	BOT FeatV = iota
+	// A ZERO value represents the zero feature value of a partial instance.
 	ZERO
+	// A ONE value represents the one feature value of a partial instance.
 	ONE
 )
 

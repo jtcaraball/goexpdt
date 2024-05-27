@@ -1,5 +1,31 @@
 package query
 
+// VarManager manages the creation and usage of cnf variables. Variables are
+// divided into user and internal variables and are denoted by the triple
+// (name, idx, val).
+type VarManager interface {
+	// TopV returns the value of largest unsigned integer assigned to a
+	// variable.
+	TopV() uint
+	// UpdateTopV updates the value of the unsigned the value of the largest
+	// integer to be assigned. Returns true if the update is valid and took
+	// effect.
+	UpdateTopV(v uint) bool
+	// Var return the unsigned integer value assigned to the user variable
+	// given. If the variable does not exists it first assigns a value to it.
+	Var(name string, idx, val int) uint
+	// VarExists return true if the user variable given exists.
+	VarExists(name string, idx, val int) bool
+	// Var return the unsigned integer value assigned to the internal variable
+	// given. If the variable does not exists it first assigns a value to it.
+	IVar(name string, idx, val int) uint
+	// VarExists return true if the internal variable given exists.
+	IVarExists(name string, idx, val int) bool
+	// Reset removes all variables and sets the next variable to be assigned
+	// to 0.
+	Reset()
+}
+
 type baseVarManager struct {
 	topv         uint            // Value of the largest variable assigned.
 	userVars     map[varRep]uint // User variables map.

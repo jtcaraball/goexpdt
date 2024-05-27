@@ -9,6 +9,28 @@ import (
 	"github.com/jtcaraball/goexpdt/query/vname"
 )
 
+// Scoper manages scope for guarded quantifiers.
+type Scoper interface {
+	// ScopeVar returns an instance variable equal to the original variable
+	// plus a suffix representing the stack of scopes at the moment its called.
+	ScopeVar(v Var) Var
+	// ScopeConst returns an instance constant with its value field set match
+	// the value of the scope targeting c at the moment its called if it
+	// exists. If the constant is scoped then ok==true else ok==false and the a
+	// zero value Const is returned.
+	ScopeConst(c Const) (scopedConst Const, ok bool)
+	// AddScope adds a scope with target==tgt to the stack.
+	AddScope(tgt string)
+	// PopScope removes the last scope in the stack.
+	PopScope()
+	// SetScope adds the value and corresponding index the last scope in the
+	// stack. Returns an error if there are no scopes or the last scope is
+	// already set.
+	SetScope(vIdx int, val []FeatV) error
+	// Reset removes all guards in the scope
+	Reset()
+}
+
 type baseScoper []scope
 
 type scope struct {

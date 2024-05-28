@@ -20,14 +20,20 @@ type baseQContext struct {
 // assignment and concatenation based instance variable and constant scoping.
 func BasicQContext(model Model) QContext {
 	return &baseQContext{
-		baseScoper:     baseScoper{},
-		baseVarManager: baseVarManager{},
-		Model:          model,
+		baseScoper: baseScoper{},
+		baseVarManager: baseVarManager{
+			userVars:     make(map[varRep]uint),
+			internalVars: make(map[varRep]uint),
+		},
+		Model: model,
 	}
 }
 
 // Reset the context's scoper and variable manager to their original state.
 func (qc *baseQContext) Reset() {
+	if qc == nil {
+		return
+	}
 	qc.baseScoper.Reset()
 	qc.baseVarManager.Reset()
 }

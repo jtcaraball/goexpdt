@@ -1,4 +1,4 @@
-package trees
+package tree
 
 import (
 	"encoding/json"
@@ -6,11 +6,7 @@ import (
 	"slices"
 )
 
-// =========================== //
-//           STRUCTS           //
-// =========================== //
-
-type NodeInJSON struct {
+type nodeJSON struct {
 	ID   int    `json:"id"`
 	Type string `json:"type"`
 	// Leaf fields
@@ -21,31 +17,27 @@ type NodeInJSON struct {
 	RightID int `json:"id_right"`
 }
 
-type TreeInJSON struct {
+type treeJSON struct {
 	ClassNames []string                   `json:"class_names"`
 	Positive   string                     `json:"positive"`
 	Features   []string                   `json:"feature_names"`
-	NodesJSON  map[string]json.RawMessage `json:"nodes"`
-	Nodes      map[int]*NodeInJSON        `json:"-"`
+	RawNodes   map[string]json.RawMessage `json:"nodes"`
+	Nodes      map[int]*nodeJSON          `json:"-"`
 }
 
-// =========================== //
-//           METHODS           //
-// =========================== //
-
-func newTreeJSON() *TreeInJSON {
-	treeJSON := new(TreeInJSON)
-	treeJSON.Nodes = make(map[int]*NodeInJSON)
+func newTreeJSON() *treeJSON {
+	treeJSON := new(treeJSON)
+	treeJSON.Nodes = make(map[int]*nodeJSON)
 	return treeJSON
 }
 
-func unmarhsalTree(jsonBytes []byte) (*TreeInJSON, error) {
+func unmarhsalTree(jsonBytes []byte) (*treeJSON, error) {
 	treeJSON := newTreeJSON()
 	if err := json.Unmarshal(jsonBytes, treeJSON); err != nil {
 		return nil, err
 	}
-	for _, nodeBytes := range treeJSON.NodesJSON {
-		nodeJSON := &NodeInJSON{
+	for _, nodeBytes := range treeJSON.RawNodes {
+		nodeJSON := &nodeJSON{
 			ID:      -1,
 			FeatIdx: -1,
 			LeftID:  -1,
@@ -62,7 +54,7 @@ func unmarhsalTree(jsonBytes []byte) (*TreeInJSON, error) {
 	return treeJSON, nil
 }
 
-func (tj *TreeInJSON) Validate() error {
+func (tj treeJSON) Validate() error {
 	// Validate fields
 	if len(tj.ClassNames) != 2 {
 		return errors.New(
@@ -81,18 +73,25 @@ func (tj *TreeInJSON) Validate() error {
 	}
 	// Validate nodes
 	for _, node := range tj.Nodes {
-		if err := node.Validate(len(tj.Features), tj.ClassNames); err != nil {
+		if err := node.Validate(
+			len(tj.Features),
+			len(tj.Nodes),
+			tj.ClassNames,
+		); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func (nj *NodeInJSON) Validate(featCount int, validClasses []string) error {
+func (nj nodeJSON) Validate(
+	featCount, nodeCount int,
+	validClasses []string,
+) error {
 	if nj.Type != "internal" && nj.Type != "leaf" {
 		return errors.New("Tree encoding error: invalid or missing node's type")
 	}
-	if nj.ID < 0 {
+	if nj.ID < 0 || nj.ID > nodeCount {
 		return errors.New(
 			"Tree encoding error: invalid or missing node's id",
 		)

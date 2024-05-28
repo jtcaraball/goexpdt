@@ -29,11 +29,14 @@ const (
 )
 
 // AllBotConst returns a all bot constant len dim with a zero value id.
-func AllBotConst(dim int) Const {
-	feats := []FeatV{}
-	for i := 0; i < dim; i++ {
-		feats = append(feats, BOT)
+func AllBotConst(dim uint) Const {
+	feats := make([]FeatV, dim)
+
+	var i uint
+	for i = 0; i < dim; i++ {
+		feats[0] = BOT
 	}
+
 	return Const{Val: feats}
 }
 

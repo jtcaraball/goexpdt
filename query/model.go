@@ -3,19 +3,19 @@ package query
 // Model provides functionality to access properties of models.
 type Model interface {
 	// Dim returns the dimension of the model.
-	Dim()
+	Dim() uint
 	// Nodes returns a slice composed of the model's nodes as Node type. The
 	// node at index 0 must correspond to the model's root.
 	Nodes() []Node
 	// NodesConsts returns all the model's nodes as constants. The method can
 	// fail if the underlying model is inconsistent.
-	NodesConsts() ([]Const, error)
+	NodesConsts() []Const
 	// PosLeafsConsts returns all the model's positive leafs as constants. The
 	// method can fail if the underlying model is inconsistent.
-	PosLeafsConsts() ([]Const, error)
+	PosLeafsConsts() []Const
 	// NegLeafsConsts returns all the model's negative leafs as constants. The
 	// method can fail if the underlying model is inconsistent.
-	NegLeafsConsts() ([]Const, error)
+	NegLeafsConsts() []Const
 }
 
 // Node represents a node in the model, be it a leaf or an internal one.

@@ -1,3 +1,6 @@
+// A basic implementation of a Decision Tree that implements the Model
+// interface using a custom tree json encoding based on scikit-learn
+// DecisionTreeClassifier encoding.
 package tree
 
 import (

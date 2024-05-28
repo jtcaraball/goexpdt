@@ -22,7 +22,7 @@ type Scoper interface {
 	// AddScope adds a scope with target==tgt to the stack.
 	AddScope(tgt string)
 	// PopScope removes the last scope in the stack.
-	PopScope()
+	PopScope() error
 	// SetScope adds the value and corresponding index the last scope in the
 	// stack. Returns an error if there are no scopes or the last scope is
 	// already set.
@@ -66,8 +66,12 @@ func (s *baseScoper) AddScope(tgt string) {
 	*s = append(*s, scope{Target: tgt})
 }
 
-func (s *baseScoper) PopScope() {
+func (s *baseScoper) PopScope() error {
+	if len(*s) == 0 {
+		return errors.New("Invalid scope removal in empty scoper")
+	}
 	*s = (*s)[:len(*s)-1]
+	return nil
 }
 
 func (s *baseScoper) SetScope(vIdx int, val []FeatV) error {
@@ -80,4 +84,6 @@ func (s *baseScoper) SetScope(vIdx int, val []FeatV) error {
 	return nil
 }
 
-func (s *baseScoper) Reset() { *s = nil }
+func (s *baseScoper) Reset() {
+	*s = make(baseScoper, 0)
+}

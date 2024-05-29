@@ -1,8 +1,10 @@
 package query
 
 // VarManager manages the creation and usage of cnf variables. Variables are
-// divided into user and internal variables and are denoted by the triple
-// (name, idx, val).
+// divided into user and internal variables, are denoted by the triple (name,
+// idx, val) and are assigned positive integer values. All variables must be
+// assigned a value equal or greater than 1 as 0 is reserved by the DIMACS
+// standard.
 type VarManager interface {
 	// TopV returns the value of largest unsigned integer assigned to a
 	// variable. This value is expected to be always positive.

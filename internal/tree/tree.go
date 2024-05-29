@@ -13,8 +13,8 @@ import (
 // Node represents a node in a decision tree. Holds both the information
 // for leafs and internal nodes.
 type node struct {
-	id        uint32
-	feat      uint32
+	id        int
+	feat      int
 	value     bool
 	zeroChild *node
 	oneChild  *node
@@ -25,7 +25,7 @@ type node struct {
 type Tree struct {
 	root          *node
 	nodeCount     int
-	featCount     uint32
+	featCount     int
 	nodes         []query.Node
 	nodeConsts    []query.Const
 	posLeafConsts []query.Const
@@ -56,7 +56,7 @@ type visitElem struct {
 }
 
 func (t *Tree) populateTree(treeJSON *treeJSON) error {
-	t.featCount = uint32(len(treeJSON.Features))
+	t.featCount = len(treeJSON.Features)
 	t.nodeCount = len(treeJSON.Nodes)
 
 	toVisit := []visitElem{{ID: 0}}
@@ -73,7 +73,7 @@ func (t *Tree) populateTree(treeJSON *treeJSON) error {
 			)
 		}
 
-		node := &node{id: uint32(nInfo.ID), parent: nInfo.Parent}
+		node := &node{id: nInfo.ID, parent: nInfo.Parent}
 
 		if nInfo.Parent == nil {
 			t.root = node
@@ -88,7 +88,7 @@ func (t *Tree) populateTree(treeJSON *treeJSON) error {
 			continue
 		}
 
-		node.feat = uint32(nodeJSON.FeatIdx)
+		node.feat = nodeJSON.FeatIdx
 
 		toVisit = append(
 			toVisit,
@@ -114,7 +114,7 @@ func (t *Tree) Nodes() []query.Node {
 func (n node) appendSubtree(nodes *[]query.Node) {
 	(*nodes)[n.id] = query.Node{
 		Value:  n.value,
-		Feat:   uint(n.feat),
+		Feat:   n.feat,
 		ZChild: -1,
 		OChild: -1,
 	}
@@ -131,8 +131,8 @@ func (n node) appendSubtree(nodes *[]query.Node) {
 
 // Dim returns the number of features the tree could decide on. Return 0 if t
 // is nil.
-func (t *Tree) Dim() uint {
-	return uint(t.featCount)
+func (t *Tree) Dim() int {
+	return t.featCount
 }
 
 // nodeElem is an auxiliary structure for iterating over nodes when generating

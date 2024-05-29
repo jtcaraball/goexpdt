@@ -2,8 +2,9 @@ package query
 
 // Model provides functionality to access properties of models.
 type Model interface {
-	// Dim returns the dimension of the model.
-	Dim() uint
+	// Dim returns the dimension of the model. This value is expected to be
+	// always positive.
+	Dim() int
 	// Nodes returns a slice composed of the model's nodes as Node type. The
 	// node at index 0 must correspond to the model's root.
 	Nodes() []Node
@@ -24,8 +25,9 @@ type Model interface {
 type Node struct {
 	// Value of a leaf node.
 	Value bool
-	// Feat index of the feature that an internal node decides on.
-	Feat uint
+	// Feat index of the feature that an internal node decides on. This value
+	// is expected to always be positive.
+	Feat int
 	// ZChild is the index on the node slice corresponding to the node's zero
 	// child. A negative value is interpreted as having no child.
 	ZChild int

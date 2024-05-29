@@ -27,6 +27,8 @@ type Scoper interface {
 	// stack. Returns an error if there are no scopes or the last scope is
 	// already set.
 	SetScope(vIdx int, val []FeatV) error
+	// AddVarToScope adds a v to all existing scopes' InScope.
+	AddVarToScope(v Var)
 	// Reset removes all guards in the scope
 	Reset()
 }
@@ -82,6 +84,10 @@ func (s *baseScoper) SetScope(vIdx int, val []FeatV) error {
 	(*s)[slen-1].VIdx = vIdx
 	(*s)[slen-1].Value = val
 	return nil
+}
+
+func (s *baseScoper) AddVarToScope(v Var) {
+	panic("Implement this!")
 }
 
 func (s *baseScoper) Reset() {

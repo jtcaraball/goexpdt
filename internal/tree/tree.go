@@ -1,6 +1,6 @@
-// A basic implementation of a Decision Tree that implements the Model
+// A basic implementation of a Decision tree that implements the Model
 // interface using a custom tree json encoding based on scikit-learn
-// DecisionTreeClassifier encoding.
+// DecisiontreeClassifier encoding.
 package tree
 
 import (
@@ -21,8 +21,8 @@ type node struct {
 	parent    *node
 }
 
-// Tree represents a decision tree.
-type Tree struct {
+// tree represents a decision tree.
+type tree struct {
 	root          *node
 	nodeCount     int
 	featCount     int
@@ -33,17 +33,17 @@ type Tree struct {
 }
 
 // Load returns the tree encoded in a json files passed by path.
-func Load(path string) (Tree, error) {
+func Load(path string) (tree, error) {
 	jsonBytes, err := os.ReadFile(path)
 	if err != nil {
-		return Tree{}, err
+		return tree{}, err
 	}
 	treeJSON, err := unmarhsalTree(jsonBytes)
 	if err != nil {
-		return Tree{}, err
+		return tree{}, err
 	}
-	tree := Tree{}
-	if err = tree.populateTree(treeJSON); err != nil {
+	tree := tree{}
+	if err = tree.populatetree(treeJSON); err != nil {
 		return tree, err
 	}
 	return tree, nil
@@ -55,7 +55,7 @@ type visitElem struct {
 	OneChild bool
 }
 
-func (t *Tree) populateTree(treeJSON *treeJSON) error {
+func (t *tree) populatetree(treeJSON *treeJSON) error {
 	t.featCount = len(treeJSON.Features)
 	t.nodeCount = len(treeJSON.Nodes)
 
@@ -68,7 +68,7 @@ func (t *Tree) populateTree(treeJSON *treeJSON) error {
 		nodeJSON := treeJSON.Nodes[nInfo.ID]
 		if nodeJSON == nil {
 			return fmt.Errorf(
-				"Tree parsing error: node with id '%d' does not exist",
+				"tree parsing error: node with id '%d' does not exist",
 				nInfo.ID,
 			)
 		}
@@ -102,7 +102,7 @@ func (t *Tree) populateTree(treeJSON *treeJSON) error {
 
 // Nodes returns a slices of the query.Node(s) that compose the tree. Returns
 // an empty slice if t is nil.
-func (t *Tree) Nodes() []query.Node {
+func (t *tree) Nodes() []query.Node {
 	if t.nodes != nil {
 		return t.nodes
 	}
@@ -115,8 +115,8 @@ func (n node) appendSubtree(nodes *[]query.Node) {
 	(*nodes)[n.id] = query.Node{
 		Value:  n.value,
 		Feat:   n.feat,
-		ZChild: -1,
-		OChild: -1,
+		ZChild: query.NoChild,
+		OChild: query.NoChild,
 	}
 
 	if n.zeroChild != nil {
@@ -131,7 +131,10 @@ func (n node) appendSubtree(nodes *[]query.Node) {
 
 // Dim returns the number of features the tree could decide on. Return 0 if t
 // is nil.
-func (t *Tree) Dim() int {
+func (t *tree) Dim() int {
+	if t == nil {
+		return 0
+	}
 	return t.featCount
 }
 
@@ -145,7 +148,7 @@ type nodeElem struct {
 // NodeConsts returns a slice of query.Const representing the nodes that
 // compose the tree. Returns an error if t is nill or there is an underlying
 // error with the tree.
-func (t *Tree) NodesConsts() []query.Const {
+func (t *tree) NodesConsts() []query.Const {
 	if t == nil {
 		return nil
 	}
@@ -191,7 +194,7 @@ func (t *Tree) NodesConsts() []query.Const {
 
 // PosLeafConsts returns a slice of query.Const representing the tree's
 // positive leafs.
-func (t *Tree) PosLeafsConsts() []query.Const {
+func (t *tree) PosLeafsConsts() []query.Const {
 	if t == nil {
 		return nil
 	}
@@ -207,7 +210,7 @@ func (t *Tree) PosLeafsConsts() []query.Const {
 
 // NegLeafConsts returns a slice of query.Const representing the tree's
 // negative leafs.
-func (t *Tree) NegLeafsConsts() []query.Const {
+func (t *tree) NegLeafsConsts() []query.Const {
 	if t == nil {
 		return nil
 	}
@@ -224,7 +227,7 @@ func (t *Tree) NegLeafsConsts() []query.Const {
 // computeLeafs sets posLeafConsts and negLeafConts to a slice of query.Const
 // representing the tree's positive and legative leaf respective. Does not
 // check if t is nil.
-func (t *Tree) computeLeafs() {
+func (t *tree) computeLeafs() {
 	var (
 		n         *node
 		v, zv, ov []query.FeatV

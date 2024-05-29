@@ -16,7 +16,7 @@ var (
 
 var test = struct {
 	tBytes        []byte
-	tree          Tree
+	tree          tree
 	nodes         []query.Node
 	nodeConsts    []query.Const
 	posLeafConsts []query.Const

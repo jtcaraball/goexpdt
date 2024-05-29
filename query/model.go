@@ -29,12 +29,16 @@ type Node struct {
 	// is expected to always be positive.
 	Feat int
 	// ZChild is the index on the node slice corresponding to the node's zero
-	// child. A negative value is interpreted as having no child.
+	// child. Use NoChild value to indicate the node has no child.
 	ZChild int
 	// OChild is the index on the node slice corresponding to the node's one
-	// child. A negative value is interpreted as having no child.
+	// child. Use NoChild value to indicate the node has no child.
 	OChild int
 }
+
+// NoChild is used in a Node's ZChild or OChild fields to indicate that it does
+// not have a child.
+const NoChild int = -1
 
 // IsLeaf returns true if the node does not have a child and thus is a leaf.
 func (n Node) IsLeaf() bool {

@@ -27,7 +27,7 @@ type Scoper interface {
 	// stack. Returns an error if there are no scopes or the last scope is
 	// already set.
 	SetScope(vIdx int, val []FeatV) error
-	// AddVarToScope adds a v to all existing scopes' InScope.
+	// AddVarToScope adds a v to all existing scopes' inScope.
 	AddVarToScope(v Var)
 	// Reset removes all guards in the scope
 	Reset()
@@ -36,36 +36,38 @@ type Scoper interface {
 type baseScoper []scope
 
 type scope struct {
-	Target  string  // Constant target of the corresponding guarded quantifier.
-	InScope []Var   // Variables declared inside the scope.
-	Value   []FeatV // The value to be assigned target.
-	VIdx    int     // The index of the value to be assigned.
+	target  string  // Constant target of the corresponding guarded quantifier.
+	inScope []Var   // Variables declared inside the scope.
+	value   []FeatV // The value to be assigned target.
+	vIdx    int     // The index of the value to be assigned.
 }
 
 func (s *baseScoper) ScopeVar(v Var) Var {
 	var sb strings.Builder
+
+	sb.WriteString(string(v))
+
 	for _, g := range *s {
-		if slices.Contains(g.InScope, v) {
-			sb.WriteString(vname.SName(g.Target, strconv.Itoa(g.VIdx)))
+		if slices.Contains(g.inScope, v) {
+			sb.WriteString(string(vname.SConnector))
+			sb.WriteString(vname.SName(g.target, strconv.Itoa(g.vIdx)))
 		}
 	}
-	if sb.Len() == 0 {
-		return v
-	}
-	return Var(vname.SName(string(v), sb.String()))
+
+	return v
 }
 
 func (s *baseScoper) ScopeConst(c Const) (Const, bool) {
 	for _, g := range *s {
-		if g.Target == c.ID {
-			return Const{c.ID, g.Value}, true
+		if g.target == c.ID {
+			return Const{c.ID, g.value}, true
 		}
 	}
 	return Const{}, false
 }
 
 func (s *baseScoper) AddScope(tgt string) {
-	*s = append(*s, scope{Target: tgt})
+	*s = append(*s, scope{target: tgt})
 }
 
 func (s *baseScoper) PopScope() error {
@@ -78,16 +80,20 @@ func (s *baseScoper) PopScope() error {
 
 func (s *baseScoper) SetScope(vIdx int, val []FeatV) error {
 	slen := len(*s)
-	if slen == 0 || (*s)[slen].Target != "" {
+	if slen == 0 || (*s)[slen].target != "" {
 		return errors.New("Invalid guard setting")
 	}
-	(*s)[slen-1].VIdx = vIdx
-	(*s)[slen-1].Value = val
+	(*s)[slen-1].vIdx = vIdx
+	(*s)[slen-1].value = val
 	return nil
 }
 
 func (s *baseScoper) AddVarToScope(v Var) {
-	panic("Implement this!")
+	for _, g := range *s {
+		if !slices.Contains(g.inScope, v) {
+			g.inScope = append(g.inScope, v)
+		}
+	}
 }
 
 func (s *baseScoper) Reset() {

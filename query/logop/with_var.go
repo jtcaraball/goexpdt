@@ -40,7 +40,6 @@ func (w WithVar) Encoding(ctx query.QContext) (ncnf cnf.CNF, err error) {
 	return ncnf, nil
 }
 
-// Generate CNF encoding.
 func (w WithVar) buildEncoding(
 	ctx query.QContext,
 ) (cnf.CNF, error) {

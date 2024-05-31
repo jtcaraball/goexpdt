@@ -36,20 +36,21 @@ type CNF struct {
 	cClauses []Clause
 }
 
-// NegCluases is a slice of clauses that contains only an empty clauses
-// which is always evaluated as false.
-var NegClauses []Clause = []Clause{{}}
+var (
+	// NegCluases is a slice of clauses that contains only an empty clauses
+	// which is always evaluated as false.
+	NegClauses []Clause = []Clause{{}}
+	// TrueCNF is a trivially positive cnf formula.
+	TrueCNF CNF = CNF{}
+	// FalseCNF is a trivially negative cnf formula.
+	FalseCNF CNF = CNF{sClauses: NegClauses}
+)
 
 // Create a new CNF struct from clauses. Clauses will be treated as semantic.
 func FromClauses(clauses []Clause) CNF {
 	ncnf := CNF{sClauses: clauses}
 	ncnf.tv = maxVar(clauses)
 	return ncnf
-}
-
-// Negative returns a negative cnf formula.
-func Negative() CNF {
-	return CNF{sClauses: NegClauses}
 }
 
 // TopV return the largest variable value that has been assigned in the cnf
@@ -73,10 +74,9 @@ func (c CNF) Negate(opt_topv ...int) CNF {
 
 	// Handle empty CNF case.
 	if len(c.sClauses) == 0 {
-		// An empty CNF is always SAT so to negate it we set it as an always
-		// false CNF with a signle empty clause.
-		rcnf = Negative()
-		rcnf.cClauses = c.cClauses
+		// An empty CNF is always SAT so to negate it we return an always false
+		// CNF with a signle empty semantic clause.
+		rcnf = c.AppendSemantics(Clause{})
 		rcnf.tv = topv
 		return rcnf
 	}

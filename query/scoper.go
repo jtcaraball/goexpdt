@@ -2,7 +2,6 @@ package query
 
 import (
 	"errors"
-	"slices"
 	"strconv"
 	"strings"
 
@@ -27,8 +26,6 @@ type Scoper interface {
 	// stack. Returns an error if there are no scopes or the last scope is
 	// already set.
 	SetScope(vIdx int, val []FeatV) error
-	// AddVarToScope adds a v to all existing scopes' inScope.
-	AddVarToScope(v Var)
 	// Reset removes all guards in the scope
 	Reset()
 }
@@ -36,10 +33,9 @@ type Scoper interface {
 type baseScoper []scope
 
 type scope struct {
-	target  string  // Constant target of the corresponding guarded quantifier.
-	inScope []Var   // Variables declared inside the scope.
-	value   []FeatV // The value to be assigned target.
-	vIdx    int     // The index of the value to be assigned.
+	target string  // Constant target of the corresponding guarded quantifier.
+	value  []FeatV // The value to be assigned target.
+	vIdx   int     // The index of the value to be assigned.
 }
 
 func (s *baseScoper) ScopeVar(v Var) Var {
@@ -48,13 +44,11 @@ func (s *baseScoper) ScopeVar(v Var) Var {
 	sb.WriteString(string(v))
 
 	for _, g := range *s {
-		if slices.Contains(g.inScope, v) {
-			sb.WriteString(string(vname.SConnector))
-			sb.WriteString(vname.SName(g.target, strconv.Itoa(g.vIdx)))
-		}
+		sb.WriteString(string(vname.SConnector))
+		sb.WriteString(vname.SName(g.target, strconv.Itoa(g.vIdx)))
 	}
 
-	return v
+	return Var(sb.String())
 }
 
 func (s *baseScoper) ScopeConst(c Const) (Const, bool) {
@@ -80,20 +74,12 @@ func (s *baseScoper) PopScope() error {
 
 func (s *baseScoper) SetScope(vIdx int, val []FeatV) error {
 	slen := len(*s)
-	if slen == 0 || (*s)[slen].target != "" {
-		return errors.New("Invalid guard setting")
+	if slen == 0 {
+		return errors.New("Invalid setting of scope in empty scoper")
 	}
 	(*s)[slen-1].vIdx = vIdx
 	(*s)[slen-1].value = val
 	return nil
-}
-
-func (s *baseScoper) AddVarToScope(v Var) {
-	for _, g := range *s {
-		if !slices.Contains(g.inScope, v) {
-			g.inScope = append(g.inScope, v)
-		}
-	}
 }
 
 func (s *baseScoper) Reset() {

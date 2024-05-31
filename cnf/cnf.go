@@ -29,7 +29,7 @@ type Clause []int
 // CNF represents a logical formula in conjoined normal form.
 type CNF struct {
 	// Top variable value used
-	tv uint32
+	tv int
 	// Semantic clauses
 	sClauses []Clause
 	// Consistency clauses
@@ -52,17 +52,23 @@ func Negative() CNF {
 	return CNF{sClauses: NegClauses}
 }
 
+// TopV return the largest variable value that has been assigned in the cnf
+// formula.
+func (c CNF) TopV() int {
+	return c.tv
+}
+
 // Negate the CNF semantic clauses. The resulting value of CNF's tv is the
 // maximum between topv and the current value. This operation will set the CNF
 // to an equivalent negation but it will not be equal to negating the
 // underlying formula. Returns new tv value.
-func (c CNF) Negate(opt_topv ...uint32) CNF {
+func (c CNF) Negate(opt_topv ...int) CNF {
 	var rcnf CNF
-	var topv uint32 = c.tv
+	var topv int = c.tv
 
 	// Why did the go team decide against optional arguments?
 	if len(opt_topv) > 0 {
-		topv = maxUInt(topv, opt_topv[0])
+		topv = maxInt(topv, opt_topv[0])
 	}
 
 	// Handle empty CNF case.
@@ -70,15 +76,16 @@ func (c CNF) Negate(opt_topv ...uint32) CNF {
 		// An empty CNF is always SAT so to negate it we set it as an always
 		// false CNF with a signle empty clause.
 		rcnf = Negative()
+		rcnf.cClauses = c.cClauses
 		rcnf.tv = topv
 		return rcnf
 	}
 
 	// Handle empty clause in CNF case.
-	if c.HasEmptySemanticClause() {
+	if c.hasEmptySemanticClause() {
 		// A CNF with an empty clause is never SAT so to negate it we set it as
 		// an always true empty CNF.
-		rcnf = CNF{}
+		rcnf = CNF{cClauses: c.cClauses}
 		rcnf.tv = topv
 		return rcnf
 	}
@@ -95,7 +102,7 @@ func (c CNF) Negate(opt_topv ...uint32) CNF {
 
 // Generate negation in place using Tseytin transformation. Does not check if
 // c is nil.
-func (c *CNF) tseytinNegation(tv uint32) {
+func (c *CNF) tseytinNegation(tv int) {
 	clauses := []Clause{}
 	enclits := Clause{}
 
@@ -105,7 +112,6 @@ func (c *CNF) tseytinNegation(tv uint32) {
 		// in the appropriate negation and returning.
 		if len(clause) == 0 { // An empty clause results in a false formula.
 			c.sClauses = nil
-			c.cClauses = nil
 			c.tv = tv
 			return
 		}
@@ -164,7 +170,7 @@ func (c CNF) Conjunction(oc CNF) CNF {
 
 // AppendSpemantics appends semantic clauses to CNF and update tv value.
 func (c CNF) AppendSemantics(clauses ...Clause) CNF {
-	topv := maxUInt(c.tv, maxVar(clauses))
+	topv := maxInt(c.tv, maxVar(clauses))
 	return CNF{
 		tv:       topv,
 		sClauses: append(c.sClauses, clauses...),
@@ -174,7 +180,7 @@ func (c CNF) AppendSemantics(clauses ...Clause) CNF {
 
 // AppendConsistency appends consistency clauses to CNF and update tv value.
 func (c CNF) AppendConsistency(clauses ...Clause) CNF {
-	topv := maxUInt(c.tv, maxVar(clauses))
+	topv := maxInt(c.tv, maxVar(clauses))
 	return CNF{
 		tv:       topv,
 		sClauses: c.sClauses,
@@ -241,11 +247,31 @@ func (c CNF) Clauses() ([]Clause, []Clause) {
 	return c.sClauses, c.cClauses
 }
 
-// HasEmptySemanticClauses returns true if the CNF has an empty semantic
-// clause.
-func (c CNF) HasEmptySemanticClause() bool {
-	for _, clause := range c.sClauses {
-		if len(clause) == 0 {
+// TriviallyTrue returns true if the underlying cnf formula is... trivially
+// true. Otherwise returns false.
+func (c CNF) TriviallyTrue() bool {
+	return len(c.sClauses) == 0 && len(c.cClauses) == 0
+}
+
+// TriviallyFalse returns true if the underlying cnf formula is... trivially
+// false. Otherwise returns false.
+func (c CNF) TriviallyFalse() bool {
+	for _, cl := range c.sClauses {
+		if len(cl) == 0 {
+			return true
+		}
+	}
+	for _, cl := range c.cClauses {
+		if len(cl) == 0 {
+			return true
+		}
+	}
+	return false
+}
+
+func (c CNF) hasEmptySemanticClause() bool {
+	for _, cl := range c.sClauses {
+		if len(cl) == 0 {
 			return true
 		}
 	}
@@ -266,8 +292,8 @@ func clauseToDIMACS(clause Clause) string {
 
 // maxVar returns the absolute value of the largest variable in a slice of
 // clauses.
-func maxVar(clauses []Clause) uint32 {
-	var topv uint32 = 0
+func maxVar(clauses []Clause) int {
+	var topv int = 0
 	for _, cl := range clauses {
 		for _, v := range cl {
 			absV := absInt(v)
@@ -280,15 +306,15 @@ func maxVar(clauses []Clause) uint32 {
 }
 
 // absInt returns the absolute value of an integer.
-func absInt(v int) uint32 {
+func absInt(v int) int {
 	if v > 0 {
-		return uint32(v)
+		return v
 	}
-	return uint32(-v)
+	return -v
 }
 
 // maxUInt returns the maximum between two unsinged integers.
-func maxUInt(v1, v2 uint32) uint32 {
+func maxInt(v1, v2 int) int {
 	if v1 > v2 {
 		return v1
 	}

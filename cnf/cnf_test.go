@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func validTopV(t *testing.T, got, expected uint32) {
+func validTopV(t *testing.T, got, expected int) {
 	if got != expected {
 		t.Errorf("NV not equal. Expected %d but got %d", expected, got)
 	}

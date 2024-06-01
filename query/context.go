@@ -22,8 +22,7 @@ func BasicQContext(model Model) QContext {
 	return &baseQContext{
 		baseScoper: baseScoper{},
 		baseVarManager: baseVarManager{
-			userVars:     make(map[varRep]int),
-			internalVars: make(map[varRep]int),
+			vars: make(map[varRep]int),
 		},
 		Model: model,
 	}

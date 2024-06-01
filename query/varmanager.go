@@ -24,8 +24,8 @@ type VarManager interface {
 }
 
 type baseVarManager struct {
-	topv         int            // Value of the largest variable assigned.
-	vars     map[varRep]int // User variables map.
+	topv int            // Value of the largest variable assigned.
+	vars map[varRep]int // User variables map.
 }
 
 type varRep struct {

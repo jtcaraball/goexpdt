@@ -10,15 +10,15 @@ import (
 
 // WithVar represents a sub-query that makes use of an instance variable.
 type WithVar struct {
-	// Instance corresponds to a partial instance variable.
-	Instance query.Var
-	// Child corresponds to a sub-query that implements the LogOpChild and that
-	// is expected to make use of Instance.
-	Child LogOpChild
+	// I corresponds to a partial instance variable.
+	I query.Var
+	// Q corresponds to a sub-query that implements the LogOpQ and that
+	// is expected to make use of I.
+	Q LogOpQ
 }
 
 // Encoding returns the CNF formula encoding the consistency clauses of its
-// Instance variable and its Child CNF formula.
+// I variable and its Q CNF formula.
 func (w WithVar) Encoding(ctx query.QContext) (ncnf cnf.CNF, err error) {
 	defer func() {
 		if err != nil {
@@ -26,7 +26,7 @@ func (w WithVar) Encoding(ctx query.QContext) (ncnf cnf.CNF, err error) {
 		}
 	}()
 
-	if w.Child == nil {
+	if w.Q == nil {
 		return cnf.CNF{}, errors.New("Invalid encoding of nil child")
 	}
 	if ctx == nil {
@@ -43,9 +43,9 @@ func (w WithVar) Encoding(ctx query.QContext) (ncnf cnf.CNF, err error) {
 func (w WithVar) buildEncoding(
 	ctx query.QContext,
 ) (cnf.CNF, error) {
-	icnf := w.encodeInstance(ctx)
+	icnf := w.encodeI(ctx)
 
-	ccnf, err := w.Child.Encoding(ctx)
+	ccnf, err := w.Q.Encoding(ctx)
 	if err != nil {
 		return cnf.CNF{}, fmt.Errorf("WithVar: %w", err)
 	}
@@ -53,12 +53,12 @@ func (w WithVar) buildEncoding(
 	return icnf.Conjunction(ccnf), nil
 }
 
-// encodeInstance returns a CNF with consistency clauses enforcing a consistent
-// valuation of w.Instance.
-func (w WithVar) encodeInstance(ctx query.QContext) cnf.CNF {
+// encodeI returns a CNF with consistency clauses enforcing a consistent
+// valuation of w.I.
+func (w WithVar) encodeI(ctx query.QContext) cnf.CNF {
 	ncnf := cnf.CNF{}
 
-	v := ctx.ScopeVar(w.Instance)
+	v := ctx.ScopeVar(w.I)
 
 	// Lets not add consistency clauses twice.
 	if ctx.VarExists(string(v), 0, int(query.BOT)) {

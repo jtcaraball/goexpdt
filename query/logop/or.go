@@ -10,12 +10,12 @@ import (
 
 // Or represents the logical operator OR.
 type Or struct {
-	// Child1 corresponds to a sub-query that implements the LogOpChild
+	// Q1 corresponds to a sub-query that implements the LogOpQ
 	// interface.
-	Child1 LogOpChild
-	// Child2 corresponds to a sub-query that implements the LogOpChild
+	Q1 LogOpQ
+	// Q2 corresponds to a sub-query that implements the LogOpQ
 	// interface.
-	Child2 LogOpChild
+	Q2 LogOpQ
 }
 
 // Encoding returns a CNF formula equivalent to the disjunction of the CNF
@@ -27,10 +27,10 @@ func (o Or) Encoding(ctx query.QContext) (ncnf cnf.CNF, err error) {
 		}
 	}()
 
-	if o.Child1 == nil {
+	if o.Q1 == nil {
 		return cnf.CNF{}, errors.New("Invalid encoding of nil child (1)")
 	}
-	if o.Child2 == nil {
+	if o.Q2 == nil {
 		return cnf.CNF{}, errors.New("Invalid encoding of nil child (2)")
 	}
 	if ctx == nil {
@@ -45,13 +45,13 @@ func (o Or) Encoding(ctx query.QContext) (ncnf cnf.CNF, err error) {
 func (o Or) buildEncoding(ctx query.QContext) (cnf.CNF, error) {
 	// De Morgan's law
 	// Encode both children
-	cnf1, err := o.Child1.Encoding(ctx)
+	cnf1, err := o.Q1.Encoding(ctx)
 	if err != nil {
-		return cnf.CNF{}, fmt.Errorf("Child 1: %w", err)
+		return cnf.CNF{}, fmt.Errorf("Q 1: %w", err)
 	}
-	cnf2, err := o.Child2.Encoding(ctx)
+	cnf2, err := o.Q2.Encoding(ctx)
 	if err != nil {
-		return cnf.CNF{}, fmt.Errorf("Child 2: %w", err)
+		return cnf.CNF{}, fmt.Errorf("Q 2: %w", err)
 	}
 
 	// Negate both children

@@ -11,9 +11,9 @@ import (
 
 func buildFAGTree() query.Model {
 	nodes := []query.Node{
-		{Feat: 0, ZChild: 1, OChild: 2},
-		{Value: false, ZChild: query.NoChild, OChild: query.NoChild},
-		{Value: false, ZChild: query.NoChild, OChild: query.NoChild},
+		{Feat: 0, ZQ: 1, OQ: 2},
+		{Value: false, ZQ: query.NoQ, OQ: query.NoQ},
+		{Value: false, ZQ: query.NoQ, OQ: query.NoQ},
 	}
 
 	// If this returns an error I kill myself.

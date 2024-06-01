@@ -10,9 +10,9 @@ import (
 
 // Not represents the logical operator NOT.
 type Not struct {
-	// Child corresponds to a sub-query that implements the LogOpChild
+	// Q corresponds to a sub-query that implements the LogOpQ
 	// interface.
-	Child LogOpChild
+	Q LogOpQ
 }
 
 // Encoding returns a CNF formula equivalent to the negations of its children's
@@ -24,7 +24,7 @@ func (n Not) Encoding(ctx query.QContext) (ncnf cnf.CNF, err error) {
 		}
 	}()
 
-	if n.Child == nil {
+	if n.Q == nil {
 		return cnf.CNF{}, errors.New("Invalid encoding of nil child")
 	}
 	if ctx == nil {
@@ -37,7 +37,7 @@ func (n Not) Encoding(ctx query.QContext) (ncnf cnf.CNF, err error) {
 }
 
 func (n Not) buildEncoding(ctx query.QContext) (cnf.CNF, error) {
-	ncnf, err := n.Child.Encoding(ctx)
+	ncnf, err := n.Q.Encoding(ctx)
 	if err != nil {
 		return cnf.CNF{}, err
 	}

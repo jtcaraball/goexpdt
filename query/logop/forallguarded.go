@@ -10,18 +10,18 @@ import (
 
 // ForAllGuarded represents a FOR ALL guarded quantifier.
 type ForAllGuarded struct {
-	// Instance corresponds to the constant that will be used to materialize
+	// I corresponds to the constant that will be used to materialize
 	// the instances that correspond to the ctx's model's nodes. Its ID will be
 	// used for scope setting.
-	Instance query.Const
-	// Child corresponds to a sub-query that implements the LogOpChild and that
-	// is expected to make use of Instance.
-	Child LogOpChild
+	I query.Const
+	// Q corresponds to a sub-query that implements the LogOpQ and that
+	// is expected to make use of I.
+	Q LogOpQ
 }
 
 // Encoding returns the CNF formula equivalent to the conjunction all the
-// possible CNF formulas of its Child resulting from instantiating every value
-// of Instance in the ctx's model.
+// possible CNF formulas of its Q resulting from instantiating every value
+// of I in the ctx's model.
 func (f ForAllGuarded) Encoding(ctx query.QContext) (ncnf cnf.CNF, err error) {
 	defer func() {
 		if err != nil {
@@ -29,7 +29,7 @@ func (f ForAllGuarded) Encoding(ctx query.QContext) (ncnf cnf.CNF, err error) {
 		}
 	}()
 
-	if f.Child == nil {
+	if f.Q == nil {
 		return cnf.CNF{}, errors.New("Invalid encoding of nil child")
 	}
 	if ctx == nil {
@@ -44,7 +44,7 @@ func (f ForAllGuarded) Encoding(ctx query.QContext) (ncnf cnf.CNF, err error) {
 func (f ForAllGuarded) buildEncoding(ctx query.QContext) (cnf.CNF, error) {
 	ncnf := cnf.CNF{}
 
-	ctx.AddScope(f.Instance.ID)
+	ctx.AddScope(f.I.ID)
 
 	ncs := ctx.NodesConsts()
 
@@ -53,7 +53,7 @@ func (f ForAllGuarded) buildEncoding(ctx query.QContext) (cnf.CNF, error) {
 			return cnf.CNF{}, err
 		}
 
-		icnf, err := f.Child.Encoding(ctx)
+		icnf, err := f.Q.Encoding(ctx)
 		if err != nil {
 			return cnf.CNF{}, err
 		}

@@ -10,8 +10,8 @@ import (
 	"github.com/jtcaraball/goexpdt/query"
 )
 
-// A LogOpChild allows for the encoding of its meaning into a CNF formula.
-type LogOpChild interface {
+// A LogOpQ allows for the encoding of its meaning into a CNF formula.
+type LogOpQ interface {
 	// Encoding returns takes in a ctx representing the state of a query or
 	// sub-query and returns its CNF encoding along side an error.
 	Encoding(ctx query.QContext) (cnf.CNF, error)

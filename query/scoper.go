@@ -15,8 +15,8 @@ type Scoper interface {
 	ScopeVar(v Var) Var
 	// ScopeConst returns an instance constant with its value field set match
 	// the value of the scope targeting c at the moment its called if it
-	// exists. If the constant is scoped then ok==true else ok==false and the a
-	// zero value Const is returned.
+	// exists. If the constant is scoped then ok==true else ok==false and c
+	// is returned.
 	ScopeConst(c Const) (scopedConst Const, ok bool)
 	// AddScope adds a scope with target==tgt to the stack.
 	AddScope(tgt string)
@@ -57,7 +57,7 @@ func (s *baseScoper) ScopeConst(c Const) (Const, bool) {
 			return Const{c.ID, g.value}, true
 		}
 	}
-	return Const{}, false
+	return c, false
 }
 
 func (s *baseScoper) AddScope(tgt string) {

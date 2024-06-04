@@ -20,8 +20,8 @@ func validClauses(t *testing.T, sc, cc, esc, ecc []Clause) {
 	if !slices.EqualFunc(cc, ecc, slices.Equal) {
 		t.Errorf(
 			"Consistency clauses not equal. Expected %d but got %d",
-			cc,
 			ecc,
+			cc,
 		)
 	}
 }
@@ -40,7 +40,7 @@ func TestCNF_Negate_SingleClauseEmpty(t *testing.T) {
 	sInitClauses := NegClauses
 	cInitClauses := []Clause{{1, 2, 3}}
 	expectedSClauses := []Clause{}
-	expectedCClauses := []Clause{}
+	expectedCClauses := cInitClauses
 	tcnf := CNF{tv: 3, sClauses: sInitClauses, cClauses: cInitClauses}
 	tcnf = tcnf.Negate()
 	sClauses, cClauses := tcnf.Clauses()

@@ -61,7 +61,7 @@ func (w WithVar) encodeI(ctx query.QContext) cnf.CNF {
 	v := ctx.ScopeVar(w.I)
 
 	// Lets not add consistency clauses twice.
-	if ctx.VarExists(string(v), 0, int(query.BOT)) {
+	if ctx.CNFVarExists(v, 0, int(query.BOT)) {
 		return ncnf
 	}
 
@@ -71,9 +71,9 @@ func (w WithVar) encodeI(ctx query.QContext) cnf.CNF {
 		reqAllFeats = append(
 			reqAllFeats,
 			cnf.Clause{
-				ctx.Var(string(v), i, int(query.ZERO)),
-				ctx.Var(string(v), i, int(query.ONE)),
-				ctx.Var(string(v), i, int(query.BOT)),
+				ctx.CNFVar(v, i, int(query.ZERO)),
+				ctx.CNFVar(v, i, int(query.ONE)),
+				ctx.CNFVar(v, i, int(query.BOT)),
 			},
 		)
 	}
@@ -83,16 +83,16 @@ func (w WithVar) encodeI(ctx query.QContext) cnf.CNF {
 	for i := 0; i < ctx.Dim(); i++ {
 		reqOnePerFeat := []cnf.Clause{
 			{
-				-ctx.Var(string(v), i, int(query.ZERO)),
-				-ctx.Var(string(v), i, int(query.ONE)),
+				-ctx.CNFVar(v, i, int(query.ZERO)),
+				-ctx.CNFVar(v, i, int(query.ONE)),
 			},
 			{
-				-ctx.Var(string(v), i, int(query.ZERO)),
-				-ctx.Var(string(v), i, int(query.BOT)),
+				-ctx.CNFVar(v, i, int(query.ZERO)),
+				-ctx.CNFVar(v, i, int(query.BOT)),
 			},
 			{
-				-ctx.Var(string(v), i, int(query.ONE)),
-				-ctx.Var(string(v), i, int(query.BOT)),
+				-ctx.CNFVar(v, i, int(query.ONE)),
+				-ctx.CNFVar(v, i, int(query.BOT)),
 			},
 		}
 		ncnf = ncnf.AppendConsistency(reqOnePerFeat...)

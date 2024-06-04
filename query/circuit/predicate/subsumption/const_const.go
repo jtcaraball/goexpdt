@@ -13,8 +13,8 @@ type ConstConst struct {
 	I2 query.QConst
 }
 
-// Encoding returns a CNF that is true if and only if the query constant I1 is
-// subsumed by the query constant I2.
+// Encoding returns a CNF that is true if and only if the query constant s.I1
+// is subsumed by the query constant s.I2.
 func (s ConstConst) Encoding(ctx query.QContext) (cnf.CNF, error) {
 	if ctx == nil {
 		return cnf.CNF{}, errors.New("Invalid encoding with nil ctx")

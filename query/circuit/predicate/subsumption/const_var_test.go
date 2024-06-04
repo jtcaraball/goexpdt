@@ -4,99 +4,119 @@ import (
 	"testing"
 
 	"github.com/jtcaraball/goexpdt/query"
-	"github.com/jtcaraball/goexpdt/query/circuit/predicates/subsumption"
+	"github.com/jtcaraball/goexpdt/query/circuit/predicate/subsumption"
 	"github.com/jtcaraball/goexpdt/query/internal/test"
 	"github.com/jtcaraball/goexpdt/query/logop"
 )
 
-func runSubsumptionQConstConst(t *testing.T, id int, tc testS, neg bool) {
+func runSubsumptionConstVar(t *testing.T, id int, tc testS, neg bool) {
 	tree, _ := test.NewMockTree(DIM, nil)
 	ctx := query.BasicQContext(tree)
 
-	var f test.Encodable
-	f = subsumption.ConstConst{
-		query.QConst{Val: tc.val1},
-		query.QConst{Val: tc.val2},
-	}
+	y := query.QVar("y")
+	c1 := query.QConst{Val: tc.val1}
+	c2 := query.QConst{Val: tc.val2}
+
+	var f test.Encodable = subsumption.ConstVar{c1, y}
 	if neg {
 		f = logop.Not{Q: f}
 	}
-
+	// Define formula
+	f = logop.WithVar{
+		I: y,
+		Q: logop.And{
+			Q1: logop.And{
+				Q1: subsumption.VarConst{y, c2},
+				Q2: subsumption.ConstVar{c2, y},
+			},
+			Q2: f,
+		},
+	}
 	test.EncodeAndRun(t, f, ctx, id, tc.expCode)
 }
 
-func runGuardedSubsumptionQConstConst(t *testing.T, id int, tc testS, neg bool) {
+func runGuardedSubsumptionConstVar(t *testing.T, id int, tc testS, neg bool) {
 	tree, _ := test.NewMockTree(DIM, nil)
 	ctx := query.BasicQContext(tree)
 
 	x := query.QConst{ID: "x"}
-	y := query.QConst{ID: "y"}
+	y := query.QVar("y")
+	c2 := query.QConst{Val: tc.val2}
 
 	ctx.AddScope("x")
 	_ = ctx.SetScope(1, tc.val1)
-	ctx.AddScope("y")
-	_ = ctx.SetScope(2, tc.val2)
 
-	var f test.Encodable
-	f = subsumption.ConstConst{x, y}
+	var f test.Encodable = subsumption.ConstVar{x, y}
 	if neg {
 		f = logop.Not{Q: f}
+	}
+
+	f = logop.WithVar{
+		I: y,
+		Q: logop.And{
+			Q1: logop.And{
+				Q1: subsumption.VarConst{y, c2},
+				Q2: subsumption.ConstVar{c2, y},
+			},
+			Q2: f,
+		},
 	}
 
 	test.EncodeAndRun(t, f, ctx, id, tc.expCode)
 }
 
-func TestQConstConst_Encoding(t *testing.T) {
+func TestConstVar_Encoding(t *testing.T) {
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			runSubsumptionQConstConst(t, i, tc, false)
+			runSubsumptionConstVar(t, i, tc, false)
 		})
 	}
 }
 
-func TestQConstConst_Encoding_Guarded(t *testing.T) {
+func TestConstVar_Encoding_Guarded(t *testing.T) {
 	for i, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			runGuardedSubsumptionQConstConst(t, i, tc, false)
+			runGuardedSubsumptionConstVar(t, i, tc, false)
 		})
 	}
 }
 
-func TestNotQConstConst_Encoding(t *testing.T) {
+func TestNotConstVar_Encoding(t *testing.T) {
 	for i, tc := range notTests {
 		t.Run(tc.name, func(t *testing.T) {
-			runSubsumptionQConstConst(t, i, tc, true)
+			runSubsumptionConstVar(t, i, tc, true)
 		})
 	}
 }
 
-func TestNotQConstConst_Encoding_Guarded(t *testing.T) {
+func TestNotConstVar_Encoding_Guarded(t *testing.T) {
 	for i, tc := range notTests {
 		t.Run(tc.name, func(t *testing.T) {
-			runGuardedSubsumptionQConstConst(t, i, tc, true)
+			runGuardedSubsumptionConstVar(t, i, tc, true)
 		})
 	}
 }
 
-func TestQConstConst_Encoding_WrongDim(t *testing.T) {
+func TestConstVar_Encoding_WrongDim(t *testing.T) {
 	tree, _ := test.NewMockTree(4, nil)
 	ctx := query.BasicQContext(tree)
 
 	x := query.QConst{Val: []query.FeatV{query.BOT, query.BOT, query.BOT}}
-	y := query.QConst{Val: []query.FeatV{query.BOT, query.BOT, query.BOT}}
+	y := query.QVar("y")
 
-	f := subsumption.ConstConst{x, y}
+	f := subsumption.ConstVar{x, y}
+
 	_, err := f.Encoding(ctx)
 	if err == nil {
 		t.Error("Error not cached. Expected constant wrong dimension error")
 	}
 }
 
-func TestQConstConst_Encoding_NilCtx(t *testing.T) {
+func TestConstVar_Encoding_NilCtx(t *testing.T) {
 	x := query.QConst{Val: []query.FeatV{query.BOT}}
-	y := query.QConst{Val: []query.FeatV{query.BOT}}
+	y := query.QVar("y")
 
-	f := subsumption.ConstConst{x, y}
+	f := subsumption.ConstVar{x, y}
 	e := "Invalid encoding with nil ctx"
 
 	_, err := f.Encoding(nil)

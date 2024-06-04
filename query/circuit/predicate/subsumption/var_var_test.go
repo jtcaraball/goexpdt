@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/jtcaraball/goexpdt/query"
-	"github.com/jtcaraball/goexpdt/query/circuit/predicates/subsumption"
+	"github.com/jtcaraball/goexpdt/query/circuit/predicate/subsumption"
 	"github.com/jtcaraball/goexpdt/query/internal/test"
 	"github.com/jtcaraball/goexpdt/query/logop"
 )

@@ -13,8 +13,8 @@ type VarVar struct {
 	I2 query.QVar
 }
 
-// Encoding returns a CNF that is true if and only if the query variable I1 is
-// subsumed by the query variable I2.
+// Encoding returns a CNF that is true if and only if the query variable s.I1
+// is subsumed by the query variable s.I2.
 func (s VarVar) Encoding(ctx query.QContext) (cnf.CNF, error) {
 	if ctx == nil {
 		return cnf.CNF{}, errors.New("Invalid encoding with nil ctx")

@@ -17,7 +17,10 @@ type baseQContext struct {
 }
 
 // A BasicQContext implements a context with and incremental variable
-// assignment and concatenation based instance variable and constant scoping.
+// assignment and concatenation based instance variable and constant scoping. A
+// BaiscQContext uses concatenation based scoping with the unit serparator
+// caracater (ascii 31) as seperator and so it should be avoided when naming
+// elements.
 func BasicQContext(model Model) QContext {
 	return &baseQContext{
 		baseScoper: baseScoper{},

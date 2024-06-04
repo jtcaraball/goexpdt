@@ -13,7 +13,7 @@ type ForAllGuarded struct {
 	// I corresponds to the constant that will be used to materialize
 	// the instances that correspond to the ctx's model's nodes. Its ID will be
 	// used for scope setting.
-	I query.Const
+	I query.QConst
 	// Q corresponds to a sub-query that implements the LogOpQ and that
 	// is expected to make use of I.
 	Q LogOpQ

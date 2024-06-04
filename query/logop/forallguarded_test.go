@@ -11,9 +11,9 @@ import (
 
 func buildFAGTree() query.Model {
 	nodes := []query.Node{
-		{Feat: 0, ZQ: 1, OQ: 2},
-		{Value: false, ZQ: query.NoQ, OQ: query.NoQ},
-		{Value: false, ZQ: query.NoQ, OQ: query.NoQ},
+		{Feat: 0, ZChild: 1, OChild: 2},
+		{Value: false, ZChild: query.NoChild, OChild: query.NoChild},
+		{Value: false, ZChild: query.NoChild, OChild: query.NoChild},
 	}
 
 	// If this returns an error I kill myself.
@@ -28,8 +28,8 @@ func buildFAGTree() query.Model {
 func TestForAllGuarded_Encoding(t *testing.T) {
 	ctx := query.BasicQContext(buildFAGTree())
 
-	x := query.Const{ID: "x"}
-	y := query.Var("y")
+	x := query.QConst{ID: "x"}
+	y := query.QVar("y")
 	cmp := logop.ForAllGuarded{x, logop.WithVar{y, test.Trivial(true)}}
 
 	ncnf, err := cmp.Encoding(ctx)
@@ -61,8 +61,8 @@ func TestForAllGuarded_Encoding(t *testing.T) {
 func TestForAllGuarded_Encoding_Nil(t *testing.T) {
 	ctx := query.BasicQContext(buildFAGTree())
 
-	vcmp := logop.ForAllGuarded{query.Const{ID: "x"}, test.Trivial(true)}
-	icmp := logop.ForAllGuarded{query.Const{ID: "x"}, nil}
+	vcmp := logop.ForAllGuarded{query.QConst{ID: "x"}, test.Trivial(true)}
+	icmp := logop.ForAllGuarded{query.QConst{ID: "x"}, nil}
 
 	ce := "ForAllGuarded: Invalid encoding with nil ctx"
 	che := "ForAllGuarded: Invalid encoding of nil child"

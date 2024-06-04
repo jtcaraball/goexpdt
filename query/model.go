@@ -10,13 +10,13 @@ type Model interface {
 	Nodes() []Node
 	// NodesConsts returns all the model's nodes as constants. The method can
 	// fail if the underlying model is inconsistent.
-	NodesConsts() []Const
+	NodesConsts() []QConst
 	// PosLeafsConsts returns all the model's positive leafs as constants. The
 	// method can fail if the underlying model is inconsistent.
-	PosLeafsConsts() []Const
+	PosLeafsConsts() []QConst
 	// NegLeafsConsts returns all the model's negative leafs as constants. The
 	// method can fail if the underlying model is inconsistent.
-	NegLeafsConsts() []Const
+	NegLeafsConsts() []QConst
 }
 
 // Node represents a node in the model, be it a leaf or an internal one.

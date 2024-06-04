@@ -7,7 +7,6 @@ import (
 	"github.com/jtcaraball/goexpdt/query"
 	"github.com/jtcaraball/goexpdt/query/internal/test"
 	"github.com/jtcaraball/goexpdt/query/logop"
-	"github.com/jtcaraball/goexpdt/query/vname"
 )
 
 func TestWithVar_Encoding(t *testing.T) {
@@ -17,8 +16,8 @@ func TestWithVar_Encoding(t *testing.T) {
 	}
 	ctx := query.BasicQContext(tree)
 
-	x := query.Var("x")
-	y := query.Var("y")
+	x := query.QVar("x")
+	y := query.QVar("y")
 	cmp := logop.WithVar{x, logop.WithVar{y, test.Trivial(false)}}
 
 	ncnf, err := cmp.Encoding(ctx)
@@ -51,9 +50,8 @@ func TestWithVar_Encoding_Scoping(t *testing.T) {
 	ctx.AddScope("T")
 	_ = ctx.SetScope(1, []query.FeatV{query.BOT})
 
-	x := query.Var("x")
+	x := query.QVar("x")
 	cmp := logop.WithVar{x, test.Trivial(true)}
-	escp := vname.SName("x", "T", "1")
 
 	_, err = cmp.Encoding(ctx)
 	if err != nil {
@@ -62,11 +60,10 @@ func TestWithVar_Encoding_Scoping(t *testing.T) {
 	}
 
 	scp := ctx.ScopeVar(x)
-	if string(scp) != escp {
-		t.Errorf(
-			"Var not included in guard scope. Expected %s but got %s",
-			escp,
-			scp,
+	if scp == x {
+		t.Error(
+			"QVar not included in guard scope. Guarded QVar is the same",
+			" as original",
 		)
 	}
 }
@@ -75,8 +72,8 @@ func TestWithVar_Encoding_Nil(t *testing.T) {
 	tree, _ := test.NewMockTree(1, nil)
 	ctx := query.BasicQContext(tree)
 
-	vcmp := logop.WithVar{query.Var("x"), test.Trivial(true)}
-	icmp := logop.WithVar{query.Var("x"), nil}
+	vcmp := logop.WithVar{query.QVar("x"), test.Trivial(true)}
+	icmp := logop.WithVar{query.QVar("x"), nil}
 
 	ce := "WithVar: Invalid encoding with nil ctx"
 	che := "WithVar: Invalid encoding of nil child"

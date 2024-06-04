@@ -31,8 +31,8 @@ func (t mockTree) Nodes() []query.Node {
 	return t.nodes
 }
 
-func (t mockTree) NodesConsts() []query.Const {
-	r := make([]query.Const, len(t.nodes))
+func (t mockTree) NodesConsts() []query.QConst {
+	r := make([]query.QConst, len(t.nodes))
 	r[0] = query.AllBotConst(t.dim)
 
 	for i := 1; i < len(t.nodes); i++ {
@@ -49,15 +49,15 @@ func (t mockTree) NodesConsts() []query.Const {
 		zv[t.nodes[i].Feat] = query.ZERO
 		ov[t.nodes[i].Feat] = query.ONE
 
-		r[t.nodes[i].ZChild] = query.Const{Val: zv}
-		r[t.nodes[i].OChild] = query.Const{Val: ov}
+		r[t.nodes[i].ZChild] = query.QConst{Val: zv}
+		r[t.nodes[i].OChild] = query.QConst{Val: ov}
 	}
 
 	return r
 }
 
-func (t mockTree) PosLeafsConsts() []query.Const {
-	var r []query.Const
+func (t mockTree) PosLeafsConsts() []query.QConst {
+	var r []query.QConst
 
 	nc := t.NodesConsts()
 	for i, n := range t.nodes {
@@ -69,8 +69,8 @@ func (t mockTree) PosLeafsConsts() []query.Const {
 	return r
 }
 
-func (t mockTree) NegLeafsConsts() []query.Const {
-	var r []query.Const
+func (t mockTree) NegLeafsConsts() []query.QConst {
+	var r []query.QConst
 
 	nc := t.NodesConsts()
 	for i, n := range t.nodes {

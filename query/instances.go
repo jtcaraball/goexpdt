@@ -5,15 +5,15 @@ import (
 	"strings"
 )
 
-// Var corresponds to the identifier of a partial instance in a query.
-type Var string
+// QVar corresponds to the identifier of a partial instance in a query.
+type QVar string
 
 // FeatV corresponds to the value of a partial instance.
 type FeatV int
 
-// Const corresponds to an explicit partial instance. It may not have an
-// assigned value to accomodate for guarded quantifiers.
-type Const struct {
+// QConst corresponds to an explicit partial instance in a query. It may not
+// have an assigned value to accomodate for guarded quantifiers.
+type QConst struct {
 	ID  string
 	Val []FeatV
 }
@@ -29,18 +29,18 @@ const (
 )
 
 // AllBotConst returns a all bot constant len dim with a zero value id.
-func AllBotConst(dim int) Const {
+func AllBotConst(dim int) QConst {
 	feats := make([]FeatV, dim)
 
 	for i := 0; i < dim; i++ {
 		feats[0] = BOT
 	}
 
-	return Const{Val: feats}
+	return QConst{Val: feats}
 }
 
 // IsFull return true if constant caller has no features equal to BOT.
-func (c Const) IsFull() bool {
+func (c QConst) IsFull() bool {
 	for _, ft := range c.Val {
 		if ft == BOT {
 			return false
@@ -50,7 +50,7 @@ func (c Const) IsFull() bool {
 }
 
 // AsString returns the caller's features represented as a string.
-func (c Const) AsString() string {
+func (c QConst) AsString() string {
 	var sb strings.Builder
 	for _, ft := range c.Val {
 		switch ft {
@@ -65,8 +65,8 @@ func (c Const) AsString() string {
 	return sb.String()
 }
 
-// BotCound return number of bot features in constant.
-func (c Const) BotCount() int {
+// BotCount return number of bot features in constant.
+func (c QConst) BotCount() int {
 	count := 0
 	for _, ft := range c.Val {
 		if ft == BOT {
@@ -80,7 +80,7 @@ func (c Const) BotCount() int {
 // different to d.
 func ValidateConstsDim(
 	d int,
-	consts ...Const,
+	consts ...QConst,
 ) error {
 	for i, c := range consts {
 		if len(c.Val) != d {

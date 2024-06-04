@@ -18,9 +18,9 @@ var test = struct {
 	tBytes        []byte
 	tree          tree
 	nodes         []query.Node
-	nodeConsts    []query.Const
-	posLeafConsts []query.Const
-	negLeafConsts []query.Const
+	nodeConsts    []query.QConst
+	posLeafConsts []query.QConst
+	negLeafConsts []query.QConst
 }{
 	tBytes: []byte(`
 {
@@ -130,7 +130,7 @@ var test = struct {
 		{Value: false, ZChild: -1, OChild: -1},
 		{Value: false, ZChild: -1, OChild: -1},
 	},
-	nodeConsts: []query.Const{
+	nodeConsts: []query.QConst{
 		{Val: []query.FeatV{b, b, b, b, b, b, b, b, b, b}},
 		{Val: []query.FeatV{b, b, b, b, b, z, b, b, b, b}},
 		{Val: []query.FeatV{b, b, b, b, b, o, b, b, b, b}},
@@ -143,11 +143,11 @@ var test = struct {
 		{Val: []query.FeatV{b, b, b, z, o, z, o, b, b, b}},
 		{Val: []query.FeatV{b, b, b, o, o, z, o, b, b, b}},
 	},
-	posLeafConsts: []query.Const{
+	posLeafConsts: []query.QConst{
 		{Val: []query.FeatV{b, b, b, b, b, o, b, b, b, b}},
 		{Val: []query.FeatV{b, b, z, b, z, z, b, b, b, b}},
 	},
-	negLeafConsts: []query.Const{
+	negLeafConsts: []query.QConst{
 		{Val: []query.FeatV{b, b, o, b, z, z, b, b, b, b}},
 		{Val: []query.FeatV{b, b, b, b, o, z, z, b, b, b}},
 		{Val: []query.FeatV{b, b, b, z, o, z, o, b, b, b}},

@@ -27,9 +27,9 @@ type tree struct {
 	nodeCount     int
 	featCount     int
 	nodes         []query.Node
-	nodeConsts    []query.Const
-	posLeafConsts []query.Const
-	negLeafConsts []query.Const
+	nodeConsts    []query.QConst
+	posLeafConsts []query.QConst
+	negLeafConsts []query.QConst
 }
 
 // Load returns the tree encoded in a json files passed by path.
@@ -148,7 +148,7 @@ type nodeElem struct {
 // NodeConsts returns a slice of query.Const representing the nodes that
 // compose the tree. Returns an error if t is nill or there is an underlying
 // error with the tree.
-func (t *tree) NodesConsts() []query.Const {
+func (t *tree) NodesConsts() []query.QConst {
 	if t == nil {
 		return nil
 	}
@@ -164,7 +164,7 @@ func (t *tree) NodesConsts() []query.Const {
 	)
 
 	next := 0
-	nconsts := make([]query.Const, t.nodeCount)
+	nconsts := make([]query.QConst, t.nodeCount)
 	nstack := []nodeElem{{n: t.root, v: make([]query.FeatV, t.featCount)}}
 
 	for len(nstack) > 0 {
@@ -172,7 +172,7 @@ func (t *tree) NodesConsts() []query.Const {
 		n, v = ninfo.n, ninfo.v
 
 		next += 1
-		nconsts[next] = query.Const{Val: v}
+		nconsts[next] = query.QConst{Val: v}
 
 		if n.zeroChild == nil || n.oneChild == nil {
 			continue
@@ -194,7 +194,7 @@ func (t *tree) NodesConsts() []query.Const {
 
 // PosLeafConsts returns a slice of query.Const representing the tree's
 // positive leafs.
-func (t *tree) PosLeafsConsts() []query.Const {
+func (t *tree) PosLeafsConsts() []query.QConst {
 	if t == nil {
 		return nil
 	}
@@ -210,7 +210,7 @@ func (t *tree) PosLeafsConsts() []query.Const {
 
 // NegLeafConsts returns a slice of query.Const representing the tree's
 // negative leafs.
-func (t *tree) NegLeafsConsts() []query.Const {
+func (t *tree) NegLeafsConsts() []query.QConst {
 	if t == nil {
 		return nil
 	}
@@ -234,8 +234,8 @@ func (t *tree) computeLeafs() {
 		ninfo     nodeElem
 	)
 
-	pconsts := []query.Const{}
-	nconsts := []query.Const{}
+	pconsts := []query.QConst{}
+	nconsts := []query.QConst{}
 	nstack := []nodeElem{{n: t.root, v: make([]query.FeatV, t.featCount)}}
 
 	for len(nstack) > 0 {
@@ -244,10 +244,10 @@ func (t *tree) computeLeafs() {
 
 		if n.zeroChild == nil || n.oneChild == nil {
 			if n.value {
-				pconsts = append(pconsts, query.Const{Val: ninfo.v})
+				pconsts = append(pconsts, query.QConst{Val: ninfo.v})
 				continue
 			}
-			nconsts = append(nconsts, query.Const{Val: ninfo.v})
+			nconsts = append(nconsts, query.QConst{Val: ninfo.v})
 			continue
 		}
 

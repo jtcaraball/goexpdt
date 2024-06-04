@@ -13,8 +13,8 @@ func TestAnd_Encoding_DTrue(t *testing.T) {
 	tree, _ := test.NewMockTree(1, nil)
 	ctx := query.BasicQContext(tree)
 
-	cx := logop.WithVar{query.Var("x"), test.Trivial(true)}
-	cy := logop.WithVar{query.Var("y"), test.Trivial(true)}
+	cx := logop.WithVar{query.QVar("x"), test.Trivial(true)}
+	cy := logop.WithVar{query.QVar("y"), test.Trivial(true)}
 	cmp := logop.And{cx, cy}
 
 	ncnf, err := cmp.Encoding(ctx)
@@ -41,8 +41,8 @@ func TestAnd_Encoding_DFalse(t *testing.T) {
 	tree, _ := test.NewMockTree(1, nil)
 	ctx := query.BasicQContext(tree)
 
-	cx := logop.WithVar{query.Var("x"), test.Trivial(false)}
-	cy := logop.WithVar{query.Var("y"), test.Trivial(false)}
+	cx := logop.WithVar{query.QVar("x"), test.Trivial(false)}
+	cy := logop.WithVar{query.QVar("y"), test.Trivial(false)}
 	cmp := logop.And{cx, cy}
 
 	ncnf, err := cmp.Encoding(ctx)
@@ -69,8 +69,8 @@ func TestAnd_Encoding_Mixed(t *testing.T) {
 	tree, _ := test.NewMockTree(1, nil)
 	ctx := query.BasicQContext(tree)
 
-	cx := logop.WithVar{query.Var("x"), test.Trivial(true)}
-	cy := logop.WithVar{query.Var("y"), test.Trivial(false)}
+	cx := logop.WithVar{query.QVar("x"), test.Trivial(true)}
+	cy := logop.WithVar{query.QVar("y"), test.Trivial(false)}
 	cmp := logop.And{cx, cy}
 
 	ncnf, err := cmp.Encoding(ctx)

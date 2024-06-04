@@ -16,7 +16,7 @@ func TestNot_Encoding(t *testing.T) {
 	}
 	ctx := query.BasicQContext(tree)
 
-	x := query.Var("x")
+	x := query.QVar("x")
 	cmp := logop.Not{logop.WithVar{x, test.Trivial(false)}}
 
 	ncnf, err := cmp.Encoding(ctx)

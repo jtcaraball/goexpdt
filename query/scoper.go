@@ -42,6 +42,10 @@ type scope struct {
 }
 
 func (s *baseScoper) ScopeVar(v QVar) QVar {
+	if len(s.scopes) == 0 {
+		return v
+	}
+
 	defer func() {
 		s.builder.Reset()
 	}()

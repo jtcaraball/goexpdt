@@ -1,4 +1,4 @@
-package pred
+package lel
 
 import (
 	"errors"
@@ -7,9 +7,9 @@ import (
 	"github.com/jtcaraball/goexpdt/query"
 )
 
-// LELVarVar is the variable-variable version of the Less or Equal Level
+// VarVar is the variable-variable version of the Less or Equal Level
 // predicate.
-type LELVarVar struct {
+type VarVar struct {
 	I1 query.QVar
 	I2 query.QVar
 	// CountVarGen returns a variable generated from v that will be used to
@@ -20,7 +20,7 @@ type LELVarVar struct {
 // Ecoding returns a CNF that is true if and only if the query variable l.I1
 // has more or equal amount of BOT valued features than the query variable
 // l.I2.
-func (l LELVarVar) Encoding(ctx query.QContext) (cnf.CNF, error) {
+func (l VarVar) Encoding(ctx query.QContext) (cnf.CNF, error) {
 	if ctx == nil {
 		return cnf.CNF{}, errors.New("Invalid encoding with nil ctx")
 	}

@@ -1,4 +1,4 @@
-package pred
+package subsumption
 
 import (
 	"errors"
@@ -7,16 +7,15 @@ import (
 	"github.com/jtcaraball/goexpdt/query"
 )
 
-// SubsumptionVarVar is the variable-variable version of the Subsumption
-// predicate.
-type SubsumptionVarVar struct {
+// VarVar is the variable-variable version of the Subsumption predicate.
+type VarVar struct {
 	I1 query.QVar
 	I2 query.QVar
 }
 
 // Encoding returns a CNF that is true if and only if the query variable s.I1
 // is subsumed by the query variable s.I2.
-func (s SubsumptionVarVar) Encoding(ctx query.QContext) (cnf.CNF, error) {
+func (s VarVar) Encoding(ctx query.QContext) (cnf.CNF, error) {
 	if ctx == nil {
 		return cnf.CNF{}, errors.New("Invalid encoding with nil ctx")
 	}

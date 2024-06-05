@@ -1,4 +1,4 @@
-package pred_test
+package subsumption_test
 
 import (
 	"testing"
@@ -6,11 +6,16 @@ import (
 	"github.com/jtcaraball/goexpdt/query"
 	"github.com/jtcaraball/goexpdt/query/internal/test"
 	"github.com/jtcaraball/goexpdt/query/logop"
-	"github.com/jtcaraball/goexpdt/query/pred"
 	"github.com/jtcaraball/goexpdt/query/pred/internal/testtable"
+	"github.com/jtcaraball/goexpdt/query/pred/subsumption"
 )
 
-func runLELVarConst(t *testing.T, id int, tc testtable.BTRecord, neg bool) {
+func runSubsumptionVarConst(
+	t *testing.T,
+	id int,
+	tc testtable.BTRecord,
+	neg bool,
+) {
 	tree, _ := test.NewMockTree(tc.Dim, nil)
 	ctx := query.BasicQContext(tree)
 
@@ -18,7 +23,8 @@ func runLELVarConst(t *testing.T, id int, tc testtable.BTRecord, neg bool) {
 	c1 := query.QConst{Val: tc.Val1}
 	c2 := query.QConst{Val: tc.Val2}
 
-	var f test.Encodable = pred.LELVarConst{x, c2, test.VarGenBotCount}
+	var f test.Encodable = subsumption.VarConst{x, c2}
+
 	if neg {
 		f = logop.Not{Q: f}
 	}
@@ -27,8 +33,8 @@ func runLELVarConst(t *testing.T, id int, tc testtable.BTRecord, neg bool) {
 		I: x,
 		Q: logop.And{
 			Q1: logop.And{
-				Q1: pred.SubsumptionVarConst{I1: x, I2: c1},
-				Q2: pred.SubsumptionConstVar{I1: c1, I2: x},
+				Q1: subsumption.VarConst{x, c1},
+				Q2: subsumption.ConstVar{c1, x},
 			},
 			Q2: f,
 		},
@@ -37,7 +43,7 @@ func runLELVarConst(t *testing.T, id int, tc testtable.BTRecord, neg bool) {
 	test.EncodeAndRun(t, f, ctx, id, tc.ExpCode)
 }
 
-func runGuardedLELVarConst(
+func runGuardedSubsumptionVarConst(
 	t *testing.T,
 	id int,
 	tc testtable.BTRecord,
@@ -53,7 +59,7 @@ func runGuardedLELVarConst(
 	ctx.AddScope("y")
 	_ = ctx.SetScope(1, tc.Val2)
 
-	var f test.Encodable = pred.LELVarConst{x, y, test.VarGenBotCount}
+	var f test.Encodable = subsumption.VarConst{x, y}
 	if neg {
 		f = logop.Not{Q: f}
 	}
@@ -62,8 +68,8 @@ func runGuardedLELVarConst(
 		I: x,
 		Q: logop.And{
 			Q1: logop.And{
-				Q1: pred.SubsumptionVarConst{I1: x, I2: c1},
-				Q2: pred.SubsumptionConstVar{I1: c1, I2: x},
+				Q1: subsumption.VarConst{x, c1},
+				Q2: subsumption.ConstVar{c1, x},
 			},
 			Q2: f,
 		},
@@ -72,46 +78,46 @@ func runGuardedLELVarConst(
 	test.EncodeAndRun(t, f, ctx, id, tc.ExpCode)
 }
 
-func TestLELVarConst_Encoding(t *testing.T) {
-	for i, tc := range testtable.LELPTT {
+func TestVarConst_Encoding(t *testing.T) {
+	for i, tc := range testtable.SubsumptionPTT {
 		t.Run(tc.Name, func(t *testing.T) {
-			runLELVarConst(t, i, tc, false)
+			runSubsumptionVarConst(t, i, tc, false)
 		})
 	}
 }
 
-func TestLELVarConst_Encoding_Guarded(t *testing.T) {
-	for i, tc := range testtable.LELPTT {
+func TestVarConst_Encoding_Guarded(t *testing.T) {
+	for i, tc := range testtable.SubsumptionPTT {
 		t.Run(tc.Name, func(t *testing.T) {
-			runGuardedLELVarConst(t, i, tc, false)
+			runGuardedSubsumptionVarConst(t, i, tc, false)
 		})
 	}
 }
 
-func TestNotLELVarConst_Encoding(t *testing.T) {
-	for i, tc := range testtable.LELNTT {
+func TestNotVarConst_Encoding(t *testing.T) {
+	for i, tc := range testtable.SubsumptionNTT {
 		t.Run(tc.Name, func(t *testing.T) {
-			runLELVarConst(t, i, tc, true)
+			runSubsumptionVarConst(t, i, tc, true)
 		})
 	}
 }
 
-func TestNotLELVarConst_Encoding_Guarded(t *testing.T) {
-	for i, tc := range testtable.LELNTT {
+func TestNotVarConst_Encoding_Guarded(t *testing.T) {
+	for i, tc := range testtable.SubsumptionNTT {
 		t.Run(tc.Name, func(t *testing.T) {
-			runGuardedLELVarConst(t, i, tc, true)
+			runGuardedSubsumptionVarConst(t, i, tc, true)
 		})
 	}
 }
 
-func TestLELVarConst_Encoding_WrongDim(t *testing.T) {
+func TestVarConst_Encoding_WrongDim(t *testing.T) {
 	tree, _ := test.NewMockTree(4, nil)
 	ctx := query.BasicQContext(tree)
 
 	x := query.QVar("x")
 	y := query.QConst{Val: []query.FeatV{query.BOT, query.BOT, query.BOT}}
 
-	f := pred.LELVarConst{x, y, test.VarGenBotCount}
+	f := subsumption.VarConst{x, y}
 
 	_, err := f.Encoding(ctx)
 	if err == nil {
@@ -119,11 +125,11 @@ func TestLELVarConst_Encoding_WrongDim(t *testing.T) {
 	}
 }
 
-func TestLELVarConst_Encoding_NilCtx(t *testing.T) {
+func TestVarConst_Encoding_NilCtx(t *testing.T) {
 	x := query.QVar("x")
 	y := query.QConst{Val: []query.FeatV{query.BOT}}
 
-	f := pred.LELVarConst{x, y, test.VarGenBotCount}
+	f := subsumption.VarConst{x, y}
 	e := "Invalid encoding with nil ctx"
 
 	_, err := f.Encoding(nil)

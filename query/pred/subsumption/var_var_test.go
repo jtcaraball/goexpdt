@@ -1,4 +1,4 @@
-package pred_test
+package subsumption_test
 
 import (
 	"testing"
@@ -6,8 +6,8 @@ import (
 	"github.com/jtcaraball/goexpdt/query"
 	"github.com/jtcaraball/goexpdt/query/internal/test"
 	"github.com/jtcaraball/goexpdt/query/logop"
-	"github.com/jtcaraball/goexpdt/query/pred"
 	"github.com/jtcaraball/goexpdt/query/pred/internal/testtable"
+	"github.com/jtcaraball/goexpdt/query/pred/subsumption"
 )
 
 func runSubsumptionVarVar(t *testing.T, id int, tc testtable.BTRecord, neg bool) {
@@ -19,7 +19,7 @@ func runSubsumptionVarVar(t *testing.T, id int, tc testtable.BTRecord, neg bool)
 	c1 := query.QConst{Val: tc.Val1}
 	c2 := query.QConst{Val: tc.Val2}
 
-	var f test.Encodable = pred.SubsumptionVarVar{x, y}
+	var f test.Encodable = subsumption.VarVar{x, y}
 	if neg {
 		f = logop.Not{Q: f}
 	}
@@ -30,13 +30,13 @@ func runSubsumptionVarVar(t *testing.T, id int, tc testtable.BTRecord, neg bool)
 			I: y,
 			Q: logop.And{
 				Q1: logop.And{
-					Q1: pred.SubsumptionVarConst{x, c1},
-					Q2: pred.SubsumptionConstVar{c1, x},
+					Q1: subsumption.VarConst{x, c1},
+					Q2: subsumption.ConstVar{c1, x},
 				},
 				Q2: logop.And{
 					Q1: logop.And{
-						Q1: pred.SubsumptionVarConst{y, c2},
-						Q2: pred.SubsumptionConstVar{c2, y},
+						Q1: subsumption.VarConst{y, c2},
+						Q2: subsumption.ConstVar{c2, y},
 					},
 					Q2: f,
 				},
@@ -47,7 +47,7 @@ func runSubsumptionVarVar(t *testing.T, id int, tc testtable.BTRecord, neg bool)
 	test.EncodeAndRun(t, f, ctx, id, tc.ExpCode)
 }
 
-func TestSubsumptionVarVar_Encoding(t *testing.T) {
+func TestVarVar_Encoding(t *testing.T) {
 	for i, tc := range testtable.SubsumptionPTT {
 		t.Run(tc.Name, func(t *testing.T) {
 			runSubsumptionVarVar(t, i, tc, false)
@@ -55,7 +55,7 @@ func TestSubsumptionVarVar_Encoding(t *testing.T) {
 	}
 }
 
-func TestNotSubsumptionVarVar_Encoding(t *testing.T) {
+func TestNotVarVar_Encoding(t *testing.T) {
 	for i, tc := range testtable.SubsumptionNTT {
 		t.Run(tc.Name, func(t *testing.T) {
 			runSubsumptionVarVar(t, i, tc, true)
@@ -63,11 +63,11 @@ func TestNotSubsumptionVarVar_Encoding(t *testing.T) {
 	}
 }
 
-func TestSubsumptionVarVar_Encoding_NilCtx(t *testing.T) {
+func TestVarVar_Encoding_NilCtx(t *testing.T) {
 	x := query.QVar("x")
 	y := query.QVar("y")
 
-	f := pred.SubsumptionVarVar{x, y}
+	f := subsumption.VarVar{x, y}
 	e := "Invalid encoding with nil ctx"
 
 	_, err := f.Encoding(nil)

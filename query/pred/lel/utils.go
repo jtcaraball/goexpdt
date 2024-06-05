@@ -1,4 +1,4 @@
-package pred
+package lel
 
 import (
 	"github.com/jtcaraball/goexpdt/cnf"

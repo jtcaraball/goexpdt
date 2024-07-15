@@ -91,9 +91,10 @@ func (n Const) Encoding(ctx query.QContext) (cnf.CNF, error) {
 // initVisitedFeatures marks every BOT valued feature as "visited" and all
 // others as "not visited".
 func (n *Const) initVisitedFeats(dim int, c query.QConst) {
-	// As n is passed on as value on the Encoding method this is always
-	// evaluating to true. Someday ill think about a way of not allocating a
-	// slice every time its called, but that day is not today.
+	// As n is passed on as value on the Encoding method this mutation is not
+	// saved on subsequent calls so this always evaluating to true. Someday ill
+	// think about a way of not allocating a slice every time its called, but
+	// that day is not today.
 	if n.visitedFeats == nil {
 		n.visitedFeats = make([]int, dim)
 	}

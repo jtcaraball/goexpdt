@@ -1,9 +1,12 @@
-package testtable
+package subsumption_test
 
-import "github.com/jtcaraball/goexpdt/query"
+import (
+	"github.com/jtcaraball/goexpdt/query"
+	"github.com/jtcaraball/goexpdt/query/internal/test"
+)
 
 // SubsumptionPTT is the subsumption positive test cases table.
-var SubsumptionPTT = []BTRecord{
+var SubsumptionPTT = []test.BTRecord{
 	{
 		Dim:     3,
 		Name:    "(1,_,_):(1,_,0)",
@@ -63,7 +66,7 @@ var SubsumptionPTT = []BTRecord{
 }
 
 // SubsumptionNTT is the subsumption negated test cases table.
-var SubsumptionNTT = []BTRecord{
+var SubsumptionNTT = []test.BTRecord{
 	{
 		Dim:     3,
 		Name:    "(1,_,_):(1,_,0)",

@@ -1,5 +1,5 @@
 // Test cases tables for pred package.
-package testtable
+package test
 
 import "github.com/jtcaraball/goexpdt/query"
 

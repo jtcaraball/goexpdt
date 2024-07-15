@@ -1,11 +1,11 @@
-package testtable
+package isnode_test
 
 import (
 	"github.com/jtcaraball/goexpdt/query"
 	"github.com/jtcaraball/goexpdt/query/internal/test"
 )
 
-var IsNodePTT = []OTRecord{
+var IsNodePTT = []test.OTRecord{
 	{
 		Dim:     3,
 		Name:    "(_,_,_)",
@@ -170,7 +170,7 @@ var IsNodePTT = []OTRecord{
 	},
 }
 
-var IsNodeNTT = []OTRecord{
+var IsNodeNTT = []test.OTRecord{
 	{
 		Dim:     3,
 		Name:    "(_,_,_)",

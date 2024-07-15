@@ -1,8 +1,11 @@
-package testtable
+package lel_test
 
-import "github.com/jtcaraball/goexpdt/query"
+import (
+	"github.com/jtcaraball/goexpdt/query"
+	"github.com/jtcaraball/goexpdt/query/internal/test"
+)
 
-var LELPTT = []BTRecord{
+var LELPTT = []test.BTRecord{
 	{
 		Dim:     3,
 		Name:    "(1,_,_):(1,_,0)",
@@ -54,7 +57,7 @@ var LELPTT = []BTRecord{
 	},
 }
 
-var LELNTT = []BTRecord{
+var LELNTT = []test.BTRecord{
 	{
 		Dim:     3,
 		Name:    "(1,_,_):(1,_,0)",

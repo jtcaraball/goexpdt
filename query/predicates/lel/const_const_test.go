@@ -6,11 +6,10 @@ import (
 	"github.com/jtcaraball/goexpdt/query"
 	"github.com/jtcaraball/goexpdt/query/internal/test"
 	"github.com/jtcaraball/goexpdt/query/logop"
-	"github.com/jtcaraball/goexpdt/query/predicates/internal/testtable"
 	"github.com/jtcaraball/goexpdt/query/predicates/lel"
 )
 
-func runLELConstConst(t *testing.T, id int, tc testtable.BTRecord, neg bool) {
+func runLELConstConst(t *testing.T, id int, tc test.BTRecord, neg bool) {
 	tree, _ := test.NewMockTree(tc.Dim, nil)
 	ctx := query.BasicQContext(tree)
 
@@ -28,7 +27,7 @@ func runLELConstConst(t *testing.T, id int, tc testtable.BTRecord, neg bool) {
 func runGuardedLELConstConst(
 	t *testing.T,
 	id int,
-	tc testtable.BTRecord,
+	tc test.BTRecord,
 	neg bool,
 ) {
 	tree, _ := test.NewMockTree(tc.Dim, nil)
@@ -51,7 +50,7 @@ func runGuardedLELConstConst(
 }
 
 func TestConstConst_Encoding(t *testing.T) {
-	for i, tc := range testtable.LELPTT {
+	for i, tc := range LELPTT {
 		t.Run(tc.Name, func(t *testing.T) {
 			runLELConstConst(t, i, tc, false)
 		})
@@ -59,7 +58,7 @@ func TestConstConst_Encoding(t *testing.T) {
 }
 
 func TestConstConst_Encoding_Guarded(t *testing.T) {
-	for i, tc := range testtable.LELPTT {
+	for i, tc := range LELPTT {
 		t.Run(tc.Name, func(t *testing.T) {
 			runGuardedLELConstConst(t, i, tc, false)
 		})
@@ -67,7 +66,7 @@ func TestConstConst_Encoding_Guarded(t *testing.T) {
 }
 
 func TestNotConstConst_Encoding(t *testing.T) {
-	for i, tc := range testtable.LELNTT {
+	for i, tc := range LELNTT {
 		t.Run(tc.Name, func(t *testing.T) {
 			runLELConstConst(t, i, tc, true)
 		})
@@ -75,7 +74,7 @@ func TestNotConstConst_Encoding(t *testing.T) {
 }
 
 func TestNotConstConst_Encoding_Guarded(t *testing.T) {
-	for i, tc := range testtable.LELNTT {
+	for i, tc := range LELNTT {
 		t.Run(tc.Name, func(t *testing.T) {
 			runGuardedLELConstConst(t, i, tc, true)
 		})

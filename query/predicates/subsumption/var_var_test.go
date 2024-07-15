@@ -6,11 +6,10 @@ import (
 	"github.com/jtcaraball/goexpdt/query"
 	"github.com/jtcaraball/goexpdt/query/internal/test"
 	"github.com/jtcaraball/goexpdt/query/logop"
-	"github.com/jtcaraball/goexpdt/query/predicates/internal/testtable"
 	"github.com/jtcaraball/goexpdt/query/predicates/subsumption"
 )
 
-func runSubsumptionVarVar(t *testing.T, id int, tc testtable.BTRecord, neg bool) {
+func runSubsumptionVarVar(t *testing.T, id int, tc test.BTRecord, neg bool) {
 	tree, _ := test.NewMockTree(tc.Dim, nil)
 	ctx := query.BasicQContext(tree)
 
@@ -48,7 +47,7 @@ func runSubsumptionVarVar(t *testing.T, id int, tc testtable.BTRecord, neg bool)
 }
 
 func TestVarVar_Encoding(t *testing.T) {
-	for i, tc := range testtable.SubsumptionPTT {
+	for i, tc := range SubsumptionPTT {
 		t.Run(tc.Name, func(t *testing.T) {
 			runSubsumptionVarVar(t, i, tc, false)
 		})
@@ -56,7 +55,7 @@ func TestVarVar_Encoding(t *testing.T) {
 }
 
 func TestNotVarVar_Encoding(t *testing.T) {
-	for i, tc := range testtable.SubsumptionNTT {
+	for i, tc := range SubsumptionNTT {
 		t.Run(tc.Name, func(t *testing.T) {
 			runSubsumptionVarVar(t, i, tc, true)
 		})

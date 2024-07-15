@@ -6,12 +6,11 @@ import (
 	"github.com/jtcaraball/goexpdt/query"
 	"github.com/jtcaraball/goexpdt/query/internal/test"
 	"github.com/jtcaraball/goexpdt/query/logop"
-	"github.com/jtcaraball/goexpdt/query/predicates/internal/testtable"
 	"github.com/jtcaraball/goexpdt/query/predicates/lel"
 	"github.com/jtcaraball/goexpdt/query/predicates/subsumption"
 )
 
-func runLELVarVar(t *testing.T, id int, tc testtable.BTRecord, neg bool) {
+func runLELVarVar(t *testing.T, id int, tc test.BTRecord, neg bool) {
 	tree, _ := test.NewMockTree(tc.Dim, nil)
 	ctx := query.BasicQContext(tree)
 
@@ -49,7 +48,7 @@ func runLELVarVar(t *testing.T, id int, tc testtable.BTRecord, neg bool) {
 }
 
 func TestVarVar_Encoding(t *testing.T) {
-	for i, tc := range testtable.LELPTT {
+	for i, tc := range LELPTT {
 		t.Run(tc.Name, func(t *testing.T) {
 			runLELVarVar(t, i, tc, false)
 		})
@@ -57,7 +56,7 @@ func TestVarVar_Encoding(t *testing.T) {
 }
 
 func TestNotVarVar_Encoding(t *testing.T) {
-	for i, tc := range testtable.LELNTT {
+	for i, tc := range LELNTT {
 		t.Run(tc.Name, func(t *testing.T) {
 			runLELVarVar(t, i, tc, true)
 		})

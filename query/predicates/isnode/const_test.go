@@ -6,12 +6,11 @@ import (
 	"github.com/jtcaraball/goexpdt/query"
 	"github.com/jtcaraball/goexpdt/query/internal/test"
 	"github.com/jtcaraball/goexpdt/query/logop"
-	"github.com/jtcaraball/goexpdt/query/predicates/internal/testtable"
 	"github.com/jtcaraball/goexpdt/query/predicates/isnode"
 )
 
-func runIsNodeConst(t *testing.T, id int, tc testtable.OTRecord, neg bool) {
-	tree := testtable.IsNodeTree()
+func runIsNodeConst(t *testing.T, id int, tc test.OTRecord, neg bool) {
+	tree := IsNodeTree()
 	ctx := query.BasicQContext(tree)
 
 	c := query.QConst{Val: tc.Val}
@@ -27,10 +26,10 @@ func runIsNodeConst(t *testing.T, id int, tc testtable.OTRecord, neg bool) {
 func runGuardedIsNodeConst(
 	t *testing.T,
 	id int,
-	tc testtable.OTRecord,
+	tc test.OTRecord,
 	neg bool,
 ) {
-	tree := testtable.IsNodeTree()
+	tree := IsNodeTree()
 	ctx := query.BasicQContext(tree)
 
 	c := query.QConst{ID: "x"}
@@ -46,7 +45,7 @@ func runGuardedIsNodeConst(
 }
 
 func TestConst_Encoding(t *testing.T) {
-	for i, tc := range testtable.IsNodePTT {
+	for i, tc := range IsNodePTT {
 		t.Run(tc.Name, func(t *testing.T) {
 			runIsNodeConst(t, i, tc, false)
 		})
@@ -54,7 +53,7 @@ func TestConst_Encoding(t *testing.T) {
 }
 
 func TestConst_Encoding_Guarded(t *testing.T) {
-	for i, tc := range testtable.IsNodePTT {
+	for i, tc := range IsNodePTT {
 		t.Run(tc.Name, func(t *testing.T) {
 			runGuardedIsNodeConst(t, i, tc, false)
 		})
@@ -62,7 +61,7 @@ func TestConst_Encoding_Guarded(t *testing.T) {
 }
 
 func TestNotConst_Encoding(t *testing.T) {
-	for i, tc := range testtable.IsNodeNTT {
+	for i, tc := range IsNodeNTT {
 		t.Run(tc.Name, func(t *testing.T) {
 			runIsNodeConst(t, i, tc, true)
 		})
@@ -70,7 +69,7 @@ func TestNotConst_Encoding(t *testing.T) {
 }
 
 func TestNotConst_Encoding_Guarded(t *testing.T) {
-	for i, tc := range testtable.IsNodeNTT {
+	for i, tc := range IsNodeNTT {
 		t.Run(tc.Name, func(t *testing.T) {
 			runGuardedIsNodeConst(t, i, tc, true)
 		})

@@ -6,13 +6,12 @@ import (
 	"github.com/jtcaraball/goexpdt/query"
 	"github.com/jtcaraball/goexpdt/query/internal/test"
 	"github.com/jtcaraball/goexpdt/query/logop"
-	"github.com/jtcaraball/goexpdt/query/predicates/internal/testtable"
 	"github.com/jtcaraball/goexpdt/query/predicates/isnode"
 	"github.com/jtcaraball/goexpdt/query/predicates/subsumption"
 )
 
-func runIsNodeVar(t *testing.T, id int, tc testtable.OTRecord, neg bool) {
-	tree := testtable.IsNodeTree()
+func runIsNodeVar(t *testing.T, id int, tc test.OTRecord, neg bool) {
+	tree := IsNodeTree()
 	ctx := query.BasicQContext(tree)
 
 	x := query.QVar("x")
@@ -42,7 +41,7 @@ func runIsNodeVar(t *testing.T, id int, tc testtable.OTRecord, neg bool) {
 }
 
 func TestVar_Encoding(t *testing.T) {
-	for i, tc := range testtable.IsNodePTT {
+	for i, tc := range IsNodePTT {
 		t.Run(tc.Name, func(t *testing.T) {
 			runIsNodeVar(t, i, tc, false)
 		})
@@ -50,7 +49,7 @@ func TestVar_Encoding(t *testing.T) {
 }
 
 func TestNotVar_Encoding(t *testing.T) {
-	for i, tc := range testtable.IsNodeNTT {
+	for i, tc := range IsNodeNTT {
 		t.Run(tc.Name, func(t *testing.T) {
 			runIsNodeVar(t, i, tc, true)
 		})

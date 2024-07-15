@@ -6,12 +6,11 @@ import (
 	"github.com/jtcaraball/goexpdt/query"
 	"github.com/jtcaraball/goexpdt/query/internal/test"
 	"github.com/jtcaraball/goexpdt/query/logop"
-	"github.com/jtcaraball/goexpdt/query/predicates/internal/testtable"
 	"github.com/jtcaraball/goexpdt/query/predicates/lel"
 	"github.com/jtcaraball/goexpdt/query/predicates/subsumption"
 )
 
-func runLELConstVar(t *testing.T, id int, tc testtable.BTRecord, neg bool) {
+func runLELConstVar(t *testing.T, id int, tc test.BTRecord, neg bool) {
 	tree, _ := test.NewMockTree(tc.Dim, nil)
 	ctx := query.BasicQContext(tree)
 
@@ -38,12 +37,7 @@ func runLELConstVar(t *testing.T, id int, tc testtable.BTRecord, neg bool) {
 	test.EncodeAndRun(t, f, ctx, id, tc.ExpCode)
 }
 
-func runGuardedLELConstVar(
-	t *testing.T,
-	id int,
-	tc testtable.BTRecord,
-	neg bool,
-) {
+func runGuardedLELConstVar(t *testing.T, id int, tc test.BTRecord, neg bool) {
 	tree, _ := test.NewMockTree(tc.Dim, nil)
 	ctx := query.BasicQContext(tree)
 
@@ -74,7 +68,7 @@ func runGuardedLELConstVar(
 }
 
 func TestConstVar_Encoding(t *testing.T) {
-	for i, tc := range testtable.LELPTT {
+	for i, tc := range LELPTT {
 		t.Run(tc.Name, func(t *testing.T) {
 			runLELConstVar(t, i, tc, false)
 		})
@@ -82,7 +76,7 @@ func TestConstVar_Encoding(t *testing.T) {
 }
 
 func TestConstVar_Encoding_Guarded(t *testing.T) {
-	for i, tc := range testtable.LELPTT {
+	for i, tc := range LELPTT {
 		t.Run(tc.Name, func(t *testing.T) {
 			runGuardedLELConstVar(t, i, tc, false)
 		})
@@ -90,7 +84,7 @@ func TestConstVar_Encoding_Guarded(t *testing.T) {
 }
 
 func TestNotConstVar_Encoding(t *testing.T) {
-	for i, tc := range testtable.LELNTT {
+	for i, tc := range LELNTT {
 		t.Run(tc.Name, func(t *testing.T) {
 			runLELConstVar(t, i, tc, true)
 		})
@@ -98,7 +92,7 @@ func TestNotConstVar_Encoding(t *testing.T) {
 }
 
 func TestNotConstVar_Encoding_Guarded(t *testing.T) {
-	for i, tc := range testtable.LELNTT {
+	for i, tc := range LELNTT {
 		t.Run(tc.Name, func(t *testing.T) {
 			runGuardedLELConstVar(t, i, tc, true)
 		})

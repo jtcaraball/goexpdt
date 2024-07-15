@@ -6,14 +6,13 @@ import (
 	"github.com/jtcaraball/goexpdt/query"
 	"github.com/jtcaraball/goexpdt/query/internal/test"
 	"github.com/jtcaraball/goexpdt/query/logop"
-	"github.com/jtcaraball/goexpdt/query/predicates/internal/testtable"
 	"github.com/jtcaraball/goexpdt/query/predicates/subsumption"
 )
 
 func runSubsumptionConstConst(
 	t *testing.T,
 	id int,
-	tc testtable.BTRecord,
+	tc test.BTRecord,
 	neg bool,
 ) {
 	tree, _ := test.NewMockTree(tc.Dim, nil)
@@ -34,7 +33,7 @@ func runSubsumptionConstConst(
 func runGuardedSubsumptionConstConst(
 	t *testing.T,
 	id int,
-	tc testtable.BTRecord,
+	tc test.BTRecord,
 	neg bool,
 ) {
 	tree, _ := test.NewMockTree(tc.Dim, nil)
@@ -58,7 +57,7 @@ func runGuardedSubsumptionConstConst(
 }
 
 func TestConstConst_Encoding(t *testing.T) {
-	for i, tc := range testtable.SubsumptionPTT {
+	for i, tc := range SubsumptionPTT {
 		t.Run(tc.Name, func(t *testing.T) {
 			runSubsumptionConstConst(t, i, tc, false)
 		})
@@ -66,7 +65,7 @@ func TestConstConst_Encoding(t *testing.T) {
 }
 
 func TestConstConst_Encoding_Guarded(t *testing.T) {
-	for i, tc := range testtable.SubsumptionPTT {
+	for i, tc := range SubsumptionPTT {
 		t.Run(tc.Name, func(t *testing.T) {
 			runGuardedSubsumptionConstConst(t, i, tc, false)
 		})
@@ -74,7 +73,7 @@ func TestConstConst_Encoding_Guarded(t *testing.T) {
 }
 
 func TestNotConstConst_Encoding(t *testing.T) {
-	for i, tc := range testtable.SubsumptionNTT {
+	for i, tc := range SubsumptionNTT {
 		t.Run(tc.Name, func(t *testing.T) {
 			runSubsumptionConstConst(t, i, tc, true)
 		})
@@ -82,7 +81,7 @@ func TestNotConstConst_Encoding(t *testing.T) {
 }
 
 func TestNotConstConst_Encoding_Guarded(t *testing.T) {
-	for i, tc := range testtable.SubsumptionNTT {
+	for i, tc := range SubsumptionNTT {
 		t.Run(tc.Name, func(t *testing.T) {
 			runGuardedSubsumptionConstConst(t, i, tc, true)
 		})

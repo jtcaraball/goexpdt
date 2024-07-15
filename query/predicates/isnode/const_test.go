@@ -6,8 +6,8 @@ import (
 	"github.com/jtcaraball/goexpdt/query"
 	"github.com/jtcaraball/goexpdt/query/internal/test"
 	"github.com/jtcaraball/goexpdt/query/logop"
-	"github.com/jtcaraball/goexpdt/query/pred/internal/testtable"
-	"github.com/jtcaraball/goexpdt/query/pred/isnode"
+	"github.com/jtcaraball/goexpdt/query/predicates/internal/testtable"
+	"github.com/jtcaraball/goexpdt/query/predicates/isnode"
 )
 
 func runIsNodeConst(t *testing.T, id int, tc testtable.OTRecord, neg bool) {

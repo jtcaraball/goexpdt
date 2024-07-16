@@ -7,7 +7,7 @@ import (
 	"github.com/jtcaraball/goexpdt/query"
 )
 
-// ConstConst is the variable-variable version of the Less or Equal Level
+// ConstVar is the constant-variable version of the Less or Equal Level
 // predicate.
 type ConstVar struct {
 	I1 query.QConst

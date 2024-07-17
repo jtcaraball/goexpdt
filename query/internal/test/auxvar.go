@@ -15,3 +15,23 @@ func VarGenBotCount(v query.QVar) query.QVar {
 func VarGenNodeReach(v query.QVar) query.QVar {
 	return query.QVar("reach" + sep + string(v))
 }
+
+// VarGenHammingDistance returns a variable equal to the sorted concatenation
+// of variables v1 and v2 with the addition of the prefix "hdist" separated
+// using the record separator character (ascii 30).
+func VarGenHammingDistance(v1, v2 query.QVar) query.QVar {
+	if string(v1) < string(v2) {
+		return query.QVar("hdist" + sep + string(v1) + sep + string(v2))
+	}
+	return query.QVar("hdist" + sep + string(v2) + sep + string(v1))
+}
+
+// VarGenEqualFeat returns a variable equal to the sorted concatenation of
+// variables v1 and v2 with the addition of the prefix "eqf" separated using
+// the record separator character (ascii 30).
+func VarGenEqualFeat(v1, v2 query.QVar) query.QVar {
+	if string(v1) < string(v2) {
+		return query.QVar("eqf" + sep + string(v1) + sep + string(v2))
+	}
+	return query.QVar("eqf" + sep + string(v2) + sep + string(v1))
+}

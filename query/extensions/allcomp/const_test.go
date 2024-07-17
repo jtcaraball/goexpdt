@@ -128,7 +128,7 @@ func TestConst_Encoding_WrongDim(t *testing.T) {
 	}
 }
 
-func TestConstConst_Encoding_NilCtx(t *testing.T) {
+func TestConst_Encoding_NilCtx(t *testing.T) {
 	x := query.QConst{Val: []query.FeatV{query.BOT}}
 
 	f := allcomp.Const{I: x}

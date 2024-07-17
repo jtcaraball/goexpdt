@@ -37,7 +37,6 @@ func runConsConstVar(t *testing.T, id int, tc test.BTRecord, neg bool) {
 	test.EncodeAndRun(t, f, ctx, id, tc.ExpCode)
 }
 
-
 func runGuardedConsConstVar(t *testing.T, id int, tc test.BTRecord, neg bool) {
 	tree, _ := test.NewMockTree(tc.Dim, nil)
 	ctx := query.BasicQContext(tree)

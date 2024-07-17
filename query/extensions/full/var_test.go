@@ -52,7 +52,7 @@ func TestNotVar_Encoding(t *testing.T) {
 	}
 }
 
-func TestVarVar_Encoding_NilCtx(t *testing.T) {
+func TestVar_Encoding_NilCtx(t *testing.T) {
 	x := query.QVar("x")
 
 	f := full.Var{I: x}

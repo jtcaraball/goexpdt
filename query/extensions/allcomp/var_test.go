@@ -73,7 +73,7 @@ func TestNotVar_Encoding_AllNeg(t *testing.T) {
 	}
 }
 
-func TestVarVar_Encoding_NilCtx(t *testing.T) {
+func TestVar_Encoding_NilCtx(t *testing.T) {
 	x := query.QVar("x")
 
 	f := allcomp.Var{I: x}

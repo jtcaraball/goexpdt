@@ -19,3 +19,13 @@ type BTRecord struct {
 	Val2    []query.FeatV
 	ExpCode int
 }
+
+// TTRecord represents a test case that uses three values.
+type TTRecord struct {
+	Dim     int
+	Name    string
+	Val1    []query.FeatV
+	Val2    []query.FeatV
+	Val3    []query.FeatV
+	ExpCode int
+}

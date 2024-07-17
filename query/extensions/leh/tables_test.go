@@ -1,0 +1,156 @@
+package leh_test
+
+import (
+	"github.com/jtcaraball/goexpdt/query"
+	"github.com/jtcaraball/goexpdt/query/internal/test"
+)
+
+var LEHPTT = []test.TTRecord{
+	{
+		Dim:     3,
+		Name:    "(0,0,0),(0,0,1),(1,1,0)",
+		Val1:    []query.FeatV{query.ZERO, query.ZERO, query.ZERO},
+		Val2:    []query.FeatV{query.ZERO, query.ZERO, query.ONE},
+		Val3:    []query.FeatV{query.ONE, query.ONE, query.ZERO},
+		ExpCode: 10,
+	},
+	{
+		Dim:     3,
+		Name:    "(0,0,0),(0,0,1),(0,1,1)",
+		Val1:    []query.FeatV{query.ZERO, query.ZERO, query.ZERO},
+		Val2:    []query.FeatV{query.ZERO, query.ZERO, query.ONE},
+		Val3:    []query.FeatV{query.ZERO, query.ONE, query.ONE},
+		ExpCode: 10,
+	},
+	{
+		Dim:     3,
+		Name:    "(0,0,0),(0,0,1),(1,0,0)",
+		Val1:    []query.FeatV{query.ZERO, query.ZERO, query.ZERO},
+		Val2:    []query.FeatV{query.ZERO, query.ZERO, query.ONE},
+		Val3:    []query.FeatV{query.ONE, query.ZERO, query.ZERO},
+		ExpCode: 10,
+	},
+	{
+		Dim:     3,
+		Name:    "(0,0,0),(0,0,1),(0,1,0)",
+		Val1:    []query.FeatV{query.ZERO, query.ZERO, query.ZERO},
+		Val2:    []query.FeatV{query.ZERO, query.ZERO, query.ONE},
+		Val3:    []query.FeatV{query.ZERO, query.ONE, query.ZERO},
+		ExpCode: 10,
+	},
+	{
+		Dim:     3,
+		Name:    "(0,0,0),(0,0,1),(0,0,1)",
+		Val1:    []query.FeatV{query.ZERO, query.ZERO, query.ZERO},
+		Val2:    []query.FeatV{query.ZERO, query.ZERO, query.ONE},
+		Val3:    []query.FeatV{query.ZERO, query.ZERO, query.ONE},
+		ExpCode: 10,
+	},
+	{
+		Dim:     3,
+		Name:    "(0,0,0),(1,0,1),(0,0,1)",
+		Val1:    []query.FeatV{query.ZERO, query.ZERO, query.ZERO},
+		Val2:    []query.FeatV{query.ONE, query.ZERO, query.ONE},
+		Val3:    []query.FeatV{query.ZERO, query.ZERO, query.ONE},
+		ExpCode: 20,
+	},
+	{
+		Dim:     3,
+		Name:    "(1,_,_),(1,1,0),(1,1,0)",
+		Val1:    []query.FeatV{query.ONE, query.BOT, query.BOT},
+		Val2:    []query.FeatV{query.ONE, query.ONE, query.ZERO},
+		Val3:    []query.FeatV{query.ONE, query.ONE, query.ZERO},
+		ExpCode: 20,
+	},
+	{
+		Dim:     3,
+		Name:    "(1,0,0),(1,1,_),(1,1,0)",
+		Val1:    []query.FeatV{query.ONE, query.ZERO, query.ZERO},
+		Val2:    []query.FeatV{query.ONE, query.ONE, query.BOT},
+		Val3:    []query.FeatV{query.ONE, query.ONE, query.ZERO},
+		ExpCode: 20,
+	},
+	{
+		Dim:     3,
+		Name:    "(1,1,1),(1,1,0),(1,_,0)",
+		Val1:    []query.FeatV{query.ONE, query.ONE, query.ONE},
+		Val2:    []query.FeatV{query.ONE, query.ONE, query.ZERO},
+		Val3:    []query.FeatV{query.ONE, query.BOT, query.ZERO},
+		ExpCode: 20,
+	},
+}
+
+var LEHNTT = []test.TTRecord{
+	{
+		Dim:     3,
+		Name:    "(0,0,0),(0,0,1),(1,1,0)",
+		Val1:    []query.FeatV{query.ZERO, query.ZERO, query.ZERO},
+		Val2:    []query.FeatV{query.ZERO, query.ZERO, query.ONE},
+		Val3:    []query.FeatV{query.ONE, query.ONE, query.ZERO},
+		ExpCode: 20,
+	},
+	{
+		Dim:     3,
+		Name:    "(0,0,0),(0,0,1),(0,1,1)",
+		Val1:    []query.FeatV{query.ZERO, query.ZERO, query.ZERO},
+		Val2:    []query.FeatV{query.ZERO, query.ZERO, query.ONE},
+		Val3:    []query.FeatV{query.ZERO, query.ONE, query.ONE},
+		ExpCode: 20,
+	},
+	{
+		Dim:     3,
+		Name:    "(0,0,0),(0,0,1),(1,0,0)",
+		Val1:    []query.FeatV{query.ZERO, query.ZERO, query.ZERO},
+		Val2:    []query.FeatV{query.ZERO, query.ZERO, query.ONE},
+		Val3:    []query.FeatV{query.ONE, query.ZERO, query.ZERO},
+		ExpCode: 20,
+	},
+	{
+		Dim:     3,
+		Name:    "(0,0,0),(0,0,1),(0,1,0)",
+		Val1:    []query.FeatV{query.ZERO, query.ZERO, query.ZERO},
+		Val2:    []query.FeatV{query.ZERO, query.ZERO, query.ONE},
+		Val3:    []query.FeatV{query.ZERO, query.ONE, query.ZERO},
+		ExpCode: 20,
+	},
+	{
+		Dim:     3,
+		Name:    "(0,0,0),(0,0,1),(0,0,1)",
+		Val1:    []query.FeatV{query.ZERO, query.ZERO, query.ZERO},
+		Val2:    []query.FeatV{query.ZERO, query.ZERO, query.ONE},
+		Val3:    []query.FeatV{query.ZERO, query.ZERO, query.ONE},
+		ExpCode: 20,
+	},
+	{
+		Dim:     3,
+		Name:    "(0,0,0),(1,0,1),(0,0,1)",
+		Val1:    []query.FeatV{query.ZERO, query.ZERO, query.ZERO},
+		Val2:    []query.FeatV{query.ONE, query.ZERO, query.ONE},
+		Val3:    []query.FeatV{query.ZERO, query.ZERO, query.ONE},
+		ExpCode: 10,
+	},
+	{
+		Dim:     3,
+		Name:    "(1,_,_),(1,1,0),(1,1,0)",
+		Val1:    []query.FeatV{query.ONE, query.BOT, query.BOT},
+		Val2:    []query.FeatV{query.ONE, query.ONE, query.ZERO},
+		Val3:    []query.FeatV{query.ONE, query.ONE, query.ZERO},
+		ExpCode: 10,
+	},
+	{
+		Dim:     3,
+		Name:    "(1,0,0),(1,1,_),(1,1,0)",
+		Val1:    []query.FeatV{query.ONE, query.ZERO, query.ZERO},
+		Val2:    []query.FeatV{query.ONE, query.ONE, query.BOT},
+		Val3:    []query.FeatV{query.ONE, query.ONE, query.ZERO},
+		ExpCode: 10,
+	},
+	{
+		Dim:     3,
+		Name:    "(1,1,1),(1,1,0),(1,_,0)",
+		Val1:    []query.FeatV{query.ONE, query.ONE, query.ONE},
+		Val2:    []query.FeatV{query.ONE, query.ONE, query.ZERO},
+		Val3:    []query.FeatV{query.ONE, query.BOT, query.ZERO},
+		ExpCode: 10,
+	},
+}

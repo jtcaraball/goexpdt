@@ -24,6 +24,9 @@ func (l ConstVar) Encoding(ctx query.QContext) (cnf.CNF, error) {
 	if ctx == nil {
 		return cnf.CNF{}, errors.New("Invalid encoding with nil ctx")
 	}
+	if l.CountVarGen == nil {
+		return cnf.CNF{}, errors.New("Invalid nil var generation function")
+	}
 
 	sv := ctx.ScopeVar(l.I2)
 	sc, _ := ctx.ScopeConst(l.I1)

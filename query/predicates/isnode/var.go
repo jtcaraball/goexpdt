@@ -21,6 +21,9 @@ func (f Var) Encoding(ctx query.QContext) (cnf.CNF, error) {
 	if ctx == nil {
 		return cnf.CNF{}, errors.New("Invalid encoding with nil ctx")
 	}
+	if f.ReachNodeVarGen == nil {
+		return cnf.CNF{}, errors.New("Invalid nil var generation function")
+	}
 
 	nodes := ctx.Nodes()
 	if len(nodes) == 0 {

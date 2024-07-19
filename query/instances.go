@@ -76,6 +76,21 @@ func (c QConst) BotCount() int {
 	return count
 }
 
+// EqualValue returns true if the value of the callers equals the value of t.
+func (c QConst) EqualValue(t QConst) bool {
+	if len(c.Val) != len(t.Val) {
+		return false
+	}
+
+	for i, v := range c.Val {
+		if v != t.Val[i] {
+			return false
+		}
+	}
+
+	return true
+}
+
 // ValidateConstsDim returns an error if any of passed consts have length
 // different to d.
 func ValidateConstsDim(

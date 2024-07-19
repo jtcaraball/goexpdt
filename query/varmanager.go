@@ -63,5 +63,5 @@ func (vm *baseVarManager) CNFVarExists(v QVar, idx, value int) bool {
 
 func (vm *baseVarManager) Reset() {
 	vm.topv = 0
-	vm.vars = nil
+	vm.vars = make(map[varRep]int)
 }

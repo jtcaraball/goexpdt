@@ -35,3 +35,12 @@ func VarGenEqualFeat(v1, v2 query.QVar) query.QVar {
 	}
 	return query.QVar("eqf" + sep + string(v2) + sep + string(v1))
 }
+
+// VarGenFeaturePreference returns a variale equal to the concatenation of
+// variable v1 and v2 with the addition of the prefix "fp" + string(p)
+// separated usind the record separator character (ascii 30).
+func VarGenFeaturePreference(p, v1, v2 query.QVar) query.QVar {
+	return query.QVar(
+		"fp" + sep + string(p) + sep + string(v1) + sep + string(v2),
+	)
+}

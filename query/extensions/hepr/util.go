@@ -8,6 +8,8 @@ import (
 	"github.com/jtcaraball/goexpdt/query"
 )
 
+// validatePref returns a non nill error if pref contains feature indexes out
+// of range of the given dimension dim or has any duplicates.
 func validatePref(pref []int, dim int) error {
 	seen := make([]bool, dim)
 	for _, i := range pref {
@@ -22,6 +24,7 @@ func validatePref(pref []int, dim int) error {
 	return nil
 }
 
+// prefVar returns a query variable corresponding to pref.
 func prefVar(pref []int) query.QVar {
 	var sb strings.Builder
 

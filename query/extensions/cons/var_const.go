@@ -7,7 +7,7 @@ import (
 	"github.com/jtcaraball/goexpdt/query"
 )
 
-// VarConst is the variable-constant version of the Consistent predicate.
+// VarConst is the variable-constant version of the Consistent extension.
 type VarConst struct {
 	I1 query.QVar
 	I2 query.QConst

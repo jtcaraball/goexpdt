@@ -14,7 +14,7 @@ type ConstConst struct {
 }
 
 // Encoding returns a CNF that is true if and only if the query constants c.I1
-// c.I2 have the same values in every feature where both are different than
+// and c.I2 have the same values in every feature where both are different than
 // bottom.
 func (c ConstConst) Encoding(ctx query.QContext) (cnf.CNF, error) {
 	if ctx == nil {

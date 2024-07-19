@@ -36,8 +36,6 @@ func (l VarVar) Encoding(ctx query.QContext) (cnf.CNF, error) {
 	ncnf = ncnf.AppendConsistency(varBotCountClauses(sv2, svCount2, ctx)...)
 
 	// If we see a number of bots in x then we must see less or equal on y
-	lcl := []cnf.Clause{}
-
 	var i, j int
 	for i = 0; i < ctx.Dim(); i++ {
 		cl := cnf.Clause{-ctx.CNFVar(svCount1, ctx.Dim()-1, i)}
@@ -47,10 +45,8 @@ func (l VarVar) Encoding(ctx query.QContext) (cnf.CNF, error) {
 				ctx.CNFVar(svCount2, ctx.Dim()-1, j),
 			)
 		}
-		lcl = append(lcl, cl)
+		ncnf = ncnf.AppendSemantics(cl)
 	}
-
-	ncnf = ncnf.AppendSemantics(lcl...)
 
 	return ncnf, nil
 }

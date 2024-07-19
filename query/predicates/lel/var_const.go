@@ -34,15 +34,13 @@ func (l VarConst) Encoding(ctx query.QContext) (cnf.CNF, error) {
 	}
 
 	ncnf := cnf.CNF{}
-
 	ncnf = ncnf.AppendConsistency(varBotCountClauses(sv, svCount, ctx)...)
 
-	lcl := []cnf.Clause{}
 	for i := 0; i < sc.BotCount(); i++ {
-		lcl = append(lcl, cnf.Clause{-ctx.CNFVar(svCount, ctx.Dim()-1, i)})
+		ncnf = ncnf.AppendSemantics(
+			cnf.Clause{-ctx.CNFVar(svCount, ctx.Dim()-1, i)},
+		)
 	}
-
-	ncnf = ncnf.AppendSemantics(lcl...)
 
 	return ncnf, nil
 }

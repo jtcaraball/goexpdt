@@ -25,11 +25,7 @@ func (l ConstConst) Encoding(ctx query.QContext) (cnf.CNF, error) {
 	sc1, _ := ctx.ScopeConst(l.I1)
 	sc2, _ := ctx.ScopeConst(l.I2)
 
-	if err := query.ValidateConstsDim(
-		ctx.Dim(),
-		sc1,
-		sc2,
-	); err != nil {
+	if err := query.ValidateConstsDim(ctx.Dim(), sc1, sc2); err != nil {
 		return cnf.CNF{}, err
 	}
 

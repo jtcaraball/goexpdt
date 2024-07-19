@@ -64,13 +64,11 @@ func (l ConstVarConst) Encoding(ctx query.QContext) (cnf.CNF, error) {
 
 	ncnf = ncnf.AppendConsistency(hdClauses...)
 
-	leqhd := []cnf.Clause{}
 	for i := cchd + 1; i <= dim; i++ {
-		leqhd = append(
-			leqhd,
+		ncnf = ncnf.AppendSemantics(
 			cnf.Clause{-ctx.CNFVar(vc1hd, dim-1, i)},
 		)
 	}
 
-	return ncnf.AppendSemantics(leqhd...), nil
+	return ncnf, nil
 }

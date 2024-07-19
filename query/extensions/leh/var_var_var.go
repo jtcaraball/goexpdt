@@ -60,11 +60,9 @@ func (l VarVarVar) Encoding(ctx query.QContext) (cnf.CNF, error) {
 		hammingDistVV(sv2, sv3, v1v3dh, v1v3ef, ctx)...,
 	)
 
-	leqhd := []cnf.Clause{}
 	for i := 1; i <= dim; i++ {
 		for j := 0; j < i; j++ {
-			leqhd = append(
-				leqhd,
+			ncnf = ncnf.AppendSemantics(
 				cnf.Clause{
 					-ctx.CNFVar(v1v2dh, dim-1, i),
 					-ctx.CNFVar(v1v3dh, dim-1, j),
@@ -73,5 +71,5 @@ func (l VarVarVar) Encoding(ctx query.QContext) (cnf.CNF, error) {
 		}
 	}
 
-	return ncnf.AppendSemantics(leqhd...), nil
+	return ncnf, nil
 }

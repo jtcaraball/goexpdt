@@ -25,7 +25,7 @@ func (f Var) Encoding(ctx query.QContext) (cnf.CNF, error) {
 	for i := 0; i < ctx.Dim(); i++ {
 		clauses = append(
 			clauses,
-			cnf.Clause{ -ctx.CNFVar(sv, i, int(query.BOT)) },
+			cnf.Clause{-ctx.CNFVar(sv, i, int(query.BOT))},
 		)
 	}
 

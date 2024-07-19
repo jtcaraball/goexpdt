@@ -45,12 +45,12 @@ func (a And) Encoding(ctx query.QContext) (ncnf cnf.CNF, err error) {
 func (a And) buildEncoding(ctx query.QContext) (cnf.CNF, error) {
 	cnf1, err := a.Q1.Encoding(ctx)
 	if err != nil {
-		return cnf.CNF{}, fmt.Errorf("Q 1: %w", err)
+		return cnf.CNF{}, fmt.Errorf("Q1: %w", err)
 	}
 
 	cnf2, err := a.Q2.Encoding(ctx)
 	if err != nil {
-		return cnf.CNF{}, fmt.Errorf("Q 2: %w", err)
+		return cnf.CNF{}, fmt.Errorf("Q2: %w", err)
 	}
 
 	return cnf1.Conjunction(cnf2), nil

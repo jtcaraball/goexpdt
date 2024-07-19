@@ -47,7 +47,7 @@ func (w WithVar) buildEncoding(
 
 	ccnf, err := w.Q.Encoding(ctx)
 	if err != nil {
-		return cnf.CNF{}, fmt.Errorf("WithVar: %w", err)
+		return cnf.CNF{}, err
 	}
 
 	return icnf.Conjunction(ccnf), nil

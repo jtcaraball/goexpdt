@@ -47,11 +47,11 @@ func (o Or) buildEncoding(ctx query.QContext) (cnf.CNF, error) {
 	// Encode both children
 	cnf1, err := o.Q1.Encoding(ctx)
 	if err != nil {
-		return cnf.CNF{}, fmt.Errorf("Q 1: %w", err)
+		return cnf.CNF{}, fmt.Errorf("Q1: %w", err)
 	}
 	cnf2, err := o.Q2.Encoding(ctx)
 	if err != nil {
-		return cnf.CNF{}, fmt.Errorf("Q 2: %w", err)
+		return cnf.CNF{}, fmt.Errorf("Q2: %w", err)
 	}
 
 	// Negate both children

@@ -53,12 +53,8 @@ func (l VarVarVar) Encoding(ctx query.QContext) (cnf.CNF, error) {
 	ncnf = ncnf.AppendConsistency(fullVarEqualClauses(sv1, sv2, v1v2ef, ctx)...)
 	ncnf = ncnf.AppendConsistency(fullVarEqualClauses(sv1, sv3, v1v3ef, ctx)...)
 
-	ncnf = ncnf.AppendConsistency(
-		hammingDistVV(sv1, sv2, v1v2dh, v1v2ef, ctx)...,
-	)
-	ncnf = ncnf.AppendConsistency(
-		hammingDistVV(sv2, sv3, v1v3dh, v1v3ef, ctx)...,
-	)
+	ncnf = ncnf.AppendConsistency(hammingDistVV(v1v2dh, v1v2ef, ctx)...)
+	ncnf = ncnf.AppendConsistency(hammingDistVV(v1v3dh, v1v3ef, ctx)...)
 
 	for i := 1; i <= dim; i++ {
 		for j := 0; j < i; j++ {

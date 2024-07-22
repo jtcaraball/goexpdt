@@ -110,10 +110,7 @@ func hammingDistVC(
 // query variables v1 and v2. The query variable vd is used to represent the
 // value of this distance and vfeq is used to encode v1 and v2 having features
 // with equal value.
-func hammingDistVV(
-	v1, v2, vd, vfeq  query.QVar,
-	ctx query.QContext,
-) []cnf.Clause {
+func hammingDistVV(vd, vfeq query.QVar, ctx query.QContext) []cnf.Clause {
 	dim := ctx.Dim()
 	clauses := []cnf.Clause{}
 

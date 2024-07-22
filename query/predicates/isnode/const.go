@@ -10,8 +10,7 @@ import (
 
 // Const is the constant version of the Node predicate.
 type Const struct {
-	I            query.QConst
-	visitedFeats []int
+	I query.QConst
 }
 
 // Encoding returns a CNF that is true if and only if the query constant n.I
@@ -27,7 +26,7 @@ func (n Const) Encoding(ctx query.QContext) (cnf.CNF, error) {
 	}
 
 	dim := ctx.Dim()
-	n.initVisitedFeats(dim, sc)
+	visited := newVisitRecord(dim, sc)
 
 	nodes := ctx.Nodes()
 	if len(nodes) == 0 {
@@ -58,7 +57,7 @@ func (n Const) Encoding(ctx query.QContext) (cnf.CNF, error) {
 
 		// Mark the feature we are deciding on as visited and set next
 		// iteration node as the current's corresponding children.
-		n.visitedFeats[node.Feat] = 1
+		visited[node.Feat] = 1
 
 		if sc.Val[node.Feat] == query.ZERO {
 			if node.ZChild < 0 || node.ZChild >= len(nodes) {
@@ -81,37 +80,37 @@ func (n Const) Encoding(ctx query.QContext) (cnf.CNF, error) {
 	}
 
 	// If all features where visited then the constant must represent a node.
-	if n.allFeatsVisited() {
+	if allFeatsVisited(visited) {
 		return cnf.TrueCNF, nil
 	}
 
 	return cnf.FalseCNF, nil
 }
 
-// initVisitedFeatures marks every BOT valued feature as "visited" and all
-// others as "not visited".
-func (n *Const) initVisitedFeats(dim int, c query.QConst) {
-	// As n is passed on as value on the Encoding method this mutation is not
-	// saved on subsequent calls so this always evaluating to true. Someday ill
-	// think about a way of not allocating a slice every time its called, but
-	// that day is not today.
-	if n.visitedFeats == nil {
-		n.visitedFeats = make([]int, dim)
-	}
+// newVisitRecord returns an int slice denoting with a 1 which features the
+// query constant c has "visited" and with a 0 those is has not. Initially only
+// the features with value equal to bottom are marked as visited.
+func newVisitRecord(dim int, c query.QConst) []int {
+	vr := make([]int, dim)
+
 	for i, ft := range c.Val {
 		if ft == query.BOT {
-			n.visitedFeats[i] = 1
+			vr[i] = 1
 			continue
 		}
-		n.visitedFeats[i] = 0
+		vr[i] = 0
 	}
+
+	return vr
 }
 
 // allVisited returns true if every feature is marked as "visited".
-func (n Const) allFeatsVisited() bool {
+func allFeatsVisited(vr []int) bool {
 	sum := 0
-	for _, val := range n.visitedFeats {
+
+	for _, val := range vr {
 		sum += val
 	}
-	return sum == len(n.visitedFeats)
+
+	return sum == len(vr)
 }

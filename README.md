@@ -1,119 +1,150 @@
 # Go-ExplainDT
 
-A pure GO implementation associated to the paper "A Uniform Language to Explain
-Decision Trees".
+A dependency free GO implementation of the work in the paper "A Uniform
+Language to Explain Decision Trees".
 
-## Docker  
+## Example
+The following program computes the minimal sufficient reason of an arbitrary
+constant and decision tree.
 
-In order to have a uniform and OS-independent environment for code execution,
-without requiring users to install SAT solvers on their computer, we use
-"docker" containers. In order to run this project you must have
-[docker](https://docs.docker.com/engine/install/) installed.
+```go
+package main
+
+import (
+	"fmt"
+	"os"
+	"strings"
+
+	"github.com/jtcaraball/goexpdt/compute"
+	"github.com/jtcaraball/goexpdt/query"
+	"github.com/jtcaraball/goexpdt/query/extensions/allcomp"
+	"github.com/jtcaraball/goexpdt/query/logop"
+	"github.com/jtcaraball/goexpdt/query/predicates/subsumption"
+)
+
+// First we define a decision tree struct that implements the query.Model
+// interface.
+type DTree struct {
+	dim   int
+	nodes []query.Node
+}
+
+func (t DTree) Dim() int {
+	return t.dim
+}
+
+func (t DTree) Nodes() []query.Node {
+	return t.nodes
+}
+
+// Then we define a function to generate, given a variable v, a new variable
+// used to encode the notion of reachability in the model.
+func reachableVarGen(v query.QVar) query.QVar {
+	return query.QVar("r" + string(v))
+}
+
+func main() {
+	// We instantiate a decision tree and create a basic context from it.
+	tree := DTree{
+		dim: 3,
+		nodes: []query.Node{
+			{Feat: 0, ZChild: 1, OChild: 6},
+			{Feat: 1, ZChild: 2, OChild: 5},
+			{Feat: 2, ZChild: 3, OChild: 4},
+			{Value: true, ZChild: query.NoChild, OChild: query.NoChild},
+			{Value: true, ZChild: query.NoChild, OChild: query.NoChild},
+			{Value: true, ZChild: query.NoChild, OChild: query.NoChild},
+			{Feat: 2, ZChild: 7, OChild: 8},
+			{Value: false, ZChild: query.NoChild, OChild: query.NoChild},
+			{Feat: 1, ZChild: 9, OChild: 10},
+			{Value: true, ZChild: query.NoChild, OChild: query.NoChild},
+			{Value: false, ZChild: query.NoChild, OChild: query.NoChild},
+		},
+	}
+	ctx := query.BasicQContext(tree)
+
+	// We define the constant we want to compute a minimal sufficient reason
+	// for.
+	c := query.QConst{
+		Val: []query.FeatV{query.ZERO, query.ONE, query.ONE},
+	}
+
+	// Finally we define two generator function that return queries
+	// representing the property of sufficient reason and a strict partial
+	// order under subsumption (minimality). These will be used by the
+	// optimisation algorithm.
+	sufficientReason := func(v query.QVar) compute.Encodable {
+		return logop.WithVar{
+			I: v,
+			Q: logop.And{
+				Q1: subsumption.VarConst{I1: v, I2: c},
+				Q2: logop.And{
+					Q1: logop.Or{
+						Q1: logop.Not{
+							Q: allcomp.Const{I: c, LeafValue: true},
+						},
+						Q2: allcomp.Var{
+							I:               v,
+							LeafValue:       true,
+							ReachNodeVarGen: reachableVarGen,
+						},
+					},
+					Q2: logop.Or{
+						Q1: logop.Not{
+							Q: allcomp.Const{I: c, LeafValue: false},
+						},
+						Q2: allcomp.Var{
+							I:               v,
+							LeafValue:       false,
+							ReachNodeVarGen: reachableVarGen,
+						},
+					},
+				},
+			},
+		}
+	}
+	strictSubsumption := func(v query.QVar, u query.QConst) compute.Encodable {
+		return logop.And{
+			Q1: subsumption.VarConst{I1: v, I2: u},
+			Q2: logop.Not{Q: subsumption.ConstVar{I1: u, I2: v}},
+		}
+	}
+
+	// Now we can compute a minimal sufficient reason for c using a sat solver
+	// which path is stored in the environment variable "SAT_SOLVER_EXEC_PATH".
+
+	output, err := compute.ComputeOptim(
+		sufficientReason,
+		strictSubsumption,
+		query.QVar("x"),
+		ctx,
+		os.Getenv("SAT_SOLVER_EXEC_PATH"),
+	)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	if output.Found {
+		fmt.Printf(
+			"Value found: %s\n",
+			strings.Split(output.Value.AsString(), ""),
+		)
+	} else {
+		fmt.Println("No value exists.")
+	}
+
+	os.Exit(0)
+}
+```
 
 ## Tests
 
-To build the test suite and execute it, run the following command:
-
-
-```
-docker build -f dockerfiles/Dockerfile.Tests -t goexpdt-tests --progress plain --no-cache-filter=run-tests-stage --target run-tests-stage .
-```
-
-## Experiments
-
-To build the docker image corresponding to the experiments, run the following
-command:
+To build the test suite and execute it, ensure that
+[Docker](https://docs.docker.com/engine/install/) and
+[make](https://en.wikipedia.org/wiki/Make_(software)) are installed and run the
+following command:
 
 ```
-docker build -f dockerfiles/Dockerfile.Experiments -t goexpdt-exp .
-```
-
-After that, experiments can be run with:
-
-```
-docker run --rm \
-    -v $(pwd)/cmd/experiment/outputs:/goexpdt/cmd/experiment/outputs \
-    -v $(pwd)/cmd/experiment/inputs:/goexpdt/cmd/experiment/inputs \
-    goexpdt-exp <command> <args>
-```
-The `<command>` and `<args>` options are described below.
-
-The experiment outputs will be written to `cmd/experiment/output` directory as
-csv files with self-explanatory headers.
-
-### Commands
-
-The available commands for experiments are:
-
-- `list`: List all implemented experiments.
-- `info <experiment>`: Get experiment info and expected arguments.
-- `<experiment> <args>`: Run experiment with arguments.
-
-Each experiment has a name (string), and the existing experiments are listed
-below.
-
-### List of Experiments
-
-We distinguish between two kinds of experiments, those for which the user
-provides instances as part of the input and those that are based on sampling
-random instances (denoted by de addition of `rand`).
-
-- `optim:rand:stats:dfs-ll`: Optimum (Stats, Random Instances) - DFS under Lesser Level Order.
-- `optim:rand:stats:sr-ll`: Optimum (Stats, Random Instances) - SR under Lesser Level Order.
-- `optim:rand:stats:sr-ss`: Optimum (Stats, Random Instances) - SR under Strict Subsumption Order.
-- `optim:rand:stats:cr-lh`: Optimum (Stats, Random Instances) - CR under Lesser Hamming Distance Order.
-- `optim:rand:stats:ca-gh`: Optimum (Stats, Random Instances) - CA under Greater Hamming Distance Order.
-- `optim:rand:val:dfs-ll`: Optimum (Value, Random Instances) - DFS under Lesser Level Order.
-- `optim:val:dfs-ll`: Optimum (Value) - DFS under Lesser Level Order.
-- `optim:val:sr-ll`: Optimum (Value) - SR under Lesser Level Order.
-- `optim:val:sr-ss`: Optimum (Value) - SR under Strict Subsumption Order.
-- `optim:val:cr-lh`: Optimum (Value) - CR under Less Hamming Distance Order.
-- `optim:val:ca-gh`: Optimum (Value) - CA under Greater Hamming Distance Order.
-
-
-### Input Types
-
-Experiments may accept one of two file formats as inputs, both of which must
-be in the `cmd/experiment/input` directory.
-
-- **Tree file**: A json file representing a decision tree.
-- **Optimization file**: A plain text file that must follow the format outlined
-  bellow
-
-  ```
-  <tree_file_name>
-  <instance_1>
-  <instance_2>
-  ...
-  <instance_n>
-  ```
-
-  Here `<tree_file_name>` corresponds to the name of a Tree file in the input
-  directory and `<instance_i>` to an instance represented as a word in the
-  alphabet {0, 1, 2} with 2 meaning that a feature is a 'bottom'.
-
-### Command Examples
-
-In the `cmd/experiments/inputs` directory there are examples of
-tree and optimization file inputs. Here are some of the experiments that
-can be ran on this inputs:
-
-**Stats for 5 random positive instances for optimal Determinant Feature Set
-over Less Level order**:
-
-```
-docker run --rm \
-    -v $(pwd)/cmd/experiment/outputs:/goexpdt/cmd/experiment/outputs \
-    -v $(pwd)/cmd/experiment/inputs:/goexpdt/cmd/experiment/inputs \
-    goexpdt-exp optim:rand:stats:dfs-ll 5 mnist_d0_n400.json
-```
-
-**Values of optimal Changed Allowed over Greater Hamming distance order for
-specific instances**:
-
-```
-docker run --rm \
-    -v $(pwd)/cmd/experiment/outputs:/goexpdt/cmd/experiment/outputs \
-    -v $(pwd)/cmd/experiment/inputs:/goexpdt/cmd/experiment/inputs \
-    goexpdt-exp optim:val:ca-gh mnist_d0_input.txt
+make test
 ```

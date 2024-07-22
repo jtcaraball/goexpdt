@@ -8,15 +8,6 @@ type Model interface {
 	// Nodes returns a slice composed of the model's nodes as Node type. The
 	// node at index 0 must correspond to the model's root.
 	Nodes() []Node
-	// NodesConsts returns all the model's nodes as constants. The method can
-	// fail if the underlying model is inconsistent.
-	NodesConsts() []QConst
-	// PosLeafsConsts returns all the model's positive leafs as constants. The
-	// method can fail if the underlying model is inconsistent.
-	PosLeafsConsts() []QConst
-	// NegLeafsConsts returns all the model's negative leafs as constants. The
-	// method can fail if the underlying model is inconsistent.
-	NegLeafsConsts() []QConst
 }
 
 // Node represents a node in the model, be it a leaf or an internal one.

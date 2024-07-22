@@ -24,8 +24,7 @@ func (d Const) Encoding(ctx query.QContext) (cnf.CNF, error) {
 		return cnf.CNF{}, err
 	}
 
-	pleaf := ctx.PosLeafsConsts()
-	nleaf := ctx.NegLeafsConsts()
+	pleaf, nleaf := leafsAsConsts(ctx.Dim(), ctx.Nodes())
 
 	if len(pleaf) == 0 && len(nleaf) == 0 {
 		return cnf.CNF{}, errors.New("Invalid encoding on empty model")

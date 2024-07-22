@@ -148,46 +148,6 @@ func DFSTree() query.Model {
 	//       node_6: 1,_,1
 	//           leaf_7: 1,0,1 (False)
 	//           leaf_8: 1,1,1 (True)
-	// FULL, _,*,_, _,*,* and *,*,_ are DFS
-
-	// leaf1 := &trees.Node{ID: 7, Value: false}
-	// leaf2 := &trees.Node{ID: 8, Value: false}
-	// leaf3 := &trees.Node{ID: 9, Value: true}
-	// leaf4 := &trees.Node{ID: 10, Value: true}
-	// leaf5 := &trees.Node{ID: 11, Value: false}
-	// leaf6 := &trees.Node{ID: 12, Value: true}
-	// leaf7 := &trees.Node{ID: 13, Value: false}
-	// leaf8 := &trees.Node{ID: 14, Value: true}
-	// node6 := &trees.Node{ID: 6, Feat: 1, LChild: leaf7, RChild: leaf8}
-	// node5 := &trees.Node{ID: 5, Feat: 1, LChild: leaf5, RChild: leaf6}
-	// node4 := &trees.Node{ID: 4, Feat: 2, LChild: leaf3, RChild: leaf4}
-	// node3 := &trees.Node{ID: 3, Feat: 2, LChild: leaf1, RChild: leaf2}
-	// node2 := &trees.Node{ID: 2, Feat: 2, LChild: node5, RChild: node6}
-	// node1 := &trees.Node{ID: 1, Feat: 1, LChild: node3, RChild: node4}
-	// root := &trees.Node{ID: 0, Feat: 0, LChild: node1, RChild: node2}
-
-	// node1.Parent = root
-	// node2.Parent = root
-	// node3.Parent = node1
-	// node4.Parent = node1
-	// node5.Parent = node2
-	// node6.Parent = node2
-	// leaf1.Parent = node3
-	// leaf2.Parent = node3
-	// leaf3.Parent = node4
-	// leaf4.Parent = node4
-	// leaf5.Parent = node5
-	// leaf6.Parent = node5
-	// leaf7.Parent = node6
-	// leaf8.Parent = node6
-
-	// return &trees.Tree{
-	// 	Root:      root,
-	// 	NodeCount: 15,
-	// 	FeatCount: 3,
-	// 	PosLeafs:  []*trees.Node{leaf3, leaf4, leaf6, leaf8},
-	// 	NegLeafs:  []*trees.Node{leaf1, leaf2, leaf5, leaf7},
-	// }
 
 	nodes := []query.Node{
 		{Feat: 0, ZChild: 1, OChild: 8},                              // root

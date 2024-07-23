@@ -4,7 +4,7 @@ A dependency free GO implementation of the work in the paper "A Uniform
 Language to Explain Decision Trees".
 
 ## Example
-The following program computes the minimal sufficient reason of an arbitrary
+The following program computes a minimal sufficient reason for an arbitrary
 constant and decision tree.
 
 ```go
@@ -72,7 +72,7 @@ func main() {
     // Finally we define two generator function that return queries
     // representing the property of sufficient reason and a strict partial
     // order under subsumption (minimality). These will be used by the
-    // optimisation algorithm.
+    // optimization algorithm.
     sufficientReason := func(v query.QVar) compute.Encodable {
         return logop.WithVar{
             I: v,
@@ -143,9 +143,5 @@ func main() {
 
 To build the test suite and execute it, ensure that
 [Docker](https://docs.docker.com/engine/install/) and
-[make](https://en.wikipedia.org/wiki/Make_(software)) are installed and run the
-following command:
-
-```
-make test
-```
+[make](https://en.wikipedia.org/wiki/Make_(software)) are installed and in the
+root of the project run `make test`.

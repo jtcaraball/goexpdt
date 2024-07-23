@@ -1,15 +1,10 @@
 package cnf
 
 import (
-	"goexpdt/internal/test/clauses"
 	"os"
 	"slices"
 	"testing"
 )
-
-// =========================== //
-//           HELPERS           //
-// =========================== //
 
 func validTopV(t *testing.T, got, expected int) {
 	if got != expected {
@@ -17,90 +12,76 @@ func validTopV(t *testing.T, got, expected int) {
 	}
 }
 
-// =========================== //
-//            TESTS            //
-// =========================== //
+func validClauses(t *testing.T, sc, cc, esc, ecc []Clause) {
+	t.Helper()
+	if !slices.EqualFunc(sc, esc, slices.Equal) {
+		t.Errorf("Semantic clauses not equal. Expected %d but got %d", esc, sc)
+	}
+	if !slices.EqualFunc(cc, ecc, slices.Equal) {
+		t.Errorf(
+			"Consistency clauses not equal. Expected %d but got %d",
+			ecc,
+			cc,
+		)
+	}
+}
 
 func TestCNF_Negate_Empty(t *testing.T) {
-	expectedSClauses := [][]int{{}}
-	expectedCClauses := [][]int{}
-	cnf := &CNF{tv: 0, cClauses: expectedCClauses}
-	cnf.Negate()
-	sClauses, cClauses := cnf.Clauses()
-	clauses.ValidateClauses(
-		t,
-		sClauses,
-		cClauses,
-		expectedSClauses,
-		expectedCClauses,
-	)
-	validTopV(t, cnf.tv, 0)
+	expectedSClauses := NegClauses
+	expectedCClauses := []Clause{}
+	tcnf := CNF{tv: 0, cClauses: expectedCClauses}
+	tcnf = tcnf.Negate()
+	sClauses, cClauses := tcnf.Clauses()
+	validClauses(t, sClauses, cClauses, expectedSClauses, expectedCClauses)
+	validTopV(t, tcnf.tv, 0)
 }
 
 func TestCNF_Negate_SingleClauseEmpty(t *testing.T) {
-	sInitClauses := [][]int{{}}
-	cInitClauses := [][]int{{1, 2, 3}}
-	expectedSClauses := [][]int{}
-	expectedCClauses := [][]int{}
-	cnf := &CNF{tv: 3, sClauses: sInitClauses, cClauses: cInitClauses}
-	cnf.Negate()
-	sClauses, cClauses := cnf.Clauses()
-	clauses.ValidateClauses(
-		t,
-		sClauses,
-		cClauses,
-		expectedSClauses,
-		expectedCClauses,
-	)
-	validTopV(t, cnf.tv, 3)
+	sInitClauses := NegClauses
+	cInitClauses := []Clause{{1, 2, 3}}
+	expectedSClauses := []Clause{}
+	expectedCClauses := cInitClauses
+	tcnf := CNF{tv: 3, sClauses: sInitClauses, cClauses: cInitClauses}
+	tcnf = tcnf.Negate()
+	sClauses, cClauses := tcnf.Clauses()
+	validClauses(t, sClauses, cClauses, expectedSClauses, expectedCClauses)
+	validTopV(t, tcnf.tv, 3)
 }
 
 func TestCNF_Negate_SingleLiteral(t *testing.T) {
-	sInitClauses := [][]int{{1}}
-	cInitClauses := [][]int{{1, 2, 3}}
-	expectedSClauses := [][]int{{-1}}
+	sInitClauses := []Clause{{1}}
+	cInitClauses := []Clause{{1, 2, 3}}
+	expectedSClauses := []Clause{{-1}}
 	expectedCClauses := cInitClauses
-	cnf := &CNF{tv: 3, sClauses: sInitClauses, cClauses: cInitClauses}
-	cnf.Negate()
-	sClauses, cClauses := cnf.Clauses()
-	clauses.ValidateClauses(
-		t,
-		sClauses,
-		cClauses,
-		expectedSClauses,
-		expectedCClauses,
-	)
-	validTopV(t, cnf.tv, 3)
+	tcnf := CNF{tv: 3, sClauses: sInitClauses, cClauses: cInitClauses}
+	tcnf = tcnf.Negate()
+	sClauses, cClauses := tcnf.Clauses()
+	validClauses(t, sClauses, cClauses, expectedSClauses, expectedCClauses)
+	validTopV(t, tcnf.tv, 3)
 }
 
 func TestCNF_Negate_SingleClause(t *testing.T) {
-	sInitClauses := [][]int{{1, 2}}
-	cInitClauses := [][]int{{1, 2, 3}}
-	expectedSClauses := [][]int{{4}}
-	expectedCClauses := [][]int{
+	sInitClauses := []Clause{{1, 2}}
+	cInitClauses := []Clause{{1, 2, 3}}
+	expectedSClauses := []Clause{{4}}
+	expectedCClauses := []Clause{
 		{1, 2, 3},
 		{-1, -4},
 		{-2, -4},
 		{1, 2, 4},
 	}
-	cnf := &CNF{tv: 3, sClauses: sInitClauses, cClauses: cInitClauses}
-	cnf.Negate()
-	sClauses, cClauses := cnf.Clauses()
-	clauses.ValidateClauses(
-		t,
-		sClauses,
-		cClauses,
-		expectedSClauses,
-		expectedCClauses,
-	)
-	validTopV(t, cnf.tv, 4)
+	tcnf := CNF{tv: 3, sClauses: sInitClauses, cClauses: cInitClauses}
+	tcnf = tcnf.Negate()
+	sClauses, cClauses := tcnf.Clauses()
+	validClauses(t, sClauses, cClauses, expectedSClauses, expectedCClauses)
+	validTopV(t, tcnf.tv, 4)
 }
 
 func TestCNF_Negate_MultipleClauses(t *testing.T) {
-	sInitClauses := [][]int{{1, 2}, {-2, 3}}
-	cInitClauses := [][]int{{1, 2, 3}}
-	expectedSClauses := [][]int{{6}}
-	expectedCClauses := [][]int{
+	sInitClauses := []Clause{{1, 2}, {-2, 3}}
+	cInitClauses := []Clause{{1, 2, 3}}
+	expectedSClauses := []Clause{{6}}
+	expectedCClauses := []Clause{
 		{1, 2, 3},
 		{-1, -4},
 		{-2, -4},
@@ -112,115 +93,91 @@ func TestCNF_Negate_MultipleClauses(t *testing.T) {
 		{-5, 6},
 		{4, 5, -6},
 	}
-	cnf := &CNF{tv: 3, sClauses: sInitClauses, cClauses: cInitClauses}
-	cnf.Negate()
-	sClauses, cClauses := cnf.Clauses()
-	clauses.ValidateClauses(
-		t,
-		sClauses,
-		cClauses,
-		expectedSClauses,
-		expectedCClauses,
-	)
-	validTopV(t, cnf.tv, 6)
+	tcnf := CNF{tv: 3, sClauses: sInitClauses, cClauses: cInitClauses}
+	tcnf = tcnf.Negate()
+	sClauses, cClauses := tcnf.Clauses()
+	validClauses(t, sClauses, cClauses, expectedSClauses, expectedCClauses)
+	validTopV(t, tcnf.tv, 6)
 }
 
 func TestCNF_Conjunctions(t *testing.T) {
-	expectedSClauses := [][]int{{1, 2}, {2, 3}, {-3, 4}}
-	expectedCClauses := [][]int{{1, 2}}
-	cnf1SInitClauses := [][]int{{1, 2}, {2, 3}}
-	cnf2SInitClauses := [][]int{{-3, 4}}
-	cnf1CInitClauses := [][]int{{1, 2}}
-	cnf1 := &CNF{tv: 3, sClauses: cnf1SInitClauses, cClauses: cnf1CInitClauses}
-	cnf2 := &CNF{tv: 4, sClauses: cnf2SInitClauses}
-	cnf1.Conjunction(cnf2)
-	sClauses, cClauses := cnf1.Clauses()
-	clauses.ValidateClauses(
-		t,
-		sClauses,
-		cClauses,
-		expectedSClauses,
-		expectedCClauses,
-	)
-	validTopV(t, cnf1.tv, 4)
+	expectedSClauses := []Clause{{1, 2}, {2, 3}, {-3, 4}}
+	expectedCClauses := []Clause{{1, 2}}
+	tcnf1SInitClauses := []Clause{{1, 2}, {2, 3}}
+	tcnf2SInitClauses := []Clause{{-3, 4}}
+	tcnf1CInitClauses := []Clause{{1, 2}}
+	tcnf1 := CNF{tv: 3, sClauses: tcnf1SInitClauses, cClauses: tcnf1CInitClauses}
+	tcnf2 := CNF{tv: 4, sClauses: tcnf2SInitClauses}
+	tcnf1 = tcnf1.Conjunction(tcnf2)
+	sClauses, cClauses := tcnf1.Clauses()
+	validClauses(t, sClauses, cClauses, expectedSClauses, expectedCClauses)
+	validTopV(t, tcnf1.tv, 4)
 }
 
 func TestCNF_ExtendSemantic(t *testing.T) {
-	expectedSClauses := [][]int{{1, 2}, {2, 3}, {-3, 4}}
-	expectedCClauses := [][]int{}
-	cnfSInitClauses := [][]int{{1, 2}}
-	cnfCInitClauses := [][]int{}
-	cnf := &CNF{tv: 2, sClauses: cnfSInitClauses, cClauses: cnfCInitClauses}
-	cnf.ExtendSemantics([][]int{{2, 3}, {-3, 4}})
-	sClauses, cClauses := cnf.Clauses()
-	clauses.ValidateClauses(
-		t,
-		sClauses,
-		cClauses,
-		expectedSClauses,
-		expectedCClauses,
-	)
-	validTopV(t, cnf.tv, 4)
+	expectedSClauses := []Clause{{1, 2}, {2, 3}, {-3, 4}}
+	expectedCClauses := []Clause{}
+	tcnfSInitClauses := []Clause{{1, 2}}
+	tcnfCInitClauses := []Clause{}
+	tcnf := CNF{tv: 2, sClauses: tcnfSInitClauses, cClauses: tcnfCInitClauses}
+	tcnf = tcnf.AppendSemantics(Clause{2, 3}, Clause{-3, 4})
+	sClauses, cClauses := tcnf.Clauses()
+	validClauses(t, sClauses, cClauses, expectedSClauses, expectedCClauses)
+	validTopV(t, tcnf.tv, 4)
 }
 
 func TestCNF_ExtendConsistency(t *testing.T) {
-	expectedSClauses := [][]int{{1, 2}}
-	expectedCClauses := [][]int{{2, 3}, {-3, 4}}
-	cnfSInitClauses := [][]int{{1, 2}}
-	cnfCInitClauses := [][]int{}
-	cnf := &CNF{tv: 2, sClauses: cnfSInitClauses, cClauses: cnfCInitClauses}
-	cnf.ExtendConsistency([][]int{{2, 3}, {-3, 4}})
-	sClauses, cClauses := cnf.Clauses()
-	clauses.ValidateClauses(
-		t,
-		sClauses,
-		cClauses,
-		expectedSClauses,
-		expectedCClauses,
-	)
-	validTopV(t, cnf.tv, 4)
+	expectedSClauses := []Clause{{1, 2}}
+	expectedCClauses := []Clause{{2, 3}, {-3, 4}}
+	tcnfSInitClauses := []Clause{{1, 2}}
+	tcnfCInitClauses := []Clause{}
+	tcnf := CNF{tv: 2, sClauses: tcnfSInitClauses, cClauses: tcnfCInitClauses}
+	tcnf = tcnf.AppendConsistency(Clause{2, 3}, Clause{-3, 4})
+	sClauses, cClauses := tcnf.Clauses()
+	validClauses(t, sClauses, cClauses, expectedSClauses, expectedCClauses)
+	validTopV(t, tcnf.tv, 4)
 }
 
 func TestCNF_ToBytes(t *testing.T) {
-	cnfSClauses := [][]int{{1, 2}, {3, 4}, {-1, 2}}
-	cnfCClauses := [][]int{{1, 2, 3, 4}, {-1, -2}, {4}}
-	cnf := CNFFromClauses(cnfSClauses)
-	cnf.ExtendConsistency(cnfCClauses)
+	tcnfSClauses := []Clause{{1, 2}, {3, 4}, {-1, 2}}
+	tcnfCClauses := []Clause{{1, 2, 3, 4}, {-1, -2}, {4}}
+	tcnf := FromClauses(tcnfSClauses)
+	tcnf = tcnf.AppendConsistency(tcnfCClauses...)
 	expBytes := []byte("p cnf 4 6\n1 2 0\n3 4 0\n-1 2 0\n1 2 3 4 0\n-1 -2 0\n4 0\n")
-	cnfBytes := cnf.ToBytes()
-	if !slices.Equal(expBytes, cnfBytes) {
+	tcnfBytes := tcnf.ToBytes()
+	if !slices.Equal(expBytes, tcnfBytes) {
 		t.Errorf(
-			"CNF as bytes not equal. Expected %s but got %s",
+			"CNF as bytes not equal.\nExpected\n%sbut got\n%s",
 			expBytes,
-			cnfBytes,
+			tcnfBytes,
 		)
 	}
 }
 
 func TestCNF_ToFile(t *testing.T) {
-	cnfFileName := "cnfToFile"
+	tcnfFileName := "tcnfToFile"
 	t.Cleanup(
 		func() {
-			os.Remove(cnfFileName)
+			os.Remove(tcnfFileName)
 		},
 	)
-	cnfSClauses := [][]int{{1, 2}, {3, 4}, {-1, 2}}
-	cnfCClauses := [][]int{{1, 2, 3, 4}, {-1, -2}, {4}}
-	cnf := CNFFromClauses(cnfSClauses)
-	cnf.ExtendConsistency(cnfCClauses)
-	if err := cnf.ToFile(cnfFileName); err != nil {
+	tcnfSClauses := []Clause{{1, 2}, {3, 4}, {-1, 2}}
+	tcnfCClauses := []Clause{{1, 2, 3, 4}, {-1, -2}, {4}}
+	tcnf := FromClauses(tcnfSClauses)
+	tcnf = tcnf.AppendConsistency(tcnfCClauses...)
+	if err := tcnf.ToFile(tcnfFileName); err != nil {
 		t.Errorf("File writing error. %s", err.Error())
 	}
 	expBytes := []byte("p cnf 4 6\n1 2 0\n3 4 0\n-1 2 0\n1 2 3 4 0\n-1 -2 0\n4 0\n")
-	cnfBytes, err := os.ReadFile(cnfFileName)
+	tcnfBytes, err := os.ReadFile(tcnfFileName)
 	if err != nil {
 		t.Errorf("File reading error. %s", err.Error())
 	}
-	if !slices.Equal(expBytes, cnfBytes) {
+	if !slices.Equal(expBytes, tcnfBytes) {
 		t.Errorf(
-			"CNF as bytes not equal. Expected %s but got %s",
+			"CNF as bytes not equal.\nExpected\n%sbut got\n%s",
 			expBytes,
-			cnfBytes,
+			tcnfBytes,
 		)
 	}
 }

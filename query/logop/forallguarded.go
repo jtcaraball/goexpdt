@@ -10,12 +10,12 @@ import (
 
 // ForAllGuarded represents a FOR ALL guarded quantifier.
 type ForAllGuarded struct {
-	// I corresponds to the constant that will be used to materialize
-	// the instances that correspond to the ctx's model's nodes. Its ID will be
+	// I corresponds to the constant that will be used to materialize the
+	// instances that correspond to the ctx's model's nodes. Its ID will be
 	// used for scope setting.
 	I query.QConst
-	// Q corresponds to a sub-query that implements the LogOpQ and that
-	// is expected to make use of I.
+	// Q corresponds to a sub-query that implements the LogOpQ interface and
+	// that is expected to make use of I.
 	Q LogOpQ
 }
 
@@ -108,8 +108,8 @@ func (i *nodeAsValuesIter) Next() bool {
 }
 
 // Encoding returns the CNF formula equivalent to the conjunction all the
-// possible CNF formulas of its Q resulting from instantiating every value
-// of I in the ctx's model.
+// possible CNF formulas of f.Q resulting from instantiating every value of f.I
+// in the ctx's model.
 func (f ForAllGuarded) Encoding(ctx query.QContext) (ncnf cnf.CNF, err error) {
 	defer func() {
 		if err != nil {

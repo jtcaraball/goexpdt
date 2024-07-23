@@ -12,8 +12,8 @@ import (
 type WithVar struct {
 	// I corresponds to a partial instance variable.
 	I query.QVar
-	// Q corresponds to a sub-query that implements the LogOpQ and that
-	// is expected to make use of I.
+	// Q corresponds to a sub-query that implements the LogOpQ interface and
+	// that is expected to make use of I.
 	Q LogOpQ
 }
 

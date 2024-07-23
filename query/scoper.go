@@ -25,7 +25,7 @@ type Scoper interface {
 	// SetScope adds the value and corresponding index to the last scope in the
 	// stack. Returns an error if there are no scopes.
 	SetScope(vIdx int, val []FeatV) error
-	// Reset removes all guards in the scope
+	// Reset removes all scopes in the stack.
 	Reset()
 }
 

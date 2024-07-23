@@ -2,7 +2,7 @@
 // conjunctive normal form.
 //
 // This package makes a distinction between semantic and consistency clauses in
-// CNF formulas. Where as semantic clauses can be negated consistency clauses
+// CNF formulas. Whereas semantic clauses can be negated consistency clauses
 // are supposed to be fixed, and thus will never be negated, as they represent
 // the 'world' in which the truth value of a formula is being evaluated.
 //
@@ -13,7 +13,7 @@
 // whose meaning corresponds to not having more than n features be equal to one
 // (semantic clauses). This way if we want to represent the formula g that is
 // true if a partial instance has more than n features with value one we can
-// simply define it as g=-f as the 'counting' clauses in f are not negated.
+// simply define it as g=-f as the 'counting' clauses in f will not be negated.
 package cnf
 
 import (
@@ -62,7 +62,7 @@ func (c CNF) TopV() int {
 // Negate the CNF semantic clauses. The resulting value of CNF's tv is the
 // maximum between topv and the current value. This operation will set the CNF
 // to an equivalent negation but it will not be equal to negating the
-// underlying formula. Returns new tv value.
+// underlying formula. Returns the new cnf.
 func (c CNF) Negate(opt_topv ...int) CNF {
 	var rcnf CNF
 	var topv int = c.tv

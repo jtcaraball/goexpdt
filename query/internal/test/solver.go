@@ -18,6 +18,9 @@ type Encodable interface {
 	Encoding(ctx query.QContext) (cnf.CNF, error)
 }
 
+// EncodeAndRun calls encoding on f and runs a sat solver over the cnf formula
+// generated. It will throw a testing.T.Fatal error if the output does not
+// match the expeced code.
 func EncodeAndRun(t *testing.T, f Encodable, ctx query.QContext, id, code int) {
 	d := t.TempDir()
 	p := path.Join(d, strconv.Itoa(id)+".cnf")

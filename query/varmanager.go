@@ -5,16 +5,15 @@ package query
 // values. All variables must be assigned a value equal or greater than 1 as 0
 // is reserved by the DIMACS standard.
 type VarManager interface {
-	// TopV returns the value of largest unsigned integer assigned to a
-	// variable. This value is expected to be always positive.
+	// TopV returns the value of largest integer assigned to a variable. This
+	// value is expected to always be positive.
 	TopV() int
-	// UpdateTopV updates the value of the unsigned the value of the largest
-	// integer to be assigned. Returns true if the update is valid and took
-	// effect.
+	// UpdateTopV updates the value of the next integer to be assigned to a cnf
+	// variable. Returns true if the update is valid and took effect.
 	UpdateTopV(v int) bool
-	// CNFVar return the unsigned integer value assigned to the variable given.
-	// If the variable does not exists it first assigns a value to it. This
-	// value is expected to be always positive.
+	// CNFVar return the integer value assigned to the variable given. If the
+	// variable does not exists it first assigns a value to it. This value is
+	// expected to always be positive.
 	CNFVar(v QVar, idx, val int) int
 	// CNFVarExists return true if the passed variable exists.
 	CNFVarExists(v QVar, idx, val int) bool

@@ -16,8 +16,8 @@ type Encodable interface {
 
 // Steps returns the exitcode and stdout returned by the SAT solver specified
 // by solverPath after running it over the encoding of the formula f. The exit
-// code will always be 10 or 20 if error == nil. filePath will be used to save
-// the encoding of the formula.
+// code will always be 10 (sat) or 20 (unsat) if error == nil. filePath will be
+// used to save the encoding of the formula.
 func Step(
 	f Encodable,
 	ctx query.QContext,
@@ -60,8 +60,8 @@ func runSolver(cmd *exec.Cmd) (int, []byte, error) {
 	return 0, nil, errors.New("Solver exit code could not be recovered")
 }
 
-// GetValueFromBytes returns the value of variable v value from a solvers
-// output passed as a byte slice.
+// GetValueFromBytes returns the value of variable v from a solvers output
+// passed as a byte slice.
 func GetValueFromBytes(
 	out []byte,
 	v query.QVar,

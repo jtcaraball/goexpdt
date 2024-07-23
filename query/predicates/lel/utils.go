@@ -40,33 +40,21 @@ func varBotCountClauses(
 			clauses = append(
 				clauses,
 				cnf.Clause{
-					// -ctx.V[('c', var.name, i, j)],
-					// ctx.V[('c', var.name, i - 1, j - 1)],
-					// -ctx.V[(var.name, i, Symbol.BOT)]
 					-ctx.CNFVar(cv, i, j),
 					ctx.CNFVar(cv, i-1, j-1),
 					-ctx.CNFVar(v, i, int(query.BOT)),
 				},
 				cnf.Clause{
-					// ctx.V[('c', var.name, i, j)],
-					// -ctx.V[('c', var.name, i - 1, j - 1)],
-					// -ctx.V[(var.name, i, Symbol.BOT)]
 					ctx.CNFVar(cv, i, j),
 					-ctx.CNFVar(cv, i-1, j-1),
 					-ctx.CNFVar(v, i, int(query.BOT)),
 				},
 				cnf.Clause{
-					// -ctx.V[('c', var.name, i, j)],
-					// ctx.V[('c', var.name, i - 1, j)],
-					// ctx.V[(var.name, i, Symbol.BOT)]
 					-ctx.CNFVar(cv, i, j),
 					ctx.CNFVar(cv, i-1, j),
 					ctx.CNFVar(v, i, int(query.BOT)),
 				},
 				cnf.Clause{
-					// ctx.V[('c', var.name, i, j)],
-					// -ctx.V[('c', var.name, i - 1, j)],
-					// ctx.V[(var.name, i, Symbol.BOT)]
 					ctx.CNFVar(cv, i, j),
 					-ctx.CNFVar(cv, i-1, j),
 					ctx.CNFVar(v, i, int(query.BOT)),
@@ -84,26 +72,18 @@ func varBotCountClauses(
 	clauses = append(
 		clauses,
 		cnf.Clause{
-			// -ctx.V[('c', var.name, 0, 1)],
-			// ctx.V[(var.name, 0, Symbol.BOT)]
 			-ctx.CNFVar(cv, 0, 1),
 			ctx.CNFVar(v, 0, int(query.BOT)),
 		},
 		cnf.Clause{
-			// -ctx.V[(var.name, 0, Symbol.BOT)],
-			// ctx.V[('c', var.name, 0, 1)]
 			-ctx.CNFVar(v, 0, int(query.BOT)),
 			ctx.CNFVar(cv, 0, 1),
 		},
 		cnf.Clause{
-			// -ctx.V[('c', var.name, 0, 0)],
-			// -ctx.V[(var.name, 0, Symbol.BOT)]
 			-ctx.CNFVar(cv, 0, 0),
 			-ctx.CNFVar(v, 0, int(query.BOT)),
 		},
 		cnf.Clause{
-			// ctx.V[(var.name, 0, Symbol.BOT)],
-			// ctx.V[('c', var.name, 0, 0)]
 			ctx.CNFVar(v, 0, int(query.BOT)),
 			ctx.CNFVar(cv, 0, 0),
 		},

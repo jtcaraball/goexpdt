@@ -1,13 +1,23 @@
 package dfs
 
-import "github.com/jtcaraball/goexpdt/query"
+import (
+	"fmt"
+
+	"github.com/jtcaraball/goexpdt/query"
+)
 
 // leafsAsConsts returns, as query constants, the positive and negative leafs
 // (in that order) of the model represented in nodes.
 func leafsAsConsts(
 	dim int,
 	nodes []query.Node,
-) ([]query.QConst, []query.QConst) {
+) ([]query.QConst, []query.QConst, error) {
+	for _, n := range nodes {
+		if err := validateNode(n, dim, len(nodes)); err != nil {
+			return nil, nil, err
+		}
+	}
+
 	pleaf := []query.QConst{}
 	nleaf := []query.QConst{}
 
@@ -79,5 +89,31 @@ func leafsAsConsts(
 		}
 	}
 
-	return pleaf, nleaf
+	return pleaf, nleaf, nil
+}
+
+// validateNode returns a non nill error if the node n is invalid for the the
+// given dimension and number of nodes.
+func validateNode(n query.Node, dim, nlen int) error {
+	if n.IsLeaf() {
+		return nil
+	}
+
+	if n.Feat < 0 || n.Feat >= dim {
+		return fmt.Errorf(
+			"Node's feature %d is out of range [0, %d]",
+			n.Feat,
+			dim-1,
+		)
+	}
+
+	if n.ZChild < 0 || n.ZChild >= nlen {
+		return fmt.Errorf("Node's ZChild out of bounds %d", n.ZChild)
+	}
+
+	if n.OChild < 0 || n.OChild >= nlen {
+		return fmt.Errorf("Node's OChild out of bounds %d", n.OChild)
+	}
+
+	return nil
 }

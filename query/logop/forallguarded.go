@@ -48,12 +48,44 @@ func newNodeAsValuesIter(
 		return nil, iter, errors.New("Invalid iteration over empty model")
 	}
 
+	for _, n := range nodes {
+		if err := validateNode(n, dim, len(nodes)); err != nil {
+			return nil, iter, err
+		}
+	}
+
 	t := make([]query.FeatV, dim)
 	iter.t = &t
 	iter.nodes = nodes
 	iter.walk = make([]walkInfo, len(nodes))
 
 	return &t, iter, nil
+}
+
+// validateNode returns a non nill error if the node n is invalid for the the
+// given dimension and number of nodes.
+func validateNode(n query.Node, dim, nlen int) error {
+	if n.IsLeaf() {
+		return nil
+	}
+
+	if n.Feat < 0 || n.Feat >= dim {
+		return fmt.Errorf(
+			"Node's feature %d is out of range [0, %d]",
+			n.Feat,
+			dim-1,
+		)
+	}
+
+	if n.ZChild < 0 || n.ZChild >= nlen {
+		return fmt.Errorf("Node's ZChild out of bounds %d", n.ZChild)
+	}
+
+	if n.OChild < 0 || n.OChild >= nlen {
+		return fmt.Errorf("Node's OChild out of bounds %d", n.OChild)
+	}
+
+	return nil
 }
 
 // Next attempts to moves the iterator to the next node, updating the value of

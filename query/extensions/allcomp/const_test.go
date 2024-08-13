@@ -84,7 +84,7 @@ func TestConst_Encoding_AllNeg(t *testing.T) {
 	}
 }
 
-func TestConst_Encoding_AllNeg_Guraded(t *testing.T) {
+func TestConst_Encoding_AllNeg_Guarded(t *testing.T) {
 	for i, tc := range AllNegPTT {
 		t.Run(tc.Name, func(t *testing.T) {
 			runGuardedAllCompConst(t, i, tc, false, false)
@@ -106,7 +106,7 @@ func TestNotConst_Encoding_AllNeg(t *testing.T) {
 	}
 }
 
-func TestNotConst_Encoding_AllNeg_Guraded(t *testing.T) {
+func TestNotConst_Encoding_AllNeg_Guarded(t *testing.T) {
 	for i, tc := range AllNegNTT {
 		t.Run(tc.Name, func(t *testing.T) {
 			runGuardedAllCompConst(t, i, tc, false, true)

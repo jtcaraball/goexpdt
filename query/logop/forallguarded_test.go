@@ -105,10 +105,10 @@ func TestForAllGuarded_Encoding_Iterator(t *testing.T) {
 	esc := []cnf.Clause{}
 	ecc := []cnf.Clause{
 		{1, 1}, // (_, _)
-		{3, 1}, // (1, _)
-		{3, 3}, // (0, _)
-		{3, 2}, // (0, 0)
-		{2, 1}, // (0, 1)
+		{3, 1}, // (0, _)
+		{3, 3}, // (0, 0)
+		{3, 2}, // (0, 1)
+		{2, 1}, // (1, _)
 	}
 
 	test.ValidClauses(t, sc, cc, esc, ecc)

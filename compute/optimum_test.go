@@ -11,8 +11,6 @@ import (
 	"github.com/jtcaraball/goexpdt/query/predicates/subsumption"
 )
 
-const SOLVER = "/kissat"
-
 func varGenBotCount(v query.QVar) query.QVar {
 	return query.QVar("botc" + string(rune(30)) + string(v))
 }
@@ -39,30 +37,6 @@ func lelOrder(v query.QVar, c query.QConst) compute.Encodable {
 	}
 }
 
-type mockModel struct {
-	dim int
-}
-
-func (m mockModel) Dim() int {
-	return m.dim
-}
-
-func (m mockModel) Nodes() []query.Node {
-	return nil
-}
-
-func (t mockModel) NodesConsts() []query.QConst {
-	return nil
-}
-
-func (t mockModel) PosLeafsConsts() []query.QConst {
-	return nil
-}
-
-func (t mockModel) NegLeafsConsts() []query.QConst {
-	return nil
-}
-
 func TestCompute_LEL(t *testing.T) {
 	v := query.QVar("x")
 	validOuts := []query.QConst{
@@ -72,7 +46,9 @@ func TestCompute_LEL(t *testing.T) {
 	}
 	ctx := query.BasicQContext(mockModel{dim: 3})
 
-	out, err := compute.ComputeOptim(lelFormula, lelOrder, v, ctx, SOLVER)
+	solver, _ := compute.NewBinSolver(SOLVER)
+
+	out, err := compute.ComputeOptim(lelFormula, lelOrder, v, ctx, solver)
 	if err != nil {
 		t.Error(err.Error())
 		return

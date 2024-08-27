@@ -89,8 +89,8 @@ var qry = logop.WithVar{
 > more than one component of a query encodes the notion of 'reachability' all
 > use the same variables to do so.
 
-If a query requires more than one variable this can be expressed concatenating
-the `query.WithVar` structure:
+If a query requires more than one variable this can be expressed nesting the
+`query.WithVar` structure:
 
 ```go
 var (

@@ -58,6 +58,12 @@ func (t evalDTree) Nodes() []query.Node {
 	return t.nodes
 }
 
+// Then we define a function to generate, given a variable v, a new variable
+// used to encode the count of bottom variables.
+func botCountVarGen(v query.QVar) query.QVar {
+	return query.QVar("cbot" + string(v))
+}
+
 func EvaluationExample() {
 	// We instantiate a decision tree and create a basic context from it.
 	tree := evalDTree{
@@ -84,7 +90,7 @@ func EvaluationExample() {
 
 	// We define the partial instance c = (_, 0, _) and variable y.
 	c := query.QConst{
-		Val: []query.FeatV{query.ZERO, query.ONE, query.ONE},
+		Val: []query.FeatV{query.BOT, query.ZERO, query.BOT},
 	}
 	y := query.QVar("y")
 
@@ -94,12 +100,25 @@ func EvaluationExample() {
 	// Q(c) we must define and solve for Q'(c) = -Q(c). For a formal definition
 	// of DFS(x) please refer to section 5.1 of the paper.
 	qry := logop.Or{
-		Q1: dfs.Const{I: c},
+		Q1: logop.Not{Q: dfs.Const{I: c}},
 		Q2: logop.WithVar{
 			I: y,
 			Q: logop.And{
 				Q1: dfs.Var{I: y},
-				Q2: lel.VarConst{I1: y, I2: c},
+				Q2: logop.And{
+					Q1: lel.VarConst{
+						I1:          y,
+						I2:          c,
+						CountVarGen: botCountVarGen,
+					},
+					Q2: logop.Not{
+						Q: lel.ConstVar{
+							I1:          c,
+							I2:          y,
+							CountVarGen: botCountVarGen,
+						},
+					},
+				},
 			},
 		},
 	}

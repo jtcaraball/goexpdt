@@ -27,7 +27,7 @@ explanation notions studied in the literature in a serviceable amount of time
 over industry sized models, as can be seeing in the following figures:
 
 <p align="center">
-    <img src="https://github.com/jtcaraball/goexpdt-experiments/blob/main/results_figure.png" alt="Results figures."/>
+    <img src="https://github.com/jtcaraball/goexpdt-experiments/blob/ebb00e2c7ca3552fb8a1291b6cbd770c3dccc0ff/results_figure.png" alt="Results figures."/>
 </p>
 
 The repository containing the source code with which this results where
@@ -147,7 +147,7 @@ using the method `Values`.
 ## Examples
 
 Complete examples of how to use Goexpdt to evaluate and compute explanations
-can be found in the [examples](https://github.com/jtcaraball/goexpdt/examples)
+can be found in the [examples](https://github.com/jtcaraball/goexpdt/tree/78e3710b9cbbf46a863343b5f9b0137197fa3d5f/examples)
 directory.
 
 ## Testing

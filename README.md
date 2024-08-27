@@ -27,7 +27,7 @@ explanation notions studied in the literature in a serviceable amount of time
 over industry sized models, as can be seeing in the following figures:
 
 <p align="center">
-    <img src="https://github.com/jtcaraball/goexpdt-experiments/results_figure.png" alt="Results figures."/>
+    <img src="https://github.com/jtcaraball/goexpdt-experiments/blob/main/results_figure.png" alt="Results figures."/>
 </p>
 
 The repository containing the source code with which this results where

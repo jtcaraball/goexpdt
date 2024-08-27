@@ -6,14 +6,10 @@
 A practical implementation of the work in "A Uniform Language to Explain
 Decision Trees".
 
---------
-
 - [Goexpdt](#goexpdt)
 - [Usage](#usage)
 - [Examples](#examples)
 - [Testing](#testing)
-
---------
 
 ## Goexpdt
 
@@ -31,7 +27,7 @@ explanation notions studied in the literature in a serviceable amount of time
 over industry sized models, as can be seeing in the following figures:
 
 <p align="center">
-    <img src="https://github.com/jtcaraball/goexpdt-experiments/results_figures.png" alt="Results figures."/>
+    <img src="https://github.com/jtcaraball/goexpdt-experiments/results_figure.png" alt="Results figures."/>
 </p>
 
 The repository containing the source code with which this results where
@@ -138,23 +134,24 @@ if err != nil {
 fmt.Println(result)
 ```
 
-> [!NOTE]
+> [!IMPORTANT]
 > Goexpdt is agnostic to the SAT solver being used as long as it complies with
 > the standard DIMACS CNF format.
 
 If the value of `x` is of importance it can be retrieve through the `solver`
 using the method `Values`.
 
-> [!IMPORTANT]
+> [!NOTE]
 > This was an example of evaluating a Q-DT-Foil formula, to see how to compute
 > instances for Opt-DT-Foil formulas, that is, instances that satisfy a
 > property and are optimal over a particular order, an example is available in
-> the [examples](#examples).
+> the [examples](#examples) below.
 
 ## Examples
 
 Complete examples of how to use Goexpdt to evaluate and compute explanations
-can be found in the [examples] directory.
+can be found in the [examples](https://github.com/jtcaraball/goexpdt/examples)
+directory.
 
 ## Testing
 

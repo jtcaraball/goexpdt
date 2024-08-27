@@ -98,7 +98,7 @@ var (
     y = query.QVar("y")
 )
 
-var query = logop.WithVar{
+var qry = logop.WithVar{
     I: x,
     Q: logop.WithVar{
         I: y,
@@ -110,10 +110,7 @@ var query = logop.WithVar{
 Finally the query can be evaluated by declaring as follows:
 
 ```go
-var boolComb = compute.QDTFAtom{
-    Query:   qry,
-    Negated: false,
-}
+var boolComb = compute.QDTFAtom{Query: qry}
 
 var (
     solver compute.Solver

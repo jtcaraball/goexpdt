@@ -3,15 +3,17 @@ package main
 // In this example we compute a minimal sufficient reason for the instance
 // c = (0, 1, 1) over the Decision Tree T defined as:
 //
-// T: f0 -0-> f1 -0-> true
+// T: f0 -0-> f1 -0-> f2 -0-> true
+//      |       |       |
+//      |       |        -1-> true
 //      |       |
-//      |        -1-> false
+//      |        -1-> true
 //      |
-//       -1-> f1 -0-> f2 -0-> true
-//              |       |
-//              |        -1-> true
+//       -1-> f2 -0-> false
 //              |
-//               -1-> true
+//               -1-> f1 -0-> true
+//                      |
+//                       -1-> false
 //
 // A sufficient reason of c over T is defined as a partial instance x such that
 // x is subsumed by c and all possible completions of x have the same

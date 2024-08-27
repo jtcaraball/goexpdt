@@ -1,7 +1,7 @@
 package main
 
 // In this example we compute a minimal sufficient reason for the instance
-// c = (0, 1, 1) over the Decision Tree:
+// c = (0, 1, 1) over the Decision Tree T defined as:
 //
 // T: f0 -0-> f1 -0-> true
 //      |       |
@@ -48,16 +48,16 @@ import (
 
 // First we define a decision tree struct that implements the query.Model
 // interface.
-type OptDTree struct {
+type optDTree struct {
 	dim   int
 	nodes []query.Node
 }
 
-func (t OptDTree) Dim() int {
+func (t optDTree) Dim() int {
 	return t.dim
 }
 
-func (t OptDTree) Nodes() []query.Node {
+func (t optDTree) Nodes() []query.Node {
 	return t.nodes
 }
 
@@ -67,9 +67,9 @@ func reachableVarGen(v query.QVar) query.QVar {
 	return query.QVar("r" + string(v))
 }
 
-func main() {
+func ComputationExample() {
 	// We instantiate a decision tree and create a basic context from it.
-	tree := OptDTree{
+	tree := optDTree{
 		dim: 3,
 		nodes: []query.Node{
 			{Feat: 0, ZChild: 1, OChild: 6},

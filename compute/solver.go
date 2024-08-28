@@ -33,26 +33,27 @@ type Solver interface {
 	Step(q Encodable, ctx query.QContext) error
 }
 
-// BinSolver holds a path to a SAT solver's executable binary and its outputs,
+// binSolver holds a path to a SAT solver's executable binary and its outputs,
 // both of which can be accessed making use of the Solver interface.
-type BinSolver struct {
+type binSolver struct {
 	output     []byte
 	solverPath string
 }
 
-// NewBinSolver returns a new BinSolver. An error is returned if the path
-// provided does not correspond to a valid SAT solver executable.
-func NewBinSolver(solverPath string) (*BinSolver, error) {
+// BinSolver that exposes a SAT solver's executable binary and holds its
+// outputs. An error is returned if the path provided does not correspond to a
+// valid SAT solver executable.
+func BinSolver(solverPath string) (Solver, error) {
 	// TODO: Look into how to determine if the path corresponds to a SAT solver
 	// executable.
 	if _, err := os.Stat(solverPath); err != nil {
 		return nil, err
 	}
 
-	return &BinSolver{solverPath: solverPath}, nil
+	return &binSolver{solverPath: solverPath}, nil
 }
 
-func (s *BinSolver) Step(
+func (s *binSolver) Step(
 	q Encodable,
 	ctx query.QContext,
 ) error {
@@ -116,7 +117,7 @@ func runSolver(cmd *exec.Cmd) (int, []byte, error) {
 	return 0, nil, errors.New("Solver exit code could not be recovered")
 }
 
-func (s *BinSolver) Values(
+func (s *binSolver) Values(
 	vars []query.QVar,
 	ctx query.QContext,
 ) ([]query.QConst, error) {

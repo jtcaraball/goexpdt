@@ -46,7 +46,7 @@ func TestCompute_LEL(t *testing.T) {
 	}
 	ctx := query.BasicQContext(mockModel{dim: 3})
 
-	solver, _ := compute.NewBinSolver(SOLVER)
+	solver, _ := compute.BinSolver(SOLVER)
 
 	out, err := compute.ComputeOptim(lelFormula, lelOrder, v, ctx, solver)
 	if err != nil {

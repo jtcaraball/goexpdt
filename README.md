@@ -118,7 +118,7 @@ var (
     err    error
 )
 
-solver, err = compute.NewBinSolver("path_to_solver_binary")
+solver, err = compute.BinSolver("path_to_solver_binary")
 if err != nil {
     panic(err)
 }

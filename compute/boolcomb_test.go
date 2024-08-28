@@ -27,7 +27,7 @@ var (
 func TestAndCombinator_True(t *testing.T) {
 	comb := compute.AndCombinator{satQDTFAttom, satQDTFAttom}
 	ctx := query.BasicQContext(mockModel{dim: 1})
-	solver, _ := compute.NewBinSolver(SOLVER)
+	solver, _ := compute.BinSolver(SOLVER)
 
 	sat, err := comb.Sat(ctx, solver)
 	if err != nil {
@@ -42,7 +42,7 @@ func TestAndCombinator_True(t *testing.T) {
 func TestAndCombinator_False(t *testing.T) {
 	comb := compute.AndCombinator{satQDTFAttom, unsatQDTFAttom}
 	ctx := query.BasicQContext(mockModel{dim: 1})
-	solver, _ := compute.NewBinSolver(SOLVER)
+	solver, _ := compute.BinSolver(SOLVER)
 
 	sat, err := comb.Sat(ctx, solver)
 	if err != nil {
@@ -57,7 +57,7 @@ func TestAndCombinator_False(t *testing.T) {
 func TestOrCombinator_True(t *testing.T) {
 	comb := compute.OrCombinator{satQDTFAttom, unsatQDTFAttom}
 	ctx := query.BasicQContext(mockModel{dim: 1})
-	solver, _ := compute.NewBinSolver(SOLVER)
+	solver, _ := compute.BinSolver(SOLVER)
 
 	sat, err := comb.Sat(ctx, solver)
 	if err != nil {
@@ -72,7 +72,7 @@ func TestOrCombinator_True(t *testing.T) {
 func TestOrCombinator_False(t *testing.T) {
 	comb := compute.OrCombinator{unsatQDTFAttom, unsatQDTFAttom}
 	ctx := query.BasicQContext(mockModel{dim: 1})
-	solver, _ := compute.NewBinSolver(SOLVER)
+	solver, _ := compute.BinSolver(SOLVER)
 
 	sat, err := comb.Sat(ctx, solver)
 	if err != nil {
@@ -92,7 +92,7 @@ func TestAtom_Positive(t *testing.T) {
 		},
 	}
 	ctx := query.BasicQContext(mockModel{dim: 1})
-	solver, _ := compute.NewBinSolver(SOLVER)
+	solver, _ := compute.BinSolver(SOLVER)
 
 	sat, err := comb.Sat(ctx, solver)
 	if err != nil {
@@ -113,7 +113,7 @@ func TestAtom_Negative(t *testing.T) {
 		Negated: true,
 	}
 	ctx := query.BasicQContext(mockModel{dim: 1})
-	solver, _ := compute.NewBinSolver(SOLVER)
+	solver, _ := compute.BinSolver(SOLVER)
 
 	sat, err := comb.Sat(ctx, solver)
 	if err != nil {

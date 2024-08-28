@@ -140,7 +140,7 @@ func ComputationExample() {
 	// specified by the path stored in the environment variable
 	// "path_to_solver_binary".
 
-	solver, err := compute.NewBinSolver("path_to_solver_binary")
+	solver, err := compute.BinSolver("path_to_solver_binary")
 	if err != nil {
 		panic(err)
 	}

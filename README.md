@@ -62,9 +62,12 @@ var ctx = query.BasicQContext(
 )
 ```
 
-To represent a query, for example 'there exists a partial instance x such that
-all its completions are positive' it is first necessary to define it as a
-DT-Foil formula with a free variable using `logop.WithVar`:
+To represent a query, for example:
+
+> There exists a partial instance x such that all its completions are positive.
+
+It is first necessary to define it as a DT-Foil formula with a free variable
+using `logop.WithVar`:
 
 ```go
 var x = query.QVar("x")
@@ -107,7 +110,8 @@ var qry = logop.WithVar{
 }
 ```
 
-Finally the query can be evaluated by declaring as follows:
+Finally the query can be evaluated by wrapping it in a Q-DT-Foil atom and
+making use of a SAT solver through the `Solver` interface as follows:
 
 ```go
 var boolComb = compute.QDTFAtom{Query: qry}

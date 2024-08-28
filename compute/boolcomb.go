@@ -10,7 +10,7 @@ import (
 // that is, a boolean combination of sub-queries in the logic that do not share
 // common variables.
 type QDTFCombinator interface {
-	// Sat returns true if and only if the query
+	// Sat returns true if and only if the query.
 	Sat(ctx query.QContext, solver Solver) (bool, error)
 }
 

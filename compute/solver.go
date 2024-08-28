@@ -66,7 +66,7 @@ func (s *BinSolver) Step(
 		os.Remove(encFile.Name())
 	}()
 
-	// Write formula as cnf to filePath
+	// Write formula as cnf to filePath.
 	cnf, err := q.Encoding(ctx)
 	if err != nil {
 		return err
@@ -75,7 +75,7 @@ func (s *BinSolver) Step(
 		return err
 	}
 
-	// Create solver command and run it
+	// Create solver command and run it.
 	cmd := exec.Command(s.solverPath, encFile.Name())
 
 	code, output, err := runSolver(cmd)
@@ -99,15 +99,15 @@ func runSolver(cmd *exec.Cmd) (int, []byte, error) {
 	cmd.Stdout = &stdout
 	err := cmd.Run()
 
-	// Attempt to cast error to exit error to read exit code
+	// Attempt to cast error to exit error to read exit code.
 	if exitErr, ok := err.(*exec.ExitError); ok {
 		exitCode := exitErr.ExitCode()
 		// If exit code is not 10 or 20 then solver failed to run and an error
-		// has to be thrown
+		// has to be thrown.
 		if exitCode != 10 && exitCode != 20 {
 			return exitCode, nil, errors.New(stderr.String())
 		}
-		// If it is just return it alongside stdout
+		// If it is just return it alongside stdout.
 		return exitErr.ExitCode(), stdout.Bytes(), nil
 	} else if err != nil {
 		return 0, nil, err

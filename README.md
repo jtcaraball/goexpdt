@@ -87,7 +87,7 @@ var qry = logop.WithVar{
 }
 ```
 
-> [!NOTE]
+> [!IMPORTANT]
 > An encoding function is passed to `allcomp.Var` in order to ensure that if
 > more than one component of a query encodes the notion of 'reachability' all
 > use the same variables to do so.
@@ -135,12 +135,12 @@ if err != nil {
 fmt.Println(result)
 ```
 
+If the value of `x` is of importance it can be retrieved through the `solver`
+using the method `Values`.
+
 > [!IMPORTANT]
 > Goexpdt is agnostic to the SAT solver being used as long as it complies with
 > the standard DIMACS CNF format.
-
-If the value of `x` is of importance it can be retrieve through the `solver`
-using the method `Values`.
 
 > [!NOTE]
 > This was an example of evaluating a Q-DT-Foil formula, to see how to compute

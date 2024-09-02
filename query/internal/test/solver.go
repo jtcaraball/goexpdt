@@ -20,7 +20,7 @@ type Encodable interface {
 
 // EncodeAndRun calls encoding on f and runs a sat solver over the cnf formula
 // generated. It will throw a testing.T.Fatal error if the output does not
-// match the expeced code.
+// match the expected code.
 func EncodeAndRun(t *testing.T, f Encodable, ctx query.QContext, id, code int) {
 	d := t.TempDir()
 	p := path.Join(d, strconv.Itoa(id)+".cnf")
@@ -50,7 +50,7 @@ func runFormulaTest(t *testing.T, code int, path string) {
 }
 
 func runSolver(cmd *exec.Cmd) (int, error) {
-	// Caputre stderr to debug kissat errors.
+	// Capture stderr to debug kissat errors.
 	var s bytes.Buffer
 	cmd.Stderr = &s
 

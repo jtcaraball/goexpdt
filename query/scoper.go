@@ -13,7 +13,8 @@ type Scoper interface {
 	// For any two variables u, v and any two stacks s1, s2 it must hold that
 	// if u != v then s1:ScopeQVar(u) != s2:ScopeQVar(v).
 	ScopeVar(v QVar) QVar
-	// AddVar initializes a variable inside the scope.
+	// AddVar initializes a variable and assigns it to the scope at the top
+	// of the stack.
 	AddVar(v QVar)
 	// ScopeConst returns an instance constant with its value field set match
 	// the value of the scope targeting c at the moment its called if it
@@ -22,7 +23,8 @@ type Scoper interface {
 	ScopeConst(c QConst) (scopedQConst QConst, ok bool)
 	// AddScope adds a scope with target==tgt to the stack.
 	AddScope(tgt string)
-	// PopScope removes the last scope in the stack.
+	// PopScope removes the last scope in the stack in addition to any
+	// variables added to it.
 	PopScope() error
 	// SetScope adds the value and corresponding index to the last scope in the
 	// stack. Returns an error if there are no scopes.

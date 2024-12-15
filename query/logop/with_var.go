@@ -33,6 +33,8 @@ func (w WithVar) Encoding(ctx query.QContext) (ncnf cnf.CNF, err error) {
 		return cnf.CNF{}, errors.New("Invalid encoding with nil ctx")
 	}
 
+	ctx.AddVar(w.I)
+
 	ncnf, err = w.buildEncoding(ctx)
 	if err != nil {
 		return cnf.CNF{}, err

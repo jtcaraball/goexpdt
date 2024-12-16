@@ -9,6 +9,20 @@ import (
 	"github.com/jtcaraball/goexpdt/query/logop"
 )
 
+func variable_clauses(n int) []cnf.Clause {
+	cls := []cnf.Clause{}
+	for i := 0; i < n; i++ {
+		cls = append(
+			cls,
+			cnf.Clause{1 + 3*i, 2 + 3*i, 3 + 3*i},
+			cnf.Clause{-1 + 3*i, -2 + 3*i},
+			cnf.Clause{-1 + 3*i, -3 + 3*i},
+			cnf.Clause{-2 + 3*i, -3 + 3*i},
+		)
+	}
+	return cls
+}
+
 func TestForAllGuarded_Encoding(t *testing.T) {
 	tree, _ := test.NewMockTree(
 		1,
@@ -32,20 +46,64 @@ func TestForAllGuarded_Encoding(t *testing.T) {
 
 	sc, cc := ncnf.Clauses()
 	esc := []cnf.Clause{}
-	ecc := []cnf.Clause{
-		{1, 2, 3},
-		{-1, -2},
-		{-1, -3},
-		{-2, -3},
-		{4, 5, 6},
-		{-4, -5},
-		{-4, -6},
-		{-5, -6},
-		{7, 8, 9},
-		{-7, -8},
-		{-7, -9},
-		{-8, -9},
+	ecc := variable_clauses(3)
+
+	test.ValidClauses(t, sc, cc, esc, ecc)
+}
+
+type isBot struct {
+	I query.QVar
+}
+
+func (ib isBot) Encoding(ctx query.QContext) (cnf.CNF, error) {
+	v := ctx.ScopeVar(ib.I)
+	return cnf.FromClauses(
+		[]cnf.Clause{{ctx.CNFVar(v, 0, int(query.BOT))}},
+	), nil
+}
+
+func TestForAllGuarded_Encoding_Alternation(t *testing.T) {
+	tree, _ := test.NewMockTree(
+		1,
+		[]query.Node{
+			{Feat: 0, ZChild: 1, OChild: 2},
+			{Value: false, ZChild: query.NoChild, OChild: query.NoChild},
+			{Value: false, ZChild: query.NoChild, OChild: query.NoChild},
+		},
+	)
+	ctx := query.BasicQContext(tree)
+
+	x := query.QConst{ID: "x"}
+	y := query.QVar("y")
+	z := query.QConst{ID: "z"}
+	w := query.QVar("w")
+	cmp := logop.ForAllGuarded{
+		x,
+		logop.WithVar{
+			y,
+			logop.ForAllGuarded{
+				z,
+				logop.WithVar{
+					w,
+					isBot{y},
+				},
+			},
+		},
 	}
+
+	ncnf, err := cmp.Encoding(ctx)
+	if err != nil {
+		t.Errorf("CNF encoding error. %s", err.Error())
+		return
+	}
+
+	sc, cc := ncnf.Clauses()
+	// Testing to see if scoping of variable y is correct. For every constant
+	// in the first guarded iterator 3 new variables are created so literals
+	// should be 4 variables apart, each with 3 literals. We assume that
+	// the third literal of every variable correspond to the BOT value.
+	esc := []cnf.Clause{{3}, {3}, {3}, {15}, {15}, {15}, {27}, {27}, {27}}
+	ecc := variable_clauses(12)
 
 	test.ValidClauses(t, sc, cc, esc, ecc)
 }

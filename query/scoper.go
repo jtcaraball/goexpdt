@@ -9,10 +9,13 @@ import (
 // Scoper manages scope for guarded quantifiers.
 type Scoper interface {
 	// ScopeVar returns an instance variable that corresponds to v "inside" the
-	// stack of scopes at the moment its called.
+	// stack of scopes at the moment it was first initialized.
 	// For any two variables u, v and any two stacks s1, s2 it must hold that
 	// if u != v then s1:ScopeQVar(u) != s2:ScopeQVar(v).
 	ScopeVar(v QVar) QVar
+	// AddVar initializes a variable and assigns it to the scope at the top
+	// of the stack.
+	AddVar(v QVar)
 	// ScopeConst returns an instance constant with its value field set match
 	// the value of the scope targeting c at the moment its called if it
 	// exists. If the constant is scoped then ok==true else ok==false and c
@@ -20,7 +23,8 @@ type Scoper interface {
 	ScopeConst(c QConst) (scopedQConst QConst, ok bool)
 	// AddScope adds a scope with target==tgt to the stack.
 	AddScope(tgt string)
-	// PopScope removes the last scope in the stack.
+	// PopScope removes the last scope in the stack in addition to any
+	// variables added to it.
 	PopScope() error
 	// SetScope adds the value and corresponding index to the last scope in the
 	// stack. Returns an error if there are no scopes.
@@ -31,7 +35,8 @@ type Scoper interface {
 
 type baseScoper struct {
 	builder strings.Builder // Scope string builder
-	scopes  []scope
+	scopes  []scope         // Scope stack
+	vars    map[QVar]int    // Variable to stack level mapping
 }
 
 type scope struct {
@@ -51,14 +56,25 @@ func (s *baseScoper) ScopeVar(v QVar) QVar {
 
 	s.builder.WriteString(string(v))
 
-	for _, g := range s.scopes {
+	for i := 0; i < s.vars[v]; i++ {
 		s.builder.WriteRune(31) // Unit separator
-		s.builder.WriteString(g.target)
+		s.builder.WriteString(s.scopes[i].target)
 		s.builder.WriteRune(31) // Unit separator
-		s.builder.WriteString(strconv.Itoa(g.vIdx))
+		s.builder.WriteString(strconv.Itoa(s.scopes[i].vIdx))
 	}
 
 	return QVar(s.builder.String())
+}
+
+func (s *baseScoper) AddVar(v QVar) {
+	if len(s.scopes) == 0 {
+		return
+	}
+
+	if _, ok := s.vars[v]; ok {
+		return
+	}
+	s.vars[v] = len(s.scopes)
 }
 
 func (s *baseScoper) ScopeConst(c QConst) (QConst, bool) {
@@ -78,7 +94,15 @@ func (s *baseScoper) PopScope() error {
 	if len(s.scopes) == 0 {
 		return errors.New("Invalid scope removal in empty scoper")
 	}
+
+	for v, i := range s.vars {
+		if i == len(s.scopes) {
+			delete(s.vars, v)
+		}
+	}
+
 	s.scopes = s.scopes[:len(s.scopes)-1]
+
 	return nil
 }
 

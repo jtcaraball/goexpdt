@@ -23,11 +23,9 @@ type baseQContext struct {
 // elements.
 func BasicQContext(model Model) QContext {
 	return &baseQContext{
-		baseScoper: baseScoper{},
-		baseVarManager: baseVarManager{
-			vars: make(map[varRep]int),
-		},
-		Model: model,
+		baseScoper:     baseScoper{vars: make(map[QVar]int)},
+		baseVarManager: baseVarManager{vars: make(map[varRep]int)},
+		Model:          model,
 	}
 }
 
